@@ -53,7 +53,7 @@ final workoutPlansProvider = Provider<List<WorkoutPlan>>(
   (_) => WorkoutPlansData.plans,
 );
 
-final workoutFilterProvider = StateProvider<String>((ref) => 'All');
+final workoutFilterProvider = Provider<String>((ref) => 'All');
 
 final filteredWorkoutPlansProvider = Provider<List<WorkoutPlan>>((ref) {
   final plans = ref.watch(workoutPlansProvider);

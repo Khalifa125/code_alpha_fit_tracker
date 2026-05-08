@@ -6,10 +6,7 @@ final fitTrackServiceProvider = Provider<FitTrackService>((ref) {
   throw UnimplementedError('FitTrackService must be initialized before use');
 });
 
-final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  final service = ref.watch(fitTrackServiceProvider);
-  return AuthNotifier(service);
-});
+final authProvider = NotifierProvider<AuthNotifier, AuthState>(() => AuthNotifier());
 
 enum AuthStatus {
   initial,
@@ -41,15 +38,16 @@ class AuthState {
   );
 }
 
-class AuthNotifier extends StateNotifier<AuthState> {
-  final FitTrackService _service;
-
-  AuthNotifier(this._service) : super(AuthState()) {
+class AuthNotifier extends Notifier<AuthState> {
+  @override
+  AuthState build() {
     _checkAuthStatus();
+    return AuthState();
   }
 
   void _checkAuthStatus() {
-    final user = _service.getUser();
+    final service = ref.read(fitTrackServiceProvider);
+    final user = service.getUser();
     if (user != null) {
       state = state.copyWith(
         status: AuthStatus.authenticated,
@@ -61,22 +59,21 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<bool> signIn(String email, String password) async {
+    final service = ref.read(fitTrackServiceProvider);
     state = state.copyWith(status: AuthStatus.loading);
     
     try {
-      // Simulate sign in - in production, validate against backend
       await Future.delayed(const Duration(seconds: 1));
       
-      // Create user (in production, validate credentials)
       final user = UserProfile(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         name: email.split('@').first,
         email: email,
-        isOnboarded: _service.isOnboarded(),
+        isOnboarded: service.isOnboarded(),
         createdAt: DateTime.now(),
       );
       
-      await _service.saveUser(user);
+      await service.saveUser(user);
       
       state = state.copyWith(
         status: AuthStatus.authenticated,
@@ -94,7 +91,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> signOut() async {
-    await _service.deleteUser();
+    final service = ref.read(fitTrackServiceProvider);
+    await service.deleteUser();
     state = state.copyWith(
       status: AuthStatus.unauthenticated,
       user: null,
@@ -102,7 +100,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> updateProfile(UserProfile user) async {
-    await _service.saveUser(user);
+    final service = ref.read(fitTrackServiceProvider);
+    await service.saveUser(user);
     state = state.copyWith(user: user);
   }
 
@@ -111,6 +110,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     required String fitnessLevel,
     required int availableMinutes,
   }) async {
+    final service = ref.read(fitTrackServiceProvider);
     if (state.user == null) return;
     
     final updatedUser = state.user!.copyWith(
@@ -120,8 +120,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
       isOnboarded: true,
     );
     
-    await _service.saveUser(updatedUser);
-    await _service.setOnboarded();
+    await service.saveUser(updatedUser);
+    await service.setOnboarded();
     
     state = state.copyWith(user: updatedUser);
   }

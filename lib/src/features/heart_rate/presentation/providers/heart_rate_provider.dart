@@ -52,6 +52,7 @@ class HeartRateNotifier extends Notifier<HeartRateState> {
   }
 
   Future<void> addHeartRate(int bpm, {String? activity, String? note}) async {
+    final service = ref.read(heartRateServiceProvider);
     final entry = HeartRateEntry(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       bpm: bpm,
@@ -59,18 +60,20 @@ class HeartRateNotifier extends Notifier<HeartRateState> {
       activity: activity,
       note: note,
     );
-    await _service.addEntry(entry);
-    await _loadData();
+    await service.addEntry(entry);
+    _loadData(service);
   }
 
   Future<void> deleteEntry(String id) async {
-    await _service.deleteEntry(id);
-    await _loadData();
+    final service = ref.read(heartRateServiceProvider);
+    await service.deleteEntry(id);
+    _loadData(service);
   }
 
   Future<void> selectDate(DateTime date) async {
+    final service = ref.read(heartRateServiceProvider);
     state = state.copyWith(selectedDate: date);
-    await _loadData();
+    _loadData(service);
   }
 }
 

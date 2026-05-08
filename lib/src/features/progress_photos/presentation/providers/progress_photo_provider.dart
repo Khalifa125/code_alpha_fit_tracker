@@ -8,10 +8,7 @@ final progressPhotoServiceProvider = Provider<ProgressPhotoService>((ref) {
   throw UnimplementedError('ProgressPhotoService must be initialized before use');
 });
 
-final progressPhotosProvider = StateNotifierProvider<ProgressPhotosNotifier, ProgressPhotosState>((ref) {
-  final service = ref.watch(progressPhotoServiceProvider);
-  return ProgressPhotosNotifier(service);
-});
+final progressPhotosProvider = NotifierProvider<ProgressPhotosNotifier, ProgressPhotosState>(() => ProgressPhotosNotifier());
 
 class ProgressPhotosState {
   final List<ProgressPhoto> photos;
@@ -35,58 +32,66 @@ class ProgressPhotosState {
   );
 }
 
-class ProgressPhotosNotifier extends StateNotifier<ProgressPhotosState> {
-  final ProgressPhotoService _service;
+class ProgressPhotosNotifier extends Notifier<ProgressPhotosState> {
   final ImagePicker _picker = ImagePicker();
 
-  ProgressPhotosNotifier(this._service) : super(ProgressPhotosState()) {
-    _loadPhotos();
+  @override
+  ProgressPhotosState build() {
+    final service = ref.watch(progressPhotoServiceProvider);
+    _loadPhotos(service);
+    return ProgressPhotosState();
   }
 
-  Future<void> _loadPhotos() async {
+  Future<void> _loadPhotos(ProgressPhotoService service) async {
     state = state.copyWith(isLoading: true);
-    final photos = await _service.getAllPhotos();
+    final photos = await service.getAllPhotos();
     state = state.copyWith(photos: photos, isLoading: false);
   }
 
   Future<void> addPhotoFromCamera({String? category, String? note, double? weight}) async {
+    final service = ref.read(progressPhotoServiceProvider);
     final XFile? image = await _picker.pickImage(source: ImageSource.camera);
     if (image != null) {
-      await _service.addPhoto(
+      await service.addPhoto(
         date: DateTime.now(),
         sourcePath: image.path,
         category: category,
         note: note,
         weight: weight,
       );
-      await _loadPhotos();
+      _loadPhotos(service);
     }
   }
 
   Future<void> addPhotoFromGallery({String? category, String? note, double? weight}) async {
+    final service = ref.read(progressPhotoServiceProvider);
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      await _service.addPhoto(
+      await service.addPhoto(
         date: DateTime.now(),
         sourcePath: image.path,
         category: category,
         note: note,
         weight: weight,
       );
-      await _loadPhotos();
+      _loadPhotos(service);
     }
   }
 
   Future<void> deletePhoto(String id) async {
-    await _service.deletePhoto(id);
-    await _loadPhotos();
+    final service = ref.read(progressPhotoServiceProvider);
+    await service.deletePhoto(id);
+    _loadPhotos(service);
   }
 
   void setCategory(String? category) {
     state = state.copyWith(selectedCategory: category);
   }
 
-  Future<File?> getPhotoFile(String id) => _service.getPhotoFile(id);
+  Future<File?> getPhotoFile(String id) {
+    final service = ref.read(progressPhotoServiceProvider);
+    return service.getPhotoFile(id);
+  }
 }
 
 final progressComparisonProvider = FutureProvider.family<ProgressComparison?, String>((ref, category) async {

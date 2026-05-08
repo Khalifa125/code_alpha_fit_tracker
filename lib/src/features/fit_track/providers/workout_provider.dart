@@ -6,33 +6,33 @@ import 'package:fit_tracker/src/features/fit_track/services/fittrack_service.dar
 import 'package:fit_tracker/src/features/fit_track/services/workout_generator.dart';
 import 'package:fit_tracker/src/features/fit_track/providers/auth_provider.dart';
 
-final progressProvider = StateNotifierProvider<ProgressNotifier, ProgressStats>((ref) {
-  final service = ref.watch(fitTrackServiceProvider);
-  return ProgressNotifier(service);
-});
+final progressProvider = NotifierProvider<ProgressNotifier, ProgressStats>(() => ProgressNotifier());
 
-class ProgressNotifier extends StateNotifier<ProgressStats> {
-  final FitTrackService _service;
-
-  ProgressNotifier(this._service) : super(_service.getProgress());
+class ProgressNotifier extends Notifier<ProgressStats> {
+  @override
+  ProgressStats build() {
+    final service = ref.read(fitTrackServiceProvider);
+    return service.getProgress();
+  }
 
   void refresh() {
-    state = _service.getProgress();
+    final service = ref.read(fitTrackServiceProvider);
+    state = service.getProgress();
   }
 
   int getCurrentStreak() {
-    return _service.getCurrentStreak();
+    final service = ref.read(fitTrackServiceProvider);
+    return service.getCurrentStreak();
   }
 
   Future<void> recordWorkout(int durationMinutes) async {
-    await _service.recordWorkout(durationMinutes);
-    state = _service.getProgress();
+    final service = ref.read(fitTrackServiceProvider);
+    await service.recordWorkout(durationMinutes);
+    state = service.getProgress();
   }
 }
 
-final workoutProvider = StateNotifierProvider<WorkoutNotifier, WorkoutState>((ref) {
-  return WorkoutNotifier();
-});
+final workoutProvider = NotifierProvider<WorkoutNotifier, WorkoutState>(() => WorkoutNotifier());
 
 class WorkoutState {
   final Workout? currentWorkout;
@@ -60,10 +60,16 @@ class WorkoutState {
   );
 }
 
-class WorkoutNotifier extends StateNotifier<WorkoutState> {
+class WorkoutNotifier extends Notifier<WorkoutState> {
   Timer? _timer;
   
-  WorkoutNotifier() : super(WorkoutState());
+  @override
+  WorkoutState build() {
+    ref.onDispose(() {
+      _timer?.cancel();
+    });
+    return WorkoutState();
+  }
 
   void generateWorkout({
     required String goal,
@@ -118,7 +124,6 @@ class WorkoutNotifier extends StateNotifier<WorkoutState> {
       
       final exerciseElapsed = state.session!.elapsedSeconds + 1;
       
-      // Auto-advance to next exercise
       if (exerciseElapsed >= currentExercise.durationSeconds) {
         nextExercise();
       } else {
@@ -149,7 +154,6 @@ class WorkoutNotifier extends StateNotifier<WorkoutState> {
     final nextIndex = state.session!.currentExerciseIndex + 1;
     
     if (nextIndex >= state.session!.workout.exercises.length) {
-      // Workout complete
       _timer?.cancel();
       state = state.copyWith(
         session: state.session!.copyWith(
@@ -174,11 +178,5 @@ class WorkoutNotifier extends StateNotifier<WorkoutState> {
   void resetWorkout() {
     _timer?.cancel();
     state = WorkoutState();
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
   }
 }

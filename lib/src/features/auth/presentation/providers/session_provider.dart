@@ -16,12 +16,6 @@ final authStateStreamProvider = StreamProvider<AppUser?>((ref) {
   return repo.onAuthStateChanged;
 });
 
-/// Provides the current session state
-final sessionProvider = StateNotifierProvider<SessionNotifier, SessionState>((ref) {
-  final repo = ref.read(authRepositoryProvider);
-  return SessionNotifier(repository: repo);
-});
-
 /// Session states
 enum SessionStatus { unknown, authenticated, unauthenticated }
 
@@ -39,19 +33,24 @@ class SessionState {
   }
 }
 
-class SessionNotifier extends StateNotifier<SessionState> {
-  final AuthRepository _repository;
+/// Provides the current session state
+final sessionProvider = NotifierProvider<SessionNotifier, SessionState>(() => SessionNotifier());
+
+class SessionNotifier extends Notifier<SessionState> {
   StreamSubscription<AppUser?>? _authSub;
 
-  SessionNotifier({required AuthRepository repository})
-      : _repository = repository,
-        super(const SessionState()) {
+@override
+  SessionState build() {
     _init();
+    ref.onDispose(() {
+      _authSub?.cancel();
+    });
+    return const SessionState();
   }
 
   Future<void> _init() async {
-    // Check persisted session first
-    final result = await _repository.checkAuthState();
+    final repository = ref.read(authRepositoryProvider);
+    final result = await repository.checkAuthState();
     result.fold(
       (_) => state = const SessionState(status: SessionStatus.unauthenticated),
       (user) {
@@ -63,8 +62,7 @@ class SessionNotifier extends StateNotifier<SessionState> {
       },
     );
 
-    // Listen for future changes
-    _authSub = _repository.onAuthStateChanged.listen((user) {
+    _authSub = repository.onAuthStateChanged.listen((user) {
       if (user != null) {
         state = SessionState(status: SessionStatus.authenticated, user: user);
       } else {
@@ -74,7 +72,8 @@ class SessionNotifier extends StateNotifier<SessionState> {
   }
 
   Future<void> logout() async {
-    await _repository.logout();
+    final repository = ref.read(authRepositoryProvider);
+    await repository.logout();
     state = const SessionState(status: SessionStatus.unauthenticated);
   }
 
@@ -84,4 +83,3 @@ class SessionNotifier extends StateNotifier<SessionState> {
     super.dispose();
   }
 }
-

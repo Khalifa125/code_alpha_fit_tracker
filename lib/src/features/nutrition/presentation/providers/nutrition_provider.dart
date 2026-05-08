@@ -59,8 +59,9 @@ class NutritionState {
   }
 }
 
-class NutritionNotifier extends StateNotifier<NutritionState> {
-  NutritionNotifier() : super(const NutritionState());
+class NutritionNotifier extends Notifier<NutritionState> {
+  @override
+  NutritionState build() => const NutritionState();
 
   void addEntry(NutritionEntry entry) {
     state = state.copyWith(entries: [...state.entries, entry]);
@@ -81,13 +82,9 @@ class NutritionNotifier extends StateNotifier<NutritionState> {
   }
 }
 
-final nutritionProvider = StateNotifierProvider<NutritionNotifier, NutritionState>((ref) {
-  return NutritionNotifier();
-});
+final nutritionProvider = NotifierProvider<NutritionNotifier, NutritionState>(() => NutritionNotifier());
 
-final foodSearchProvider = StateNotifierProvider<FoodSearchNotifier, FoodSearchState>((ref) {
-  return FoodSearchNotifier();
-});
+final foodSearchProvider = NotifierProvider<FoodSearchNotifier, FoodSearchState>(() => FoodSearchNotifier());
 
 class FoodSearchState {
   final String query;
@@ -117,8 +114,9 @@ class FoodSearchState {
   }
 }
 
-class FoodSearchNotifier extends StateNotifier<FoodSearchState> {
-  FoodSearchNotifier() : super(const FoodSearchState());
+class FoodSearchNotifier extends Notifier<FoodSearchState> {
+  @override
+  FoodSearchState build() => const FoodSearchState();
 
   Future<void> search(String query) async {
     if (query.isEmpty) {
@@ -141,5 +139,5 @@ class FoodSearchNotifier extends StateNotifier<FoodSearchState> {
   }
 }
 
-final selectedFoodProvider = StateProvider<FoodModel?>((ref) => null);
-final foodQuantityProvider = StateProvider<double>((ref) => 100);
+final selectedFoodProvider = Provider<FoodModel?>((ref) => null);
+final foodQuantityProvider = Provider<double>((ref) => 100);

@@ -10,9 +10,7 @@ import 'package:fit_tracker/src/features/settings/data/repositories/settings_rep
 
 final settingsRepoProvider = Provider<SettingsRepository>((ref) => SettingsRepository());
 
-final notificationSettingsProvider = StateNotifierProvider<NotificationSettingsNotifier, NotificationSettings>((ref) {
-  return NotificationSettingsNotifier(ref.read(settingsRepoProvider));
-});
+final notificationSettingsProvider = NotifierProvider<NotificationSettingsNotifier, NotificationSettings>(() => NotificationSettingsNotifier());
 
 class NotificationSettings {
   final bool workoutReminders;
@@ -42,36 +40,41 @@ class NotificationSettings {
   }
 }
 
-class NotificationSettingsNotifier extends StateNotifier<NotificationSettings> {
-  final SettingsRepository _repository;
-
-  NotificationSettingsNotifier(this._repository) : super(const NotificationSettings()) {
-    _loadSettings();
+class NotificationSettingsNotifier extends Notifier<NotificationSettings> {
+  @override
+  NotificationSettings build() {
+    final repository = ref.read(settingsRepoProvider);
+    _loadSettings(repository);
+    return const NotificationSettings();
   }
 
-  Future<void> _loadSettings() async {
-    final settings = await _repository.getNotificationSettings();
+  Future<void> _loadSettings(SettingsRepository repository) async {
+    final settings = await repository.getNotificationSettings();
     state = settings;
   }
 
   Future<void> setWorkoutReminders(bool value) async {
+    final repository = ref.read(settingsRepoProvider);
     state = state.copyWith(workoutReminders: value);
-    await _repository.saveNotificationSettings(state);
+    await repository.saveNotificationSettings(state);
   }
 
   Future<void> setDailyGoals(bool value) async {
+    final repository = ref.read(settingsRepoProvider);
     state = state.copyWith(dailyGoals: value);
-    await _repository.saveNotificationSettings(state);
+    await repository.saveNotificationSettings(state);
   }
 
   Future<void> setMotivationNotifications(bool value) async {
+    final repository = ref.read(settingsRepoProvider);
     state = state.copyWith(motivationNotifications: value);
-    await _repository.saveNotificationSettings(state);
+    await repository.saveNotificationSettings(state);
   }
 
   Future<void> setReminderInterval(int hours) async {
+    final repository = ref.read(settingsRepoProvider);
     state = state.copyWith(reminderIntervalHours: hours);
-    await _repository.saveNotificationSettings(state);
+    await repository.saveNotificationSettings(state);
   }
 }
 
