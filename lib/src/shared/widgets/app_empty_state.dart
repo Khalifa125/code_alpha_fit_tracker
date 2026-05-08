@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import '../../imports/imports.dart';
 
 /// Displays an empty state with an icon, title, optional subtitle, and action.
