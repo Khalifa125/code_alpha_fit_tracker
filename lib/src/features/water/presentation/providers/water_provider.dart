@@ -6,10 +6,7 @@ final waterServiceProvider = Provider<WaterService>((ref) {
   throw UnimplementedError('WaterService must be initialized before use');
 });
 
-final waterProvider = StateNotifierProvider<WaterNotifier, WaterState>((ref) {
-  final service = ref.watch(waterServiceProvider);
-  return WaterNotifier(service);
-});
+final waterProvider = NotifierProvider<WaterNotifier, WaterState>(() => WaterNotifier());
 
 class WaterState {
   final List<WaterEntry> entries;
@@ -45,17 +42,18 @@ class WaterState {
   );
 }
 
-class WaterNotifier extends StateNotifier<WaterState> {
-  final WaterService _service;
-
-  WaterNotifier(this._service) : super(WaterState(goal: _service.getGoal())) {
-    _loadData();
+class WaterNotifier extends Notifier<WaterState> {
+  @override
+  WaterState build() {
+    final service = ref.watch(waterServiceProvider);
+    _loadData(service);
+    return WaterState(goal: service.getGoal());
   }
 
-  Future<void> _loadData() async {
+  Future<void> _loadData(WaterService service) async {
     state = state.copyWith(isLoading: true);
-    final entries = await _service.getEntriesForDate(state.selectedDate);
-    final reminders = _service.getReminders();
+    final entries = await service.getEntriesForDate(state.selectedDate);
+    final reminders = service.getReminders();
     state = state.copyWith(
       entries: entries,
       reminders: reminders,
@@ -70,21 +68,25 @@ class WaterNotifier extends StateNotifier<WaterState> {
       timestamp: DateTime.now(),
       note: note,
     );
-    await _service.addEntry(entry);
-    await _loadData();
+    final service = ref.read(waterServiceProvider);
+    await service.addEntry(entry);
+    _loadData(service);
   }
 
   Future<void> deleteEntry(String id) async {
-    await _service.deleteEntry(id);
-    await _loadData();
+    final service = ref.read(waterServiceProvider);
+    await service.deleteEntry(id);
+    _loadData(service);
   }
 
   Future<void> setGoal(int goal) async {
-    await _service.setGoal(goal);
+    final service = ref.read(waterServiceProvider);
+    await service.setGoal(goal);
     state = state.copyWith(goal: goal);
   }
 
   Future<void> toggleReminder(String id, bool enabled) async {
+    final service = ref.read(waterServiceProvider);
     final reminders = state.reminders.map((r) {
       if (r.id == id) {
         return WaterReminder(
@@ -97,13 +99,14 @@ class WaterNotifier extends StateNotifier<WaterState> {
       }
       return r;
     }).toList();
-    await _service.saveReminders(reminders);
+    await service.saveReminders(reminders);
     state = state.copyWith(reminders: reminders);
   }
 
   Future<void> selectDate(DateTime date) async {
     state = state.copyWith(selectedDate: date);
-    await _loadData();
+    final service = ref.read(waterServiceProvider);
+    _loadData(service);
   }
 }
 

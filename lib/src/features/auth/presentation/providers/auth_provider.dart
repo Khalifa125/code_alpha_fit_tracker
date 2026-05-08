@@ -3,9 +3,7 @@ import 'package:fit_tracker/src/services/auth_service.dart';
 
 final authServiceProvider = Provider<AuthService>((ref) => AuthService());
 
-final authStateProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  return AuthNotifier(ref.read(authServiceProvider));
-});
+final authStateProvider = NotifierProvider<AuthNotifier, AuthState>(() => AuthNotifier());
 
 class AuthState {
   final UserModel? user;
@@ -31,18 +29,19 @@ class AuthState {
   }
 }
 
-class AuthNotifier extends StateNotifier<AuthState> {
-  final AuthService _authService;
-
-  AuthNotifier(this._authService) : super(const AuthState()) {
+class AuthNotifier extends Notifier<AuthState> {
+  @override
+  AuthState build() {
     _checkAuthStatus();
+    return const AuthState();
   }
 
   Future<void> _checkAuthStatus() async {
+    final authService = ref.read(authServiceProvider);
     state = state.copyWith(isLoading: true);
-    final isLoggedIn = await _authService.isLoggedIn();
+    final isLoggedIn = await authService.isLoggedIn();
     if (isLoggedIn) {
-      final user = await _authService.getCurrentUser();
+      final user = await authService.getCurrentUser();
       state = AuthState(user: user, isLoggedIn: true, isLoading: false);
     } else {
       state = const AuthState(isLoading: false);
@@ -54,9 +53,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
     required String password,
     String name = '',
   }) async {
+    final authService = ref.read(authServiceProvider);
     state = state.copyWith(isLoading: true);
     try {
-      final user = await _authService.login(
+      final user = await authService.login(
         email: email,
         password: password,
         name: name,
@@ -70,19 +70,21 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> logout() async {
+    final authService = ref.read(authServiceProvider);
     state = state.copyWith(isLoading: true);
-    await _authService.logout();
+    await authService.logout();
     state = const AuthState(isLoading: false);
   }
 
   Future<void> updateProfile({String? name}) async {
+    final authService = ref.read(authServiceProvider);
     if (state.user != null && name != null) {
       final updatedUser = UserModel(
         id: state.user!.id,
         name: name,
         email: state.user!.email,
       );
-      await _authService.updateUser(updatedUser);
+      await authService.updateUser(updatedUser);
       state = state.copyWith(user: updatedUser);
     }
   }

@@ -6,10 +6,7 @@ final heartRateServiceProvider = Provider<HeartRateService>((ref) {
   throw UnimplementedError('HeartRateService must be initialized before use');
 });
 
-final heartRateProvider = StateNotifierProvider<HeartRateNotifier, HeartRateState>((ref) {
-  final service = ref.watch(heartRateServiceProvider);
-  return HeartRateNotifier(service);
-});
+final heartRateProvider = NotifierProvider<HeartRateNotifier, HeartRateState>(() => HeartRateNotifier());
 
 class HeartRateState {
   final List<HeartRateEntry> entries;
@@ -39,17 +36,18 @@ class HeartRateState {
   );
 }
 
-class HeartRateNotifier extends StateNotifier<HeartRateState> {
-  final HeartRateService _service;
-
-  HeartRateNotifier(this._service) : super(HeartRateState()) {
-    _loadData();
+class HeartRateNotifier extends Notifier<HeartRateState> {
+  @override
+  HeartRateState build() {
+    final service = ref.watch(heartRateServiceProvider);
+    _loadData(service);
+    return HeartRateState();
   }
 
-  Future<void> _loadData() async {
+  Future<void> _loadData(HeartRateService service) async {
     state = state.copyWith(isLoading: true);
-    final entries = await _service.getEntriesForDate(state.selectedDate);
-    final stats = await _service.getStatsForDate(state.selectedDate);
+    final entries = await service.getEntriesForDate(state.selectedDate);
+    final stats = await service.getStatsForDate(state.selectedDate);
     state = state.copyWith(entries: entries, stats: stats, isLoading: false);
   }
 

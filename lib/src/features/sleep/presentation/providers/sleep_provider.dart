@@ -6,10 +6,7 @@ final sleepServiceProvider = Provider<SleepService>((ref) {
   throw UnimplementedError('SleepService must be initialized before use');
 });
 
-final sleepProvider = StateNotifierProvider<SleepNotifier, SleepState>((ref) {
-  final service = ref.watch(sleepServiceProvider);
-  return SleepNotifier(service);
-});
+final sleepProvider = NotifierProvider<SleepNotifier, SleepState>(() => SleepNotifier());
 
 class SleepState {
   final List<SleepEntry> entries;
@@ -41,16 +38,17 @@ class SleepState {
   );
 }
 
-class SleepNotifier extends StateNotifier<SleepState> {
-  final SleepService _service;
-
-  SleepNotifier(this._service) : super(SleepState()) {
-    _loadData();
+class SleepNotifier extends Notifier<SleepState> {
+  @override
+  SleepState build() {
+    final service = ref.watch(sleepServiceProvider);
+    _loadData(service);
+    return SleepState();
   }
 
-  Future<void> _loadData() async {
+  Future<void> _loadData(SleepService service) async {
     state = state.copyWith(isLoading: true);
-    final entries = await _service.getEntriesForDate(state.selectedDate);
+    final entries = await service.getEntriesForDate(state.selectedDate);
     state = state.copyWith(entries: entries, isLoading: false);
   }
 
@@ -60,6 +58,7 @@ class SleepNotifier extends StateNotifier<SleepState> {
     int? quality,
     String? note,
   }) async {
+    final service = ref.read(sleepServiceProvider);
     final entry = SleepEntry(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       startTime: startTime,
@@ -67,18 +66,20 @@ class SleepNotifier extends StateNotifier<SleepState> {
       quality: quality,
       note: note,
     );
-    await _service.addEntry(entry);
-    await _loadData();
+    await service.addEntry(entry);
+    _loadData(service);
   }
 
   Future<void> deleteEntry(String id) async {
-    await _service.deleteEntry(id);
-    await _loadData();
+    final service = ref.read(sleepServiceProvider);
+    await service.deleteEntry(id);
+    _loadData(service);
   }
 
   Future<void> selectDate(DateTime date) async {
+    final service = ref.read(sleepServiceProvider);
     state = state.copyWith(selectedDate: date);
-    await _loadData();
+    _loadData(service);
   }
 }
 
