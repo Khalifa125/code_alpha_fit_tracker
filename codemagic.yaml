@@ -3,13 +3,10 @@ workflows:
     name: iOS Build
     max_build_duration: 60
     environment:
-      flutter: 3.29.0
+      flutter: "3.29.0"
       xcode: latest
       cocoapods: default
-      java: 17
-      vars:
-        FIREBASE_TOKEN: $FIREBASE_TOKEN
-        GOOGLE_SERVICE_INFO_PLIST: $GOOGLE_SERVICE_INFO_PLIST
+      java: "17"
     scripts:
       - name: Configure Firebase (iOS)
         script: |
