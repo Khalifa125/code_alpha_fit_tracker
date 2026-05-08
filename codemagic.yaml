@@ -11,9 +11,6 @@ workflows:
         FIREBASE_TOKEN: $FIREBASE_TOKEN
         GOOGLE_SERVICE_INFO_PLIST: $GOOGLE_SERVICE_INFO_PLIST
     scripts:
-      - name: Install Firebase CLI
-        script: |
-          curl -sL https://firebase.tools/bin/install.sh | bash
       - name: Configure Firebase (iOS)
         script: |
           echo "$GOOGLE_SERVICE_INFO_PLIST" > ios/Runner/GoogleService-Info.plist
