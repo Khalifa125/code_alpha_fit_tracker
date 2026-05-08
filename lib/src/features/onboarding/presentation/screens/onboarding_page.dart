@@ -86,7 +86,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         height: 32.w,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [FitColors.neonGreen, FitColors.neonGreen.withValues(alpha: 0.6)],
+                            colors: [FitColors.neonGreen, FitColors.neonGreen.withOpacity(0.6)],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
@@ -186,7 +186,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           )).animate().fadeIn().slideX(begin: -0.1),
           SizedBox(height: 8.h),
           Text('Choose the goal that matches what you want to achieve', style: TextStyle(
-            color: FitColors.textSecondaryDark.withValues(alpha: 0.7),
+            color: FitColors.textSecondaryDark.withOpacity(0.7),
             fontSize: 14.sp,
           )).animate().fadeIn(delay: 50.ms),
           SizedBox(height: 24.h),
@@ -208,7 +208,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     duration: const Duration(milliseconds: 200),
                     padding: EdgeInsets.all(14.r),
                     decoration: BoxDecoration(
-                      color: isSelected ? FitColors.neonGreen.withValues(alpha: 0.12) : FitColors.cardDark,
+                      color: isSelected ? FitColors.neonGreen.withOpacity(0.12) : FitColors.cardDark,
                       borderRadius: BorderRadius.circular(14.r),
                       border: Border.all(
                         color: isSelected ? FitColors.neonGreen : FitColors.borderDark,
@@ -222,7 +222,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           width: 44.w,
                           height: 44.w,
                           decoration: BoxDecoration(
-                            color: isSelected ? FitColors.neonGreen.withValues(alpha: 0.2) : FitColors.surfaceDark,
+                            color: isSelected ? FitColors.neonGreen.withOpacity(0.2) : FitColors.surfaceDark,
                             borderRadius: BorderRadius.circular(12.r),
                           ),
                           child: Icon(goal['icon'], color: isSelected ? FitColors.neonGreen : FitColors.textSecondaryDark, size: 22),
@@ -235,7 +235,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ), textAlign: TextAlign.center),
                         SizedBox(height: 2.h),
                         Text(goal['desc'], style: TextStyle(
-                          color: FitColors.textSecondaryDark.withValues(alpha: 0.6),
+                          color: FitColors.textSecondaryDark.withOpacity(0.6),
                           fontSize: 10.sp,
                         ), textAlign: TextAlign.center),
                       ],
@@ -264,7 +264,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           )).animate().fadeIn().slideX(begin: -0.1),
           SizedBox(height: 8.h),
           Text('This helps us personalize your training plan', style: TextStyle(
-            color: FitColors.textSecondaryDark.withValues(alpha: 0.7),
+            color: FitColors.textSecondaryDark.withOpacity(0.7),
             fontSize: 14.sp,
           )).animate().fadeIn(delay: 50.ms),
           SizedBox(height: 24.h),
@@ -281,7 +281,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     margin: EdgeInsets.only(bottom: 12.h),
                     padding: EdgeInsets.all(16.r),
                     decoration: BoxDecoration(
-                      color: isSelected ? FitColors.neonGreen.withValues(alpha: 0.12) : FitColors.cardDark,
+                      color: isSelected ? FitColors.neonGreen.withOpacity(0.12) : FitColors.cardDark,
                       borderRadius: BorderRadius.circular(14.r),
                       border: Border.all(
                         color: isSelected ? FitColors.neonGreen : FitColors.borderDark,
@@ -294,7 +294,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           width: 44.w,
                           height: 44.w,
                           decoration: BoxDecoration(
-                            color: isSelected ? FitColors.neonGreen.withValues(alpha: 0.2) : FitColors.surfaceDark,
+                            color: isSelected ? FitColors.neonGreen.withOpacity(0.2) : FitColors.surfaceDark,
                             borderRadius: BorderRadius.circular(12.r),
                           ),
                           child: Icon(level['icon'], color: isSelected ? FitColors.neonGreen : FitColors.textSecondaryDark, size: 22),
@@ -311,7 +311,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               )),
                               SizedBox(height: 2.h),
                               Text(level['desc'], style: TextStyle(
-                                color: FitColors.textSecondaryDark.withValues(alpha: 0.6),
+                                color: FitColors.textSecondaryDark.withOpacity(0.6),
                                 fontSize: 12.sp,
                               )),
                             ],
@@ -352,7 +352,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           )).animate().fadeIn().slideX(begin: -0.1),
           SizedBox(height: 8.h),
           Text('How much time can you dedicate to each workout?', style: TextStyle(
-            color: FitColors.textSecondaryDark.withValues(alpha: 0.7),
+            color: FitColors.textSecondaryDark.withOpacity(0.7),
             fontSize: 14.sp,
           )).animate().fadeIn(delay: 50.ms),
           SizedBox(height: 32.h),
@@ -368,7 +368,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   width: (MediaQuery.of(context).size.width - 60) / 2,
                   padding: EdgeInsets.symmetric(vertical: 20.h),
                   decoration: BoxDecoration(
-                    color: isSelected ? FitColors.neonGreen.withValues(alpha: 0.12) : FitColors.cardDark,
+                    color: isSelected ? FitColors.neonGreen.withOpacity(0.12) : FitColors.cardDark,
                     borderRadius: BorderRadius.circular(14.r),
                     border: Border.all(
                       color: isSelected ? FitColors.neonGreen : FitColors.borderDark,
@@ -384,7 +384,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       )),
                       SizedBox(height: 2.h),
                       Text('min', style: TextStyle(
-                        color: FitColors.textSecondaryDark.withValues(alpha: 0.6),
+                        color: FitColors.textSecondaryDark.withOpacity(0.6),
                         fontSize: 12.sp,
                       )),
                     ],
@@ -408,7 +408,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 Expanded(
                   child: Text(
                     'You can adjust this anytime in Profile > Settings',
-                    style: TextStyle(color: FitColors.textSecondaryDark.withValues(alpha: 0.7), fontSize: 12.sp),
+                    style: TextStyle(color: FitColors.textSecondaryDark.withOpacity(0.7), fontSize: 12.sp),
                   ),
                 ),
               ],

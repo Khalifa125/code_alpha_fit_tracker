@@ -14,6 +14,7 @@ import 'package:fit_tracker/src/features/profile/presentation/screens/profile_sc
 
 import 'package:fit_tracker/src/features/home/presentation/screens/home_page.dart';
 import 'package:fit_tracker/src/features/fit_track/screens/home_page.dart' show FitTrackHomePage;
+import 'package:fit_tracker/src/features/dashboard/screens/dashboard_screen.dart' show ModernDashboard;
 import 'package:fit_tracker/src/features/fitness/presentation/screens/fitness_screen.dart';
 import 'package:fit_tracker/src/features/nutrition/presentation/screens/nutrition_screen.dart';
 import 'package:fit_tracker/src/features/water/presentation/screens/water_tracking_screen.dart';
@@ -55,7 +56,7 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: AppRoutes.home,
           name: 'home',
-          builder: (context, state) => const HomeScreenContent(),
+          builder: (context, state) => const ModernDashboard(),
         ),
         GoRoute(
           path: '/fitness',
@@ -135,7 +136,7 @@ class _MainShellState extends State<MainShell> {
           context.go(_destinations[index].$1);
         },
         backgroundColor: FitColors.surfaceDark,
-        indicatorColor: FitColors.neonGreen.withValues(alpha: 0.2),
+        indicatorColor: FitColors.neonGreen.withOpacity(0.2),
         destinations: _destinations.map((d) => NavigationDestination(
           icon: Icon(d.$2, color: FitColors.textSecondary),
           selectedIcon: Icon(d.$2, color: FitColors.neonGreen),

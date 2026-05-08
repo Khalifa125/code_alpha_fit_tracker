@@ -56,8 +56,8 @@ class ProfileScreen extends ConsumerWidget {
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
                     colors: [
-                      FitColors.neonGreen.withValues(alpha: 0.3),
-                      FitColors.neonGreen.withValues(alpha: 0.1),
+                      FitColors.neonGreen.withOpacity(0.3),
+                      FitColors.neonGreen.withOpacity(0.1),
                     ],
                   ),
                   border: Border.all(
@@ -89,7 +89,7 @@ class ProfileScreen extends ConsumerWidget {
               Text(
                 user?.email ?? '',
                 style: TextStyle(
-                  color: FitColors.textSecondaryDark.withValues(alpha: 0.7),
+                  color: FitColors.textSecondaryDark.withOpacity(0.7),
                   fontSize: 12,
                 ),
               ).animate().fadeIn(delay: 200.ms),
@@ -190,7 +190,7 @@ class _ProfileMenuItem extends StatelessWidget {
         leading: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: FitColors.neonGreen.withValues(alpha: 0.1),
+            color: FitColors.neonGreen.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: FitColors.neonGreen, size: 22),

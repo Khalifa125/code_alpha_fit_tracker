@@ -19,7 +19,7 @@ Future<T?> showAppSheet<T>({
     context: context,
     isScrollControlled: isScrollControlled,
     backgroundColor: Colors.transparent,
-    barrierColor: context.theme.colorScheme.scrim.withValues(alpha: 0.2),
+    barrierColor: context.theme.colorScheme.scrim.withOpacity(0.2),
     elevation: 0,
     useSafeArea: useSafeArea,
     enableDrag: enableDrag,

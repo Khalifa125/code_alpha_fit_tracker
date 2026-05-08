@@ -115,7 +115,7 @@ class AppCachedImage extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      color: context.theme.colorScheme.surfaceContainerHighest .withValues(alpha: 0.9),
+      color: context.theme.colorScheme.surfaceContainerHighest .withOpacity(0.9),
       child: const Center(
         child: CircularProgressIndicator(strokeWidth: 2),
       ),
@@ -126,7 +126,7 @@ class AppCachedImage extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      color: context.theme.colorScheme.errorContainer .withValues(alpha: 0.9),
+      color: context.theme.colorScheme.errorContainer .withOpacity(0.9),
       child: Center(
         child:           Icon(
             Icons.broken_image_outlined,

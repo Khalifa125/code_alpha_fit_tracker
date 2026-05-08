@@ -190,14 +190,14 @@ class _WaterProgressCard extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            FitColors.blue.withValues(alpha: 0.15),
-            FitColors.blue.withValues(alpha: 0.05),
+            FitColors.blue.withOpacity(0.15),
+            FitColors.blue.withOpacity(0.05),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: FitColors.blue.withValues(alpha: 0.3)),
+        border: Border.all(color: FitColors.blue.withOpacity(0.3)),
       ),
       child: Column(
         children: [
@@ -237,7 +237,7 @@ class _WaterProgressCard extends StatelessWidget {
                       )),
                     Text('ml',
                       style: TextStyle(
-                        color: FitColors.textSecondaryDark.withValues(alpha: 0.7),
+                        color: FitColors.textSecondaryDark.withOpacity(0.7),
                         fontSize: 12.sp,
                       )),
                   ],
@@ -298,9 +298,9 @@ class _QuickAddButton extends StatelessWidget {
     child: Container(
       padding: EdgeInsets.symmetric(vertical: 16.h),
       decoration: BoxDecoration(
-        color: FitColors.blue.withValues(alpha: 0.1),
+        color: FitColors.blue.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: FitColors.blue.withValues(alpha: 0.3)),
+        border: Border.all(color: FitColors.blue.withOpacity(0.3)),
       ),
       child: Column(
         children: [
@@ -441,7 +441,7 @@ class _WaterEntryTile extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(10.r),
             decoration: BoxDecoration(
-              color: FitColors.blue.withValues(alpha: 0.1),
+              color: FitColors.blue.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10.r),
             ),
             child: Icon(Icons.water_drop, color: FitColors.blue, size: 20.sp),

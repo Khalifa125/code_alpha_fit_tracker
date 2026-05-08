@@ -46,7 +46,7 @@ class _FitTrackShellState extends ConsumerState<FitTrackShell> {
         decoration: BoxDecoration(
           color: FitColors.card,
           border: Border(
-            top: BorderSide(color: FitColors.border.withValues(alpha: 0.3)),
+            top: BorderSide(color: FitColors.border.withOpacity(0.3)),
           ),
         ),
         child: SafeArea(
@@ -103,7 +103,7 @@ class _NavBarItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected 
-              ? FitColors.neonGreen.withValues(alpha: 0.1) 
+              ? FitColors.neonGreen.withOpacity(0.1) 
               : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
         ),

@@ -133,7 +133,7 @@ class _WorkoutCard extends StatelessWidget {
               width: 60.w,
               height: 60.w,
               decoration: BoxDecoration(
-                color: FitColors.neonGreen.withValues(alpha: 0.1),
+                color: FitColors.neonGreen.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(16.r),
               ),
               child: Icon(
@@ -170,7 +170,7 @@ class _WorkoutCard extends StatelessWidget {
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                         decoration: BoxDecoration(
-                          color: _getDifficultyColor(workout.level).withValues(alpha: 0.1),
+                          color: _getDifficultyColor(workout.level).withOpacity(0.1),
                           borderRadius: BorderRadius.circular(6.r),
                         ),
                         child: Text(

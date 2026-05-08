@@ -100,8 +100,8 @@ class _SplashScreenState extends State<SplashScreen>
                       shape: BoxShape.circle,
                       gradient: RadialGradient(
                         colors: [
-                          const Color(0xFF00FF88).withValues(alpha: 0.15 * _glowAnimation.value),
-                          const Color(0xFF00FF88).withValues(alpha: 0.05 * _glowAnimation.value),
+                          const Color(0xFF00FF88).withOpacity(0.15 * _glowAnimation.value),
+                          const Color(0xFF00FF88).withOpacity(0.05 * _glowAnimation.value),
                           Colors.transparent,
                         ],
                         stops: const [0.0, 0.5, 1.0],
@@ -163,7 +163,7 @@ class _FLogo extends StatelessWidget {
         borderRadius: BorderRadius.circular(32),
         boxShadow: [
           BoxShadow(
-            color: Color(0xFF00FF88).withValues(alpha: 0.4 * glowIntensity),
+            color: Color(0xFF00FF88).withOpacity(0.4 * glowIntensity),
             blurRadius: 60,
             spreadRadius: 20,
           ),
@@ -176,13 +176,13 @@ class _FLogo extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Colors.white.withValues(alpha: 0.15),
-              Colors.white.withValues(alpha: 0.05),
-              Colors.white.withValues(alpha: 0.1),
+              Colors.white.withOpacity(0.15),
+              Colors.white.withOpacity(0.05),
+              Colors.white.withOpacity(0.1),
             ],
           ),
           border: Border.all(
-            color: Colors.white.withValues(alpha: 0.2),
+            color: Colors.white.withOpacity(0.2),
             width: 1,
           ),
         ),
@@ -210,14 +210,14 @@ class _FLogoPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, size.width * 0.05)
-      ..color = Color(0xFF00FF88).withValues(alpha: 0.6 * glowIntensity);
+      ..color = Color(0xFF00FF88).withOpacity(0.6 * glowIntensity);
 
     final mainPaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = size.width * 0.08
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
-      ..color = Colors.white.withValues(alpha: 0.9);
+      ..color = Colors.white.withOpacity(0.9);
 
     final centerY = size.height / 2;
     final letterHeight = size.height * 0.6;

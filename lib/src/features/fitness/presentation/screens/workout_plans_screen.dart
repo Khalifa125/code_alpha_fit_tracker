@@ -46,7 +46,7 @@ class WorkoutPlansScreen extends ConsumerWidget {
                       child: Container(
                         padding: EdgeInsets.all(8.r),
                         decoration: BoxDecoration(
-                          color: FitColors.neonGreen.withValues(alpha: 0.1),
+                          color: FitColors.neonGreen.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(10.r),
                         ),
                         child: Row(
@@ -194,7 +194,7 @@ class WorkoutPlansScreen extends ConsumerWidget {
                           duration: 200.ms,
                           padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
                           decoration: BoxDecoration(
-                            color: selected ? FitColors.neonGreen.withValues(alpha: 0.12) : FitColors.card,
+                            color: selected ? FitColors.neonGreen.withOpacity(0.12) : FitColors.card,
                             borderRadius: BorderRadius.circular(20.r),
                             border: Border.all(
                               color: selected ? FitColors.neonGreen : FitColors.border,
@@ -248,7 +248,7 @@ class _TodayPlanBanner extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [FitColors.card, FitColors.neonGreen.withValues(alpha: 0.06)],
+          colors: [FitColors.card, FitColors.neonGreen.withOpacity(0.06)],
         ),
       ),
       child: Row(children: [
@@ -299,9 +299,9 @@ class _CategoryCard extends StatelessWidget {
     child: Container(
       height: 80.h,
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
+        color: color.withOpacity(0.08),
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
+        border: Border.all(color: color.withOpacity(0.2)),
       ),
       child: Stack(
         alignment: Alignment.centerLeft,
@@ -350,7 +350,7 @@ class _WorkoutPlanCard extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(10.r),
           decoration: BoxDecoration(
-            color: _levelColor.withValues(alpha: 0.1),
+            color: _levelColor.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12.r),
           ),
           child: Text(plan.emoji, style: TextStyle(fontSize: 24.sp)),
@@ -384,7 +384,7 @@ class _Badge extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 3.h),
     decoration: BoxDecoration(
-      color: color.withValues(alpha: 0.12),
+      color: color.withOpacity(0.12),
       borderRadius: BorderRadius.circular(5.r),
     ),
     child: Text(text, style: TextStyle(color: color, fontSize: 9.sp, fontWeight: FontWeight.w700)),
@@ -462,7 +462,7 @@ class _WorkoutDetailScreen extends StatelessWidget {
                   width: 34.w,
                   height: 34.w,
                   decoration: BoxDecoration(
-                    color: FitColors.neonGreen.withValues(alpha: 0.08),
+                    color: FitColors.neonGreen.withOpacity(0.08),
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Center(child: Text(
@@ -633,9 +633,9 @@ class _WorkoutPlayerScreenState extends State<_WorkoutPlayerScreen> {
                   child: Container(
                     padding: EdgeInsets.all(12.r),
                     decoration: BoxDecoration(
-                      color: FitColors.neonGreen.withValues(alpha: 0.12),
+                      color: FitColors.neonGreen.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(color: FitColors.neonGreen.withValues(alpha: 0.4)),
+                      border: Border.all(color: FitColors.neonGreen.withOpacity(0.4)),
                     ),
                     child: Icon(Icons.add_rounded, color: FitColors.neonGreen, size: 20.sp),
                   ),

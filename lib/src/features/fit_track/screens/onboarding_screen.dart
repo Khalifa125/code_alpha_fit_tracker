@@ -223,7 +223,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   padding: EdgeInsets.all(20.w),
                   decoration: BoxDecoration(
                     color: _selectedMinutes == minutes
-                        ? FitColors.neonGreen.withValues(alpha: 0.15)
+                        ? FitColors.neonGreen.withOpacity(0.15)
                         : FitColors.card,
                     borderRadius: BorderRadius.circular(20.r),
                     border: Border.all(
@@ -280,7 +280,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         duration: 300.ms,
         padding: EdgeInsets.all(20.w),
         decoration: BoxDecoration(
-          color: isSelected ? color.withValues(alpha: 0.15) : FitColors.card,
+          color: isSelected ? color.withOpacity(0.15) : FitColors.card,
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
             color: isSelected ? color : FitColors.border,
@@ -288,7 +288,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           ),
           boxShadow: isSelected ? [
             BoxShadow(
-              color: color.withValues(alpha: 0.3),
+              color: color.withOpacity(0.3),
               blurRadius: 12,
               spreadRadius: -4,
             ),
@@ -299,7 +299,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             Container(
               padding: EdgeInsets.all(12.r),
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.2),
+                color: color.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Icon(icon, color: color, size: 28.sp),

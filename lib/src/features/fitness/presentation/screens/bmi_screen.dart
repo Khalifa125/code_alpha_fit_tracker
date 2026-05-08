@@ -192,7 +192,7 @@ class _BmiResult extends StatelessWidget {
       decoration: BoxDecoration(
         color: FitColors.card,
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: _color.withValues(alpha: 0.4)),
+        border: Border.all(color: _color.withOpacity(0.4)),
       ),
       child: Column(children: [
         Text('$_emoji Your BMI', style: TextStyle(color: Colors.white, fontSize: 15.sp, fontWeight: FontWeight.w700)),
@@ -200,7 +200,7 @@ class _BmiResult extends StatelessWidget {
         Text(bmi.toStringAsFixed(1), style: TextStyle(color: _color, fontSize: 48.sp, fontWeight: FontWeight.w900)),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
-          decoration: BoxDecoration(color: _color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(8.r)),
+          decoration: BoxDecoration(color: _color.withOpacity(0.12), borderRadius: BorderRadius.circular(8.r)),
           child: Text(_category, style: TextStyle(color: _color, fontSize: 14.sp, fontWeight: FontWeight.w700)),
         ),
         SizedBox(height: 16.h),
@@ -274,7 +274,7 @@ class _WeightChart extends StatelessWidget {
               barWidth: 2.5,
               isCurved: true,
               dotData: FlDotData(getDotPainter: (_, __, ___, ____) => FlDotCirclePainter(radius: 3, color: FitColors.green, strokeWidth: 0)),
-              belowBarData: BarAreaData(show: true, color: FitColors.green.withValues(alpha: 0.08)),
+              belowBarData: BarAreaData(show: true, color: FitColors.green.withOpacity(0.08)),
             )],
             gridData: FlGridData(show: true, drawVerticalLine: false, getDrawingHorizontalLine: (_) => FlLine(color: FitColors.border, strokeWidth: 1)),
             titlesData: FlTitlesData(
@@ -308,7 +308,7 @@ class _GenderBtn extends StatelessWidget {
       duration: NumExtension(200).ms,
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: selected ? FitColors.cyan.withValues(alpha: 0.12) : FitColors.surface,
+        color: selected ? FitColors.cyan.withOpacity(0.12) : FitColors.surface,
         borderRadius: BorderRadius.circular(10.r),
         border: Border.all(color: selected ? FitColors.cyan : FitColors.border),
       ),
@@ -336,7 +336,7 @@ class _SmallInput extends StatelessWidget {
       style: TextStyle(color: Colors.white, fontSize: 14.sp),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: TextStyle(color: FitColors.textSecondary.withValues(alpha: 0.4), fontSize: 13.sp),
+        hintStyle: TextStyle(color: FitColors.textSecondary.withOpacity(0.4), fontSize: 13.sp),
         filled: true, fillColor: const Color(0xFF0A0E1A),
         contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r), borderSide: const BorderSide(color: FitColors.border)),

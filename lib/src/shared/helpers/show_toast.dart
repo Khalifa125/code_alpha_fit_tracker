@@ -48,7 +48,7 @@ void showToast(
     animationCurve: Curves.easeIn,
     builder: (context) => ToastCard(
       color: backgroundColor,
-      shadowColor: colorScheme.shadow.withValues(alpha: 0.05),
+      shadowColor: colorScheme.shadow.withOpacity(0.05),
       leading: Icon(
         icon ??
             (toastStatus == 'success'

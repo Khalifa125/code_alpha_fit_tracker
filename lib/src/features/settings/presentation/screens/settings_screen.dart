@@ -289,7 +289,7 @@ class _SettingsTile extends StatelessWidget {
       leading: Container(
         padding: EdgeInsets.all(8.r),
         decoration: BoxDecoration(
-          color: FitColors.neonGreen.withValues(alpha: 0.1),
+          color: FitColors.neonGreen.withOpacity(0.1),
           borderRadius: BorderRadius.circular(8.r),
         ),
         child: Icon(icon, color: FitColors.neonGreen, size: 20.sp),
@@ -320,7 +320,7 @@ class _ThemeModeSelector extends ConsumerWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
         decoration: BoxDecoration(
-          color: FitColors.neonGreen.withValues(alpha: 0.1),
+          color: FitColors.neonGreen.withOpacity(0.1),
           borderRadius: BorderRadius.circular(8.r),
         ),
         child: Row(

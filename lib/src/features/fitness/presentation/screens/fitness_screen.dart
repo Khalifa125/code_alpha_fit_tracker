@@ -211,7 +211,7 @@ class _CategoryCardState extends State<_CategoryCard> {
                 width: 34,
                 height: 34,
                 decoration: BoxDecoration(
-                  color: widget.color.withValues(alpha: 0.15),
+                  color: widget.color.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(9),
                 ),
                 child: Icon(widget.icon, color: widget.color, size: 16),
@@ -229,7 +229,7 @@ class _CategoryCardState extends State<_CategoryCard> {
               Text(
                 widget.count,
                 style: TextStyle(
-                  color: FitColors.textSecondaryDark.withValues(alpha: 0.7),
+                  color: FitColors.textSecondaryDark.withOpacity(0.7),
                   fontSize: 10,
                 ),
               ),
@@ -295,7 +295,7 @@ class _PlanItem extends StatelessWidget {
                 Text(
                   subtitle,
                   style: TextStyle(
-                    color: FitColors.textSecondaryDark.withValues(alpha: 0.7),
+                    color: FitColors.textSecondaryDark.withOpacity(0.7),
                     fontSize: 10,
                   ),
                 ),
@@ -305,7 +305,7 @@ class _PlanItem extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
             decoration: BoxDecoration(
-              color: levelColor.withValues(alpha: 0.12),
+              color: levelColor.withOpacity(0.12),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(

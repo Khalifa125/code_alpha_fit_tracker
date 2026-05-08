@@ -37,7 +37,7 @@ class WorkoutDetailsScreen extends ConsumerWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      FitColors.neonGreen.withValues(alpha: 0.3),
+                      FitColors.neonGreen.withOpacity(0.3),
                       FitColors.background,
                     ],
                   ),
@@ -151,7 +151,7 @@ class WorkoutDetailsScreen extends ConsumerWidget {
                             width: 40.w,
                             height: 40.w,
                             decoration: BoxDecoration(
-                              color: FitColors.neonGreen.withValues(alpha: 0.1),
+                              color: FitColors.neonGreen.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(10.r),
                             ),
                             child: Center(

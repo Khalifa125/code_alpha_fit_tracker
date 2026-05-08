@@ -137,7 +137,7 @@ class _CalorieRingChart extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text('$consumed', style: const TextStyle(color: FitColors.textPrimaryDark, fontSize: 28, fontWeight: FontWeight.w700, letterSpacing: -0.5)),
-                      Text('of $goal kcal', style: TextStyle(color: FitColors.textSecondaryDark.withValues(alpha: 0.7), fontSize: 12)),
+                      Text('of $goal kcal', style: TextStyle(color: FitColors.textSecondaryDark.withOpacity(0.7), fontSize: 12)),
                     ],
                   ),
                 ],
@@ -171,7 +171,7 @@ class _CalorieStat extends StatelessWidget {
     return Column(
       children: [
         Text(value, style: TextStyle(color: color, fontSize: 16, fontWeight: FontWeight.w700)),
-        Text(label, style: TextStyle(color: FitColors.textSecondaryDark.withValues(alpha: 0.7), fontSize: 11)),
+        Text(label, style: TextStyle(color: FitColors.textSecondaryDark.withOpacity(0.7), fontSize: 11)),
       ],
     );
   }
@@ -213,7 +213,7 @@ class _MacroCard extends StatelessWidget {
       decoration: BoxDecoration(color: FitColors.cardDark, borderRadius: BorderRadius.circular(12.r), border: Border.all(color: FitColors.borderDark)),
       child: Column(
         children: [
-          Text(name, style: TextStyle(color: FitColors.textSecondaryDark.withValues(alpha: 0.7), fontSize: 10, fontWeight: FontWeight.w600, letterSpacing: 0.3)),
+          Text(name, style: TextStyle(color: FitColors.textSecondaryDark.withOpacity(0.7), fontSize: 10, fontWeight: FontWeight.w600, letterSpacing: 0.3)),
           SizedBox(height: 6.h),
           Text(value, style: const TextStyle(color: FitColors.textPrimaryDark, fontSize: 16, fontWeight: FontWeight.w700)),
           SizedBox(height: 6.h),
@@ -264,7 +264,7 @@ class _MealSectionCard extends StatelessWidget {
               SizedBox(width: 8.w),
               Text(name, style: const TextStyle(color: FitColors.textPrimaryDark, fontSize: 13, fontWeight: FontWeight.w600)),
               const Spacer(),
-              Text('$calories kcal', style: TextStyle(color: FitColors.textSecondaryDark.withValues(alpha: 0.7), fontSize: 12)),
+              Text('$calories kcal', style: TextStyle(color: FitColors.textSecondaryDark.withOpacity(0.7), fontSize: 12)),
             ],
           ),
           SizedBox(height: 12.h),
@@ -277,7 +277,7 @@ class _MealSectionCard extends StatelessWidget {
                   label: const Text('Add Food'),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: FitColors.neonGreen,
-                    side: BorderSide(color: FitColors.neonGreen.withValues(alpha: 0.5)),
+                    side: BorderSide(color: FitColors.neonGreen.withOpacity(0.5)),
                     padding: EdgeInsets.symmetric(vertical: 8.h),
                   ),
                 ),
@@ -324,9 +324,9 @@ class _WaterMiniWidgetState extends State<_WaterMiniWidget> {
         child: Container(
           padding: EdgeInsets.all(16.r),
           decoration: BoxDecoration(
-            color: FitColors.blue.withValues(alpha: 0.1),
+            color: FitColors.blue.withOpacity(0.1),
             borderRadius: BorderRadius.circular(16.r),
-            border: Border.all(color: FitColors.blue.withValues(alpha: 0.3)),
+            border: Border.all(color: FitColors.blue.withOpacity(0.3)),
           ),
           child: Row(
             children: [

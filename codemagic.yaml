@@ -3,7 +3,7 @@ workflows:
     name: iOS Build
     max_build_duration: 60
     environment:
-      flutter: stable
+      flutter: 3.27.0
       xcode: latest
       cocoapods: default
     scripts:
@@ -30,13 +30,12 @@ workflows:
           zip -r Runner.ipa Payload/
     artifacts:
       - build/ios/archive/Runner.xcarchive/Runner.ipa
-      - build/ios/ipa/*.ipa
 
   android-workflow:
     name: Android Build
     max_build_duration: 45
     environment:
-      flutter: stable
+      flutter: 3.27.0
       java: 17
     scripts:
       - name: Get dependencies
@@ -55,7 +54,7 @@ workflows:
     name: Flutter Analyze
     max_build_duration: 15
     environment:
-      flutter: stable
+      flutter: 3.27.0
     scripts:
       - name: Get dependencies
         script: |

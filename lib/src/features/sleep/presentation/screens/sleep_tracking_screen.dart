@@ -150,14 +150,14 @@ class _SleepSummaryCard extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            FitColors.purple.withValues(alpha: 0.15),
-            FitColors.purple.withValues(alpha: 0.05),
+            FitColors.purple.withOpacity(0.15),
+            FitColors.purple.withOpacity(0.05),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: FitColors.purple.withValues(alpha: 0.3)),
+        border: Border.all(color: FitColors.purple.withOpacity(0.3)),
       ),
       child: Column(
         children: [
@@ -170,7 +170,7 @@ class _SleepSummaryCard extends StatelessWidget {
             letterSpacing: -0.5,
           )),
           Text('total sleep', style: TextStyle(
-            color: FitColors.textSecondaryDark.withValues(alpha: 0.7),
+            color: FitColors.textSecondaryDark.withOpacity(0.7),
             fontSize: 12.sp,
           )),
           SizedBox(height: 16.h),
@@ -235,9 +235,9 @@ class _AddSleepButton extends StatelessWidget {
     child: Container(
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: FitColors.purple.withValues(alpha: 0.1),
+        color: FitColors.purple.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: FitColors.purple.withValues(alpha: 0.3)),
+        border: Border.all(color: FitColors.purple.withOpacity(0.3)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -434,7 +434,7 @@ class _SleepEntryTile extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(10.r),
             decoration: BoxDecoration(
-              color: FitColors.purple.withValues(alpha: 0.1),
+              color: FitColors.purple.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10.r),
             ),
             child: Icon(Icons.nightlight_round, color: FitColors.purple, size: 20.sp),

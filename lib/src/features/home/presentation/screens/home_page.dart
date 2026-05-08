@@ -84,17 +84,17 @@ class _FitBottomNav extends StatelessWidget {
       margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 8.h),
       padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: FitColors.surface.withValues(alpha: 0.95),
+        color: FitColors.surface.withOpacity(0.95),
         borderRadius: BorderRadius.circular(24.r),
-        border: Border.all(color: FitColors.border.withValues(alpha: 0.3)),
+        border: Border.all(color: FitColors.border.withOpacity(0.3)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
+            color: Colors.black.withOpacity(0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
           BoxShadow(
-            color: FitColors.neonGreen.withValues(alpha: 0.1),
+            color: FitColors.neonGreen.withOpacity(0.1),
             blurRadius: 20,
             spreadRadius: -5,
           ),
@@ -121,7 +121,7 @@ class _FitBottomNav extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                     decoration: BoxDecoration(
                       color: selected 
-                          ? FitColors.neonGreen.withValues(alpha: 0.15)
+                          ? FitColors.neonGreen.withOpacity(0.15)
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(12.r),
                     ),
@@ -431,9 +431,9 @@ class _HomeHeader extends ConsumerWidget {
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                       decoration: BoxDecoration(
-                        color: FitColors.orange.withValues(alpha: 0.15),
+                        color: FitColors.orange.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(12.r),
-                        border: Border.all(color: FitColors.orange.withValues(alpha: 0.3)),
+                        border: Border.all(color: FitColors.orange.withOpacity(0.3)),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -464,19 +464,19 @@ class _HomeHeader extends ConsumerWidget {
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
                     colors: [
-                      FitColors.neonGreen.withValues(alpha: 0.8),
-                      FitColors.neonGreen.withValues(alpha: 0.4),
+                      FitColors.neonGreen.withOpacity(0.8),
+                      FitColors.neonGreen.withOpacity(0.4),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   border: Border.all(
-                    color: FitColors.neonGreen.withValues(alpha: 0.5),
+                    color: FitColors.neonGreen.withOpacity(0.5),
                     width: 2,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: FitColors.neonGreen.withValues(alpha: 0.3),
+                      color: FitColors.neonGreen.withOpacity(0.3),
                       blurRadius: 12,
                       spreadRadius: -4,
                     ),
@@ -528,24 +528,24 @@ class _StepsHeroCard extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             FitColors.card,
-            FitColors.card.withValues(alpha: 0.95),
+            FitColors.card.withOpacity(0.95),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24.r),
         border: Border.all(
-          color: FitColors.neonGreen.withValues(alpha: 0.2),
+          color: FitColors.neonGreen.withOpacity(0.2),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: FitColors.neonGreen.withValues(alpha: 0.1),
+            color: FitColors.neonGreen.withOpacity(0.1),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
+            color: Colors.black.withOpacity(0.2),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -568,7 +568,7 @@ class _StepsHeroCard extends StatelessWidget {
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: FitColors.neonGreen.withValues(alpha: 0.3),
+                        color: FitColors.neonGreen.withOpacity(0.3),
                         blurRadius: 20,
                         spreadRadius: 2,
                       ),
@@ -585,7 +585,7 @@ class _StepsHeroCard extends StatelessWidget {
                     builder: (_, v, __) => CircularProgressIndicator(
                       value: v,
                       strokeWidth: 10,
-                      backgroundColor: FitColors.border.withValues(alpha: 0.5),
+                      backgroundColor: FitColors.border.withOpacity(0.5),
                       valueColor: AlwaysStoppedAnimation(
                         Color.lerp(FitColors.neonGreen, FitColors.green, progress) ?? FitColors.neonGreen,
                       ),
@@ -680,9 +680,9 @@ class _SideStatRow extends StatelessWidget {
       Container(
         padding: EdgeInsets.all(8.r),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.15),
+          color: color.withOpacity(0.15),
           borderRadius: BorderRadius.circular(10.r),
-          border: Border.all(color: color.withValues(alpha: 0.2)),
+          border: Border.all(color: color.withOpacity(0.2)),
         ),
         child: Icon(icon, color: color, size: 16.sp),
       ),
@@ -729,7 +729,7 @@ class _GoalsCard extends StatelessWidget {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
               decoration: BoxDecoration(
-                color: FitColors.neonGreen.withValues(alpha: 0.12),
+                color: FitColors.neonGreen.withOpacity(0.12),
                 borderRadius: BorderRadius.circular(8.r),
               ),
               child: Text(
@@ -873,7 +873,7 @@ class _WeeklyBarChart extends StatelessWidget {
               barRods: [BarChartRodData(
                 toY: calories[i],
                 width: 20.w,
-                color: i == 6 ? FitColors.neonGreen : FitColors.neonGreen.withValues(alpha: 0.25),
+                color: i == 6 ? FitColors.neonGreen : FitColors.neonGreen.withOpacity(0.25),
                 borderRadius: BorderRadius.vertical(top: Radius.circular(5.r)),
               )],
             )),
@@ -927,9 +927,9 @@ class _PeriodChip extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
     decoration: BoxDecoration(
-      color: selected ? FitColors.neonGreen.withValues(alpha: 0.12) : Colors.transparent,
+      color: selected ? FitColors.neonGreen.withOpacity(0.12) : Colors.transparent,
       borderRadius: BorderRadius.circular(6.r),
-      border: selected ? Border.all(color: FitColors.neonGreen.withValues(alpha: 0.4)) : null,
+      border: selected ? Border.all(color: FitColors.neonGreen.withOpacity(0.4)) : null,
     ),
     child: Text(
       label,
@@ -964,17 +964,17 @@ class _QuickActionTile extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            color.withValues(alpha: 0.08),
-            color.withValues(alpha: 0.04),
+            color.withOpacity(0.08),
+            color.withOpacity(0.04),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: color.withValues(alpha: 0.15)),
+        border: Border.all(color: color.withOpacity(0.15)),
         boxShadow: [
           BoxShadow(
-            color: color.withValues(alpha: 0.1),
+            color: color.withOpacity(0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -986,11 +986,11 @@ class _QuickActionTile extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(10.r),
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.15),
+              color: color.withOpacity(0.15),
               borderRadius: BorderRadius.circular(12.r),
               boxShadow: [
                 BoxShadow(
-                  color: color.withValues(alpha: 0.2),
+                  color: color.withOpacity(0.2),
                   blurRadius: 8,
                   spreadRadius: -2,
                 ),
@@ -1074,7 +1074,7 @@ class _StepsSkeletonCard extends StatelessWidget {
     decoration: BoxDecoration(
       color: FitColors.card,
       borderRadius: BorderRadius.circular(24.r),
-      border: Border.all(color: FitColors.border.withValues(alpha: 0.3)),
+      border: Border.all(color: FitColors.border.withOpacity(0.3)),
     ),
     child: Row(
       children: [
@@ -1086,7 +1086,7 @@ class _StepsSkeletonCard extends StatelessWidget {
             color: FitColors.border,
           ),
         ).animate(onPlay: (c) => c.repeat())
-          .shimmer(duration: 1200.ms, color: FitColors.textMuted.withValues(alpha: 0.3)),
+          .shimmer(duration: 1200.ms, color: FitColors.textMuted.withOpacity(0.3)),
         SizedBox(width: 20.w),
         Expanded(
           child: Column(
@@ -1125,7 +1125,7 @@ class _StepsSkeletonCard extends StatelessWidget {
       ],
     ),
   ).animate(onPlay: (c) => c.repeat())
-    .shimmer(duration: 1200.ms, color: FitColors.neonGreen.withValues(alpha: 0.1));
+    .shimmer(duration: 1200.ms, color: FitColors.neonGreen.withOpacity(0.1));
 }
 
 // ─── KPI Row (matching mockup) ───────────────────────────────────────────────
@@ -1181,7 +1181,7 @@ class _KPICard extends StatelessWidget {
             Text(value, style: TextStyle(color: FitColors.textPrimaryDark, fontSize: 13.sp, fontWeight: FontWeight.w700)),
             Text(unit, style: TextStyle(color: color, fontSize: 9.sp, fontWeight: FontWeight.w600)),
             SizedBox(height: 2.h),
-            Text(label, style: TextStyle(color: FitColors.textSecondaryDark.withValues(alpha: 0.6), fontSize: 8.sp)),
+            Text(label, style: TextStyle(color: FitColors.textSecondaryDark.withOpacity(0.6), fontSize: 8.sp)),
           ],
         ),
       ),
@@ -1200,10 +1200,10 @@ class _KPISkeletonRow extends StatelessWidget {
           decoration: BoxDecoration(
             color: FitColors.cardDark,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: FitColors.borderDark.withValues(alpha: 0.3)),
+            border: Border.all(color: FitColors.borderDark.withOpacity(0.3)),
           ),
         ).animate(onPlay: (c) => c.repeat())
-          .shimmer(duration: 1200.ms, color: FitColors.textSecondaryDark.withValues(alpha: 0.1)),
+          .shimmer(duration: 1200.ms, color: FitColors.textSecondaryDark.withOpacity(0.1)),
       )),
     );
   }
@@ -1222,12 +1222,12 @@ class _TodaysWorkoutCard extends StatelessWidget {
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [FitColors.neonGreen.withValues(alpha: 0.15), FitColors.neonGreen.withValues(alpha: 0.05)],
+          colors: [FitColors.neonGreen.withOpacity(0.15), FitColors.neonGreen.withOpacity(0.05)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: FitColors.neonGreen.withValues(alpha: 0.3)),
+        border: Border.all(color: FitColors.neonGreen.withOpacity(0.3)),
       ),
       child: Row(
         children: [
@@ -1235,7 +1235,7 @@ class _TodaysWorkoutCard extends StatelessWidget {
             width: 56.w,
             height: 56.w,
             decoration: BoxDecoration(
-              color: FitColors.neonGreen.withValues(alpha: 0.2),
+              color: FitColors.neonGreen.withOpacity(0.2),
               shape: BoxShape.circle,
             ),
             child: Icon(hasWorkoutToday ? Icons.check : Icons.fitness_center, color: FitColors.neonGreen, size: 24),
@@ -1588,7 +1588,7 @@ class _NutritionTab extends ConsumerWidget {
                     Container(
                       padding: EdgeInsets.all(10.r),
                       decoration: BoxDecoration(
-                        color: color.withValues(alpha: 0.1),
+                        color: color.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(10.r),
                       ),
                       child: Icon(icon, color: color, size: 20.sp),
@@ -1765,7 +1765,7 @@ class _ProfileTab extends ConsumerWidget {
                   leading: Container(
                     padding: EdgeInsets.all(8.r),
                     decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.1),
+                      color: color.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Icon(icon, color: color, size: 18.sp),

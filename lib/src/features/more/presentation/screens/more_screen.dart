@@ -179,7 +179,7 @@ class MoreScreen extends ConsumerWidget {
             Container(
               padding: EdgeInsets.all(8.r),
               decoration: BoxDecoration(
-                color: FitColors.neonGreen.withValues(alpha: 0.2),
+                color: FitColors.neonGreen.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(8.r),
               ),
               child: Icon(Icons.fitness_center, color: FitColors.neonGreen),
@@ -245,9 +245,9 @@ class _QuickAccessTile extends StatelessWidget {
     onTap: () {},
     child: DecoratedBox(
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+        border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -306,7 +306,7 @@ class _SettingsTile extends StatelessWidget {
       leading: Container(
         padding: EdgeInsets.all(8.r),
         decoration: BoxDecoration(
-          color: FitColors.neonGreen.withValues(alpha: 0.1),
+          color: FitColors.neonGreen.withOpacity(0.1),
           borderRadius: BorderRadius.circular(8.r),
         ),
         child: Icon(icon, color: FitColors.neonGreen, size: 20.sp),

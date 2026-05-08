@@ -260,7 +260,7 @@ class _MapWorkoutScreenState extends ConsumerState<MapWorkoutScreen> {
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: FitColors.card.withValues(alpha: 0.9),
+                          color: FitColors.card.withOpacity(0.9),
                           borderRadius: BorderRadius.circular(12.r),
                         ),
                         child: IconButton(
@@ -271,7 +271,7 @@ class _MapWorkoutScreenState extends ConsumerState<MapWorkoutScreen> {
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                         decoration: BoxDecoration(
-                          color: _isTracking ? FitColors.neonGreen : FitColors.card.withValues(alpha: 0.9),
+                          color: _isTracking ? FitColors.neonGreen : FitColors.card.withOpacity(0.9),
                           borderRadius: BorderRadius.circular(20.r),
                         ),
                         child: Text(
@@ -291,7 +291,7 @@ class _MapWorkoutScreenState extends ConsumerState<MapWorkoutScreen> {
                   margin: EdgeInsets.all(16.r),
                   padding: EdgeInsets.all(20.r),
                   decoration: BoxDecoration(
-                    color: FitColors.card.withValues(alpha: 0.95),
+                    color: FitColors.card.withOpacity(0.95),
                     borderRadius: BorderRadius.circular(20.r),
                     border: Border.all(color: FitColors.border),
                   ),

@@ -95,7 +95,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     width: 80,
                     height: 80,
                     decoration: BoxDecoration(
-                      color: FitColors.neonGreen.withValues(alpha: 0.1),
+                      color: FitColors.neonGreen.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(24),
                     ),
                     child: const Icon(
