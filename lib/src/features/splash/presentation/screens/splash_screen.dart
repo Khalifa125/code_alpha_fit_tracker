@@ -1,4 +1,4 @@
-// ignore_for_file: use_decorated_box, depend_on_referenced_packages, prefer_const_constructors, prefer_int_literals
+// ignore_for_file: deprecated_member_use, use_decorated_box, depend_on_referenced_packages, prefer_const_constructors, prefer_int_literals
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

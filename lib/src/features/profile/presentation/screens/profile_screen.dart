@@ -1,4 +1,4 @@
-// ignore_for_file: use_if_null_to_convert_nulls_to_bools, prefer_const_constructors
+// ignore_for_file: deprecated_member_use, use_if_null_to_convert_nulls_to_bools, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fit_tracker/src/features/fit_track/models/workout.dart';
 import 'package:fit_tracker/src/features/fit_track/models/progress.dart';
-import 'package:fit_tracker/src/features/fit_track/services/fittrack_service.dart';
 import 'package:fit_tracker/src/features/fit_track/services/workout_generator.dart';
 import 'package:fit_tracker/src/features/fit_track/providers/auth_provider.dart';
 

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import '../../imports/imports.dart';
 
 /// A fully themed button supporting all [ButtonVariant]s and [ButtonSize]s.

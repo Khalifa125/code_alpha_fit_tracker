@@ -1,6 +1,5 @@
 // ignore_for_file: deprecated_member_use
 
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,7 +7,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:fit_tracker/src/theme/fit_colors.dart';
 import 'package:fit_tracker/src/features/dashboard/widgets/progress_ring.dart';
 import 'package:fit_tracker/src/features/dashboard/widgets/stat_cards.dart';
-import 'package:fit_tracker/src/features/fitness/presentation/providers/fitness_providers.dart';
 import 'package:fit_tracker/src/features/water/presentation/providers/water_provider.dart';
 
 final caloriesConsumedProvider = Provider<double>((ref) => 1200);

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import '../../imports/core_imports.dart';
 import '../../imports/packages_imports.dart';
 
