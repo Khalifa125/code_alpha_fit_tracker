@@ -1,0 +1,67 @@
+workflows:
+  ios-workflow:
+    name: iOS Build
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Get dependencies
+        script: |
+          flutter pub get
+      - name: Set iOS deployment target
+        script: |
+          cd ios
+          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*/IPHONEOS_DEPLOYMENT_TARGET = 13.0/' Podfile
+          cd ..
+      - name: Install iOS pods
+        script: |
+          cd ios
+          pod install
+          cd ..
+      - name: Build iOS for simulator (debug)
+        script: |
+          flutter build ios --simulator --no-codesign
+      - name: Build iOS for release (archive)
+        script: |
+          flutter build ipa --release --no-codesign --export-options-plist=/tmp/export_options.plist
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - build/ios/Runner.app
+      - build/ios/xcarchive/*.xcarchive
+
+  android-workflow:
+    name: Android Build
+    max_build_duration: 45
+    environment:
+      flutter: stable
+      android-sdk: 34
+    scripts:
+      - name: Get dependencies
+        script: |
+          flutter pub get
+      - name: Build Android APK (debug)
+        script: |
+          flutter build apk --debug
+      - name: Build Android APK (release)
+        script: |
+          flutter build apk --release
+    artifacts:
+      - build/app/outputs/flutter-apk/*.apk
+
+  flutter-analysis:
+    name: Flutter Analyze
+    max_build_duration: 15
+    environment:
+      flutter: stable
+    scripts:
+      - name: Get dependencies
+        script: |
+          flutter pub get
+      - name: Run Flutter analyze
+        script: |
+          flutter analyze --no-fatal-infos --no-fatal-warnings
+      - name: Run tests
+        script: |
+          flutter test
