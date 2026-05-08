@@ -1,4 +1,4 @@
-// ignore_for_file: unused_import, prefer_const_constructors, inference_failure_on_function_invocation
+// ignore_for_file: deprecated_member_use, unused_import, prefer_const_constructors, inference_failure_on_function_invocation
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -6,6 +6,7 @@ workflows:
       flutter: 3.27.0
       xcode: latest
       cocoapods: default
+      java: 17
     vars:
       FIREBASE_TOKEN: $FIREBASE_TOKEN
       GOOGLE_SERVICE_INFO_PLIST: $GOOGLE_SERVICE_INFO_PLIST
@@ -22,7 +23,7 @@ workflows:
       - name: Set iOS deployment target
         script: |
           cd ios
-          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*/IPHONEOS_DEPLOYMENT_TARGET = 13.0/' Podfile`
+          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*/IPHONEOS_DEPLOYMENT_TARGET = 13.0/' Podfile
           cd ..
       - name: Install iOS pods
         script: |
@@ -31,16 +32,10 @@ workflows:
           cd ..
       - name: Build IPA
         script: |
-          flutter build ipa --release --no-codesign
-          mkdir -p build/ios/ipa/
-          cd build/ios/archive/
-          mkdir -p Runner.xcarchive/Payload
-          cp -r Runner.xcarchive/Products/Applications/Runner.app Runner.xcarchive/Payload/
-          cd Runner.xcarchive
-          zip -r ../Runner.ipa Payload/
-          cd ../../..
+          flutter build ipa --release --no-codesign --export-options-plist=ExportOptions.plist
     artifacts:
-      - build/ios/ipa/Runner.ipa
+      - build/ios/ipa/*.ipa
+      - build/ios/ipa/*.xcarchive
 
   android-workflow:
     name: Android Build
