@@ -7,9 +7,9 @@ workflows:
       xcode: latest
       cocoapods: default
       java: 17
-    vars:
-      FIREBASE_TOKEN: $FIREBASE_TOKEN
-      GOOGLE_SERVICE_INFO_PLIST: $GOOGLE_SERVICE_INFO_PLIST
+      vars:
+        FIREBASE_TOKEN: $FIREBASE_TOKEN
+        GOOGLE_SERVICE_INFO_PLIST: $GOOGLE_SERVICE_INFO_PLIST
     scripts:
       - name: Install Firebase CLI
         script: |
@@ -43,8 +43,8 @@ workflows:
     environment:
       flutter: 3.27.0
       java: 17
-    vars:
-      GOOGLE_SERVICES_JSON: $GOOGLE_SERVICES_JSON
+      vars:
+        GOOGLE_SERVICES_JSON: $GOOGLE_SERVICES_JSON
     scripts:
       - name: Setup Firebase (Android)
         script: |
