@@ -217,7 +217,7 @@ class _HomeTab extends ConsumerWidget {
               SliverToBoxAdapter(
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
-                  child: _TodaysWorkoutCard(summary: summaryAsync.valueOrNull),
+                  child: _TodaysWorkoutCard(summary: summaryAsync.value),
                 ),
               ),
 

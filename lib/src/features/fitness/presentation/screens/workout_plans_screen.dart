@@ -189,7 +189,7 @@ class WorkoutPlansScreen extends ConsumerWidget {
                       final f = _filters[i];
                       final selected = f == filter;
                       return GestureDetector(
-                        onTap: () => ref.read(workoutFilterProvider.notifier).state = f,
+                        onTap: () => ref.read(workoutFilterProvider.notifier).setFilter(f),
                         child: AnimatedContainer(
                           duration: 200.ms,
                           padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),

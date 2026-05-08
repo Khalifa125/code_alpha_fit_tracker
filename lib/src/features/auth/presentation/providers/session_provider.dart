@@ -76,10 +76,4 @@ class SessionNotifier extends Notifier<SessionState> {
     await repository.logout();
     state = const SessionState(status: SessionStatus.unauthenticated);
   }
-
-  @override
-  void dispose() {
-    _authSub?.cancel();
-    super.dispose();
-  }
 }

@@ -53,7 +53,16 @@ final workoutPlansProvider = Provider<List<WorkoutPlan>>(
   (_) => WorkoutPlansData.plans,
 );
 
-final workoutFilterProvider = Provider<String>((ref) => 'All');
+final workoutFilterProvider = NotifierProvider<WorkoutFilterNotifier, String>(() => WorkoutFilterNotifier());
+
+class WorkoutFilterNotifier extends Notifier<String> {
+  @override
+  String build() => 'All';
+  
+  void setFilter(String filter) {
+    state = filter;
+  }
+}
 
 final filteredWorkoutPlansProvider = Provider<List<WorkoutPlan>>((ref) {
   final plans = ref.watch(workoutPlansProvider);

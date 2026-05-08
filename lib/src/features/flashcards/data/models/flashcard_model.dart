@@ -1,29 +1,12 @@
 import 'dart:convert';
-import 'package:hive_flutter/hive_flutter.dart';
 
-part 'flashcard_model.g.dart';
-
-@HiveType(typeId: 50)
 class FlashcardModel {
-  @HiveField(0)
   final String id;
-
-  @HiveField(1)
   final String question;
-
-  @HiveField(2)
   final String answer;
-
-  @HiveField(3)
   final String topic;
-
-  @HiveField(4)
   final DateTime createdAt;
-
-  @HiveField(5)
   bool isLearned;
-
-  @HiveField(6)
   final int? reviewCount;
 
   FlashcardModel({

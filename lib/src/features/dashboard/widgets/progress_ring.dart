@@ -7,7 +7,7 @@ class AnimatedProgressRing extends StatefulWidget {
   final double progress;
   final double size;
   final double strokeWidth;
-  final Color? gradientColors;
+  final List<Color>? gradientColors;
   final Color? backgroundColor;
   final Widget? child;
   final Duration duration;
@@ -92,9 +92,7 @@ class _AnimatedProgressRingState extends State<AnimatedProgressRing>
                   progress: _animation.value.clamp(0.0, 1.0),
                   strokeWidth: widget.strokeWidth,
                   backgroundColor: widget.backgroundColor ?? FitColors.borderDark,
-                  gradientColors: widget.gradientColors != null
-                      ? [widget.gradientColors!, widget.gradientColors!]
-                      : [FitColors.neonGreen, FitColors.neonGreen],
+                  gradientColors: widget.gradientColors ?? [FitColors.neonGreen, FitColors.neonGreen],
                 ),
               ),
               if (widget.child != null) widget.child!,
@@ -229,7 +227,7 @@ class MiniProgressRing extends StatelessWidget {
       progress: progress,
       size: size,
       strokeWidth: strokeWidth,
-      gradientColors: color,
+      gradientColors: [color, color],
       backgroundColor: color.withOpacity(0.2),
       child: Text(
         '${(progress * 100).toInt()}%',
@@ -296,7 +294,7 @@ class DashboardProgressCard extends StatelessWidget {
                   progress: progress.clamp(0.0, 1.0),
                   size: 44,
                   strokeWidth: 4,
-                  gradientColors: gradientColors?.first ?? color,
+                  gradientColors: gradientColors ?? [color, color],
                   backgroundColor: color.withOpacity(0.2),
                 ),
               ],

@@ -8,18 +8,22 @@ import 'package:fit_tracker/src/features/dashboard/widgets/progress_ring.dart';
 import 'package:fit_tracker/src/features/dashboard/widgets/stat_cards.dart';
 import 'package:fit_tracker/src/features/fitness/presentation/providers/fitness_providers.dart';
 import 'package:fit_tracker/src/features/water/presentation/providers/water_provider.dart';
-import 'package:fit_tracker/src/features/steps/providers/step_provider.dart';
+
+final caloriesConsumedProvider = Provider<double>((ref) => 1200);
+final caloriesGoalProvider = Provider<double>((ref) => 2000);
+final stepCountProvider = Provider<int>((ref) => 5000);
 
 class ModernDashboard extends ConsumerWidget {
   const ModernDashboard({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final waterState = ref.watch(waterProvider);
     final caloriesConsumed = ref.watch(caloriesConsumedProvider);
     final caloriesGoal = ref.watch(caloriesGoalProvider);
     final steps = ref.watch(stepCountProvider);
-    final waterIntake = ref.watch(waterIntakeProvider);
-    final waterGoal = ref.watch(waterGoalProvider);
+    final waterIntake = waterState.totalIntake.toDouble();
+    final waterGoal = waterState.goal.toDouble();
 
     final calorieProgress = (caloriesConsumed / caloriesGoal).clamp(0.0, 1.0);
     final waterProgress = (waterIntake / waterGoal).clamp(0.0, 1.0);

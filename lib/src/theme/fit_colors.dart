@@ -117,6 +117,11 @@ class FitColors {
     Color(0xFFEF4444),
     Color(0xFFF87171),
   ];
+
+  static const streakGradient = [
+    Color(0xFFF59E0B),
+    Color(0xFFFBBF24),
+  ];
 }
 
 class FitThemeColors {
