@@ -37,7 +37,7 @@ workflows:
           mkdir -p Runner.xcarchive/Payload
           cp -r Runner.xcarchive/Products/Applications/Runner.app Runner.xcarchive/Payload/
           cd Runner.xcarchive
-          zip -r ../ipa/Runner.ipa Payload/
+          zip -r ../Runner.ipa Payload/
           cd ../../..
     artifacts:
       - build/ios/ipa/Runner.ipa
