@@ -20,23 +20,24 @@ workflows:
           cd ios
           pod install
           cd ..
-      - name: Build iOS for simulator (debug)
+      - name: Build IPA
         script: |
-          flutter build ios --simulator --no-codesign
-      - name: Build iOS for release (archive)
-        script: |
-          flutter build ipa --release --no-codesign --export-options-plist=/tmp/export_options.plist
+          flutter build ipa --release --no-codesign
+          cd build/ios/archive/
+          mkdir -p Runner.xcarchive/Payload
+          cp -r Runner.xcarchive/Products/Applications/Runner.app Runner.xcarchive/Payload/
+          cd Runner.xcarchive
+          zip -r Runner.ipa Payload/
     artifacts:
+      - build/ios/archive/Runner.xcarchive/Runner.ipa
       - build/ios/ipa/*.ipa
-      - build/ios/Runner.app
-      - build/ios/xcarchive/*.xcarchive
 
   android-workflow:
     name: Android Build
     max_build_duration: 45
     environment:
       flutter: stable
-      android-sdk: 34
+      java: 17
     scripts:
       - name: Get dependencies
         script: |
