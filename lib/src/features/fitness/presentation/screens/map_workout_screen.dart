@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_final_locals, prefer_const_constructors, use_decorated_box, unnecessary_brace_in_string_interps
+// ignore_for_file: deprecated_member_use, prefer_final_locals, prefer_const_constructors, use_decorated_box, unnecessary_brace_in_string_interps
 
 import 'dart:async';
 import 'package:flutter/material.dart';

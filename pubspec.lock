@@ -169,6 +169,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  codemagic_app_preview:
+    dependency: "direct dev"
+    description:
+      name: codemagic_app_preview
+      sha256: "81f08aad23f87a75647ae4e73b1a792305834a3bd55cf22a1fc3df055d3a162f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.3"
+  codemagic_manager:
+    dependency: "direct dev"
+    description:
+      name: codemagic_manager
+      sha256: "7b84dc318170932851d4655ad81cd160297695504178f0040ba423acc1461fe6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.0"
   collection:
     dependency: transitive
     description:
@@ -1481,10 +1497,10 @@ packages:
     dependency: "direct main"
     description:
       name: skeletonizer
-      sha256: "9f38f9b47ec3cf2235a6a4f154a88a95432bc55ba98b3e2eb6ced5c1974bc122"
+      sha256: "0dcacc51c144af4edaf37672072156f49e47036becbc394d7c51850c5c1e884b"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.3"
+    version: "1.4.3"
   sky_engine:
     dependency: transitive
     description: flutter

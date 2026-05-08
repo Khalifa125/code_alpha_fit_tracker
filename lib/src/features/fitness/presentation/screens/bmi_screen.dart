@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, unnecessary_import, unused_import
+// ignore_for_file: deprecated_member_use, prefer_const_constructors, unnecessary_import, unused_import
 
 import 'package:fit_tracker/src/imports/core_imports.dart';
 import 'package:flutter/material.dart';
