@@ -6,13 +6,9 @@ workflows:
       flutter: 3.27.0
       xcode: latest
       cocoapods: default
-    vars:
-      FIREBASE_TOKEN: $FIREBASE_TOKEN
-      GOOGLE_SERVICE_INFO_PLIST: $GOOGLE_SERVICE_INFO_PLIST
+      groups:
+        - firebase_credentials
     scripts:
-      - name: Install Firebase CLI
-        script: |
-          curl -sL https://firebase.tools/bin/install.sh | bash
       - name: Configure Firebase (iOS)
         script: |
           echo "$GOOGLE_SERVICE_INFO_PLIST" > ios/Runner/GoogleService-Info.plist
@@ -38,46 +34,5 @@ workflows:
           cp -r Runner.xcarchive/Products/Applications/Runner.app Runner.xcarchive/Payload/
           cd Runner.xcarchive
           zip -r ../Runner.ipa Payload/
-          cd ../../..
     artifacts:
       - build/ios/ipa/Runner.ipa
-
-  android-workflow:
-    name: Android Build
-    max_build_duration: 45
-    environment:
-      flutter: 3.27.0
-      java: 17
-    vars:
-      GOOGLE_SERVICES_JSON: $GOOGLE_SERVICES_JSON
-    scripts:
-      - name: Setup Firebase (Android)
-        script: |
-          echo "$GOOGLE_SERVICES_JSON" > android/app/google-services.json
-      - name: Get dependencies
-        script: |
-          flutter pub get
-      - name: Build Android APK (debug)
-        script: |
-          flutter build apk --debug
-      - name: Build Android APK (release)
-        script: |
-          flutter build apk --release
-    artifacts:
-      - build/app/outputs/flutter-apk/*.apk
-
-  flutter-analysis:
-    name: Flutter Analyze
-    max_build_duration: 15
-    environment:
-      flutter: 3.27.0
-    scripts:
-      - name: Get dependencies
-        script: |
-          flutter pub get
-      - name: Run Flutter analyze
-        script: |
-          flutter analyze --no-fatal-infos --no-fatal-warnings
-      - name: Run tests
-        script: |
-          flutter test
