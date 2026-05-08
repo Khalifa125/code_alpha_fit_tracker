@@ -6,7 +6,16 @@ workflows:
       flutter: 3.27.0
       xcode: latest
       cocoapods: default
+    environment_variables:
+      - FIREBASE_TOKEN
+      - GOOGLE_SERVICE_INFO_PLIST
     scripts:
+      - name: Install Firebase CLI
+        script: |
+          curl -sL https://firebase.tools/bin/install.sh | bash
+      - name: Configure Firebase (iOS)
+        script: |
+          echo "$GOOGLE_SERVICE_INFO_PLIST" > ios/Runner/GoogleService-Info.plist
       - name: Get dependencies
         script: |
           flutter pub get
@@ -23,13 +32,15 @@ workflows:
       - name: Build IPA
         script: |
           flutter build ipa --release --no-codesign
+          mkdir -p build/ios/ipa/
           cd build/ios/archive/
           mkdir -p Runner.xcarchive/Payload
           cp -r Runner.xcarchive/Products/Applications/Runner.app Runner.xcarchive/Payload/
           cd Runner.xcarchive
-          zip -r Runner.ipa Payload/
+          zip -r ../ipa/Runner.ipa Payload/
+          cd ../../..
     artifacts:
-      - build/ios/archive/Runner.xcarchive/Runner.ipa
+      - build/ios/ipa/Runner.ipa
 
   android-workflow:
     name: Android Build
@@ -37,7 +48,12 @@ workflows:
     environment:
       flutter: 3.27.0
       java: 17
+    environment_variables:
+      - GOOGLE_SERVICES_JSON
     scripts:
+      - name: Setup Firebase (Android)
+        script: |
+          echo "$GOOGLE_SERVICES_JSON" > android/app/google-services.json
       - name: Get dependencies
         script: |
           flutter pub get
