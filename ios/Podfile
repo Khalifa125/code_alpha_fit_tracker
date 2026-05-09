@@ -1,9 +1,5 @@
 platform :ios, '15.0'
 
-flutter_application_path = File.expand_path('..', __FILE__)
-
-eval(File.read(File.join(flutter_application_path, '..', '.dart_tool', 'flutter_export_environment.sh')))
-
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
