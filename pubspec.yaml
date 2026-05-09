@@ -40,7 +40,7 @@ dependencies:
   flutter_svg: ^2.0.10+1
 
   # UI / Loading
-  # skeletonizer: ^0.8.0  # Requires Flutter 3.31.0+
+  # skeletonizer removed - requires Flutter 3.31.0+
 
   # Responsive UI
   flutter_screenutil: ^5.9.3
@@ -61,12 +61,12 @@ dependencies:
   share_plus: ^10.1.4
   permission_handler: ^11.3.1
   uuid: ^4.3.3
-  intl: ">=0.19.0 <0.21.0"
+  intl: ^0.20.2
   image_picker: ^1.1.2
 
   # Device & System
   device_info_plus: ^11.2.0
-  app_version_update: ^6.2.0
+  app_version_update: ^4.0.1
 
   # Localization
   easy_localization: ^3.0.8
@@ -81,7 +81,7 @@ dependencies:
 
   # Nutrition API
   http: ^1.4.0
-  mobile_scanner: ^5.2.3
+  mobile_scanner: ^6.0.5
 
   # Auth
   google_sign_in: ^6.2.2

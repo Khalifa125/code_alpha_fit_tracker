@@ -10,17 +10,10 @@ workflows:
       - name: Get dependencies
         script: |
           flutter pub get
-      - name: Set iOS deployment target
-        script: |
-          cd ios
-          sed -i '' "s/IPHONEOS_DEPLOYMENT_TARGET = 13.0/IPHONEOS_DEPLOYMENT_TARGET = 15.0/" Podfile
-          sed -i '' "s/platform :ios, '13.0'/platform :ios, '15.0'/" Podfile
-          cd ..
       - name: Install iOS pods
         script: |
           cd ios
           rm -rf Pods Podfile.lock
-          flutter pub get
           pod install
           cd ..
       - name: Build IPA
