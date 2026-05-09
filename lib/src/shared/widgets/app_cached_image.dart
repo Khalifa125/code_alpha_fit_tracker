@@ -43,7 +43,7 @@ class AppCachedImage extends StatelessWidget {
   /// How to align the image within its bounds.
   final Alignment alignment;
 
-  /// If true, the image will be wrapped in a [Skeletonizer] during loading.
+  /// If true, the image will use a shimmer placeholder during loading.
   final bool useSkeleton;
 
   /// Optional key to use for caching.
@@ -97,19 +97,6 @@ class AppCachedImage extends StatelessWidget {
   }
 
   Widget _buildDefaultPlaceholder(BuildContext context) {
-    if (useSkeleton) {
-      return Skeletonizer(
-        enabled: true,
-        child: Container(
-          width: width,
-          height: height,
-          decoration: BoxDecoration(
-            color: context.theme.colorScheme.surfaceContainerHighest,
-            borderRadius: borderRadius,
-          ),
-        ),
-      );
-    }
     return _buildLoadingIndicator(context);
   }
 
