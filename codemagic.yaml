@@ -17,7 +17,7 @@ workflows:
       - name: Set iOS deployment target
         script: |
           cd ios
-          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*/IPHONEOS_DEPLOYMENT_TARGET = 13.0/' Podfile
+          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*/IPHONEOS_DEPLOYMENT_TARGET = 15.0/' Podfile
           cd ..
       - name: Install iOS pods
         script: |
