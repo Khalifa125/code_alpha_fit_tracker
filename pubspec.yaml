@@ -39,9 +39,6 @@ dependencies:
   cached_network_image: ^3.4.1
   flutter_svg: ^2.2.4
 
-  # UI / Loading
-  skeletonizer: ^1.0.0
-
   # Responsive UI
   flutter_screenutil: ^5.9.3
 
@@ -102,7 +99,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^5.0.0
+  flutter_lints: ^4.0.0
 
   # Icons generator
   flutter_launcher_icons: ^0.14.4
