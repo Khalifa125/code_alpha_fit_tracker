@@ -32,7 +32,7 @@ dependencies:
   firebase_crashlytics: ^5.1.0
 
   # Local Storage
-  shared_preferences: ^2.5.4
+  shared_preferences: ^2.3.2
   flutter_secure_storage: ^10.1.0
 
   # Images & SVG
