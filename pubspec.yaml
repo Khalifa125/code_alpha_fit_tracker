@@ -78,7 +78,7 @@ dependencies:
 
   # Nutrition API
   http: ^1.4.0
-  mobile_scanner: ^7.2.0
+  mobile_scanner: ^5.0.0
 
   # Auth
   google_sign_in: ^6.3.0
