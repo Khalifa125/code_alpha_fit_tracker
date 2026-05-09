@@ -18,18 +18,13 @@ workflows:
         script: |
           cd ios
           if [ ! -f Podfile ]; then
-            flutter build ios --simulator --no-codesign 2>/dev/null || true
+            touch Podfile
           fi
-          if [ -f Podfile ]; then
-            sed -i '' 's/platform :ios, .*/platform :ios, '\''15.0'\''/' Podfile
-            sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*/IPHONEOS_DEPLOYMENT_TARGET = 15.0/' Podfile
+          if ! grep -q "platform :ios" Podfile; then
+            echo "platform :ios, '15.0'" >> Podfile
           fi
+          sed -i '' "s/platform :ios, '.*'/platform :ios, '15.0'/" Podfile
           pod install --repo-update || pod install
-          cd ..
-      - name: Build IPA
-        script: |
-          cd ios
-          pod install
           cd ..
       - name: Build IPA
         script: |
