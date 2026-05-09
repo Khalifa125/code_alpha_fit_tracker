@@ -20,6 +20,7 @@ workflows:
         script: |
           cd ios
           rm -rf Pods Podfile.lock
+          flutter pub get
           pod install
           cd ..
       - name: Build IPA
