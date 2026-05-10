@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 
 import 'text_theme.dart';
 import 'color_schemes.dart';
+import 'fit_colors.dart';
 
 Color _colorFromHex(String hex) {
   final cleaned = hex.replaceFirst('#', '');
@@ -101,7 +102,7 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppColorsExtension customColors) 
     ],
     
     // --- Basic Elements ---
-    scaffoldBackgroundColor: colorScheme.surface,
+    scaffoldBackgroundColor: FitColors.backgroundDark,
     dividerTheme: DividerThemeData(
       color: colorScheme.outlineVariant,
       thickness: 1,
