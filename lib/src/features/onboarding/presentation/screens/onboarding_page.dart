@@ -17,23 +17,26 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
+  final _weightCtrl = TextEditingController();
+  final _heightCtrl = TextEditingController();
+  final _ageCtrl = TextEditingController();
   int _currentPage = 0;
-  
+
   String? _selectedGoal;
   String? _selectedFitness;
   int _selectedTime = 30;
 
   final List<Map<String, dynamic>> _goals = [
-    {'id': 'lose_weight', 'name': 'Lose Weight', 'icon': Icons.monitor_weight_outlined, 'desc': 'Burn fat & get lean'},
-    {'id': 'build_muscle', 'name': 'Build Muscle', 'icon': Icons.fitness_center, 'desc': 'Gain strength & size'},
-    {'id': 'stay_active', 'name': 'Stay Active', 'icon': Icons.directions_run, 'desc': 'Maintain fitness'},
-    {'id': 'endurance', 'name': 'Endurance', 'icon': Icons.timer, 'desc': 'Boost stamina'},
+    {'id': 'lose_weight', 'name': 'Lose Weight', 'icon': Icons.monitor_weight_outlined, 'desc': 'Burn fat & get lean', 'detail': '~500 cal deficit • 4-5x/week'},
+    {'id': 'build_muscle', 'name': 'Build Muscle', 'icon': Icons.fitness_center, 'desc': 'Gain strength & size', 'detail': 'Progressive overload • protein'},
+    {'id': 'stay_active', 'name': 'Stay Active', 'icon': Icons.directions_run, 'desc': 'Maintain fitness', 'detail': 'Light activity • 30 min/day'},
+    {'id': 'endurance', 'name': 'Endurance', 'icon': Icons.timer, 'desc': 'Boost stamina', 'detail': 'HIIT & steady state cardio'},
   ];
 
   final List<Map<String, dynamic>> _fitnessLevels = [
-    {'id': 'beginner', 'name': 'Beginner', 'desc': 'New to fitness', 'icon': Icons.sentiment_satisfied_outlined},
-    {'id': 'intermediate', 'name': 'Intermediate', 'desc': 'Active lifestyle', 'icon': Icons.trending_up},
-    {'id': 'advanced', 'name': 'Advanced', 'desc': 'Experienced', 'icon': Icons.whatshot},
+    {'id': 'beginner', 'name': 'Beginner', 'desc': 'New to fitness or returning after a break', 'icon': Icons.sentiment_satisfied_outlined, 'weeks': '4-6 weeks'},
+    {'id': 'intermediate', 'name': 'Intermediate', 'desc': 'Active lifestyle with consistent training', 'icon': Icons.trending_up, 'weeks': '6-8 weeks'},
+    {'id': 'advanced', 'name': 'Advanced', 'desc': 'Experienced — train regularly', 'icon': Icons.whatshot, 'weeks': '8-12 weeks'},
   ];
 
   final List<int> _timeOptions = [15, 30, 45, 60];
@@ -41,11 +44,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   void dispose() {
     _pageController.dispose();
+    _weightCtrl.dispose();
+    _heightCtrl.dispose();
+    _ageCtrl.dispose();
     super.dispose();
   }
 
   void _nextPage() {
-    if (_currentPage < 2) {
+    if (_currentPage < 3) {
       _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
     } else {
       _completeOnboarding();
@@ -58,6 +64,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     if (_selectedGoal != null) await prefs.setString('user_goal', _selectedGoal!);
     if (_selectedFitness != null) await prefs.setString('fitness_level', _selectedFitness!);
     await prefs.setInt('available_time', _selectedTime);
+
+    final w = double.tryParse(_weightCtrl.text);
+    final h = double.tryParse(_heightCtrl.text);
+    final a = int.tryParse(_ageCtrl.text);
+    if (w != null) await prefs.setDouble('user_weight', w);
+    if (h != null) await prefs.setDouble('user_height', h);
+    if (a != null) await prefs.setInt('user_age', a);
+
     if (mounted) context.go(AppRoutes.home);
   }
 
@@ -66,6 +80,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       case 0: return _selectedGoal != null;
       case 1: return _selectedFitness != null;
       case 2: return _selectedTime > 0;
+      case 3: return true;
       default: return false;
     }
   }
@@ -123,6 +138,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   _buildGoalPage(),
                   _buildFitnessPage(),
                   _buildTimePage(),
+                  _buildMetricsPage(),
                 ],
               ),
             ),
@@ -140,7 +156,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     elevation: 0,
                   ),
                   child: Text(
-                    _currentPage == 2 ? 'Start Journey' : 'Continue',
+                    _currentPage == 3 ? 'Start Journey' : 'Continue',
                     style: TextStyle(
                       color: _canProceed ? Colors.black : FitColors.textSecondaryDark,
                       fontSize: 15.sp,
@@ -157,10 +173,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Widget _buildProgressDots() {
+    const steps = 4;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Row(
-        children: List.generate(3, (index) => Expanded(
+        children: List.generate(steps, (index) => Expanded(
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 4.w),
             height: 3.h,
@@ -198,7 +215,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 crossAxisCount: 2,
                 mainAxisSpacing: 12.h,
                 crossAxisSpacing: 12.w,
-                childAspectRatio: 1.1,
+                childAspectRatio: 1,
               ),
               itemCount: _goals.length,
               itemBuilder: (context, index) {
@@ -209,7 +226,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   onTap: () => setState(() => _selectedGoal = goal['id']),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
-                    padding: EdgeInsets.all(14.r),
+                    padding: EdgeInsets.all(12.r),
                     decoration: BoxDecoration(
                       color: isSelected ? FitColors.neonGreen.withOpacity(0.12) : FitColors.cardDark,
                       borderRadius: BorderRadius.circular(14.r),
@@ -230,7 +247,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           ),
                           child: Icon(goal['icon'], color: isSelected ? FitColors.neonGreen : FitColors.textSecondaryDark, size: 22),
                         ),
-                        SizedBox(height: 10.h),
+                        SizedBox(height: 8.h),
                         Text(goal['name'], style: TextStyle(
                           color: isSelected ? FitColors.neonGreen : FitColors.textPrimaryDark,
                           fontSize: 13.sp,
@@ -241,6 +258,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           color: FitColors.textSecondaryDark.withOpacity(0.6),
                           fontSize: 10.sp,
                         ), textAlign: TextAlign.center),
+                        SizedBox(height: 2.h),
+                        Text(goal['detail'], style: TextStyle(
+                          color: isSelected ? FitColors.neonGreen.withOpacity(0.8) : FitColors.textSecondaryDark.withOpacity(0.4),
+                          fontSize: 8.sp,
+                        ), textAlign: TextAlign.center, maxLines: 1),
                       ],
                     ),
                   ).animate().fadeIn(delay: (100 + index * 50).ms).scale(begin: const Offset(0.95, 0.95)),
@@ -417,6 +439,119 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ],
             ),
           ).animate().fadeIn(delay: 300.ms),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMetricsPage() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Your Health Metrics', style: TextStyle(
+            color: FitColors.textPrimaryDark,
+            fontSize: 26.sp,
+            fontWeight: FontWeight.w700,
+            letterSpacing: -0.5,
+          )).animate().fadeIn().slideX(begin: -0.1),
+          SizedBox(height: 8.h),
+          Text('Help us personalize your experience', style: TextStyle(
+            color: FitColors.textSecondaryDark.withOpacity(0.7),
+            fontSize: 14.sp,
+          )).animate().fadeIn(delay: 50.ms),
+          SizedBox(height: 24.h),
+          Expanded(
+            child: ListView(
+              children: [
+                _MetricField(
+                  controller: _weightCtrl,
+                  label: 'Weight (kg)',
+                  hint: 'e.g. 70',
+                  icon: Icons.monitor_weight_outlined,
+                ),
+                SizedBox(height: 14.h),
+                _MetricField(
+                  controller: _heightCtrl,
+                  label: 'Height (cm)',
+                  hint: 'e.g. 175',
+                  icon: Icons.height,
+                ),
+                SizedBox(height: 14.h),
+                _MetricField(
+                  controller: _ageCtrl,
+                  label: 'Age',
+                  hint: 'e.g. 25',
+                  icon: Icons.cake_outlined,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MetricField extends StatelessWidget {
+  final TextEditingController controller;
+  final String label;
+  final String hint;
+  final IconData icon;
+
+  const _MetricField({
+    required this.controller,
+    required this.label,
+    required this.hint,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(14.r),
+      decoration: BoxDecoration(
+        color: FitColors.cardDark,
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: FitColors.borderDark),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: TextStyle(
+            color: FitColors.textSecondaryDark,
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w500,
+          )),
+          SizedBox(height: 6.h),
+          Row(
+            children: [
+              Icon(icon, color: FitColors.neonGreen, size: 20),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: TextField(
+                  controller: controller,
+                  keyboardType: TextInputType.number,
+                  style: TextStyle(
+                    color: FitColors.textPrimaryDark,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: hint,
+                    hintStyle: TextStyle(
+                      color: FitColors.textSecondaryDark.withOpacity(0.4),
+                      fontSize: 14.sp,
+                    ),
+                    border: InputBorder.none,
+                    isDense: true,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

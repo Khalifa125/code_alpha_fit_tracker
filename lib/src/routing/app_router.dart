@@ -23,8 +23,8 @@ import 'package:fit_tracker/src/features/water/presentation/screens/water_tracki
 import 'package:fit_tracker/src/features/sleep/presentation/screens/sleep_tracking_screen.dart';
 import 'package:fit_tracker/src/theme/fit_colors.dart';
 
-CustomTransitionPage _darkPage(Widget child, GoRouterState state) {
-  return CustomTransitionPage(
+CustomTransitionPage<void> _darkPage(Widget child, GoRouterState state) {
+  return CustomTransitionPage<void>(
     key: ValueKey(state.uri),
     child: child,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {

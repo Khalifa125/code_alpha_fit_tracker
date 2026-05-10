@@ -5,8 +5,8 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
-    timeout-minutes: 30
+    runs-on: macos-14
+    timeout-minutes: 45
 
     steps:
       - uses: actions/checkout@v4
@@ -16,14 +16,34 @@ jobs:
         with:
           flutter-version: 3.29.0
 
+      - name: Setup Xcode
+        run: |
+          sudo xcode-select -switch /Applications/Xcode_16.1.app 2>/dev/null || true
+          xcodebuild -version
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
       - name: Get dependencies
         run: flutter pub get
+
+      - name: Update CocoaPods
+        run: |
+          gem install cocoapods -v 1.15.2 --no-document
+          pod --version
 
       - name: Install iOS pods
         working-directory: ios
         run: |
-          rm -rf Pods Podfile.lock
-          pod install --repo-update || pod install
+          pod install --repo-update
+
+      - name: Clean build artifacts
+        run: flutter clean
 
       - name: Build unsigned IPA
         run: flutter build ipa --no-codesign --release
