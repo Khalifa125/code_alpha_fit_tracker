@@ -16,11 +16,11 @@ workflows:
           rm -rf Pods Podfile.lock
           pod install --repo-update || pod install
           cd ..
-      - name: Build iOS
+      - name: Build IPA
         script: |
-          flutter build ios --no-codesign
+          flutter build ipa --no-codesign
     artifacts:
-      - build/ios/iphoneos/Runner.app
+      - build/ios/ipa/*.ipa
 
   android-workflow:
     name: Android Build
