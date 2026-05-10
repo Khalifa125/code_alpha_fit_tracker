@@ -227,7 +227,7 @@ class _QuickAccessGrid extends StatelessWidget {
       itemCount: features.length,
       itemBuilder: (context, i) {
         final (label, icon, color) = features[i];
-        return _QuickAccessTile(label: label, icon: icon, color: color);
+        return _QuickAccessTile(key: ValueKey('qa_$label'), label: label, icon: icon, color: color);
       },
     );
   }
@@ -238,7 +238,7 @@ class _QuickAccessTile extends StatelessWidget {
   final IconData icon;
   final Color color;
 
-  const _QuickAccessTile({required this.label, required this.icon, required this.color});
+  const _QuickAccessTile({super.key, required this.label, required this.icon, required this.color});
 
   @override
   Widget build(BuildContext context) => GestureDetector(

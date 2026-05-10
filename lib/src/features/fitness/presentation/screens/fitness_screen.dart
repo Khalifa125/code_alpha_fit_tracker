@@ -119,6 +119,7 @@ class _FitnessScreenState extends ConsumerState<FitnessScreen> with AutomaticKee
                   itemBuilder: (context, index) {
                     final cat = _categories[index];
                     return _CategoryCard(
+                      key: ValueKey('cat_${cat['name']}'),
                       icon: cat['icon'] as IconData,
                       name: cat['name'] as String,
                       count: cat['count'] as String,
@@ -171,6 +172,7 @@ class _CategoryCard extends StatefulWidget {
   final VoidCallback onTap;
 
   const _CategoryCard({
+    super.key,
     required this.icon,
     required this.name,
     required this.count,

@@ -88,6 +88,7 @@ class CategoryScreen extends ConsumerWidget {
                       itemBuilder: (context, index) {
                         final workout = categoryWorkouts[index];
                         return _WorkoutCard(
+                          key: ValueKey(workout.id),
                           workout: workout,
                           onTap: () => Navigator.push<void>(
                             context,
@@ -114,7 +115,7 @@ class _WorkoutCard extends StatelessWidget {
   final WorkoutPlan workout;
   final VoidCallback onTap;
 
-  const _WorkoutCard({required this.workout, required this.onTap});
+  const _WorkoutCard({super.key, required this.workout, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

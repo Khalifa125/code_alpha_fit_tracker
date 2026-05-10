@@ -205,6 +205,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 final goal = _goals[index];
                 final isSelected = _selectedGoal == goal['id'];
                 return GestureDetector(
+                  key: ValueKey('goal_${goal['id']}'),
                   onTap: () => setState(() => _selectedGoal = goal['id']),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),

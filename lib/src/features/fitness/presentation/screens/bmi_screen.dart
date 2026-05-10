@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use, prefer_const_constructors, unnecessary_import, unused_import
+// ignore_for_file: deprecated_member_use, prefer_const_constructors, unnecessary_import, unused_import, unused_element_parameter
 
 import 'package:fit_tracker/src/imports/core_imports.dart';
 import 'package:flutter/material.dart';
@@ -25,11 +25,24 @@ class _BmiScreenState extends ConsumerState<BmiScreen> {
   final _ageCtrl = TextEditingController();
   String _gender = 'male';
   bool _saving = false;
+  final _bmiNotifier = ValueNotifier<double?>(null);
 
   @override
   void initState() {
     super.initState();
     _loadProfile();
+    _heightCtrl.addListener(_updateBmi);
+    _weightCtrl.addListener(_updateBmi);
+  }
+
+  void _updateBmi() {
+    final h = double.tryParse(_heightCtrl.text);
+    final w = double.tryParse(_weightCtrl.text);
+    double? bmi;
+    if (h != null && w != null && h > 0) {
+      bmi = w / ((h / 100) * (h / 100));
+    }
+    _bmiNotifier.value = bmi;
   }
 
   Future<void> _loadProfile() async {
@@ -68,22 +81,18 @@ class _BmiScreenState extends ConsumerState<BmiScreen> {
 
   @override
   void dispose() {
+    _heightCtrl.removeListener(_updateBmi);
+    _weightCtrl.removeListener(_updateBmi);
     _heightCtrl.dispose();
     _weightCtrl.dispose();
     _ageCtrl.dispose();
+    _bmiNotifier.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final weightsAsync = ref.watch(weightEntriesProvider);
-
-    final h = double.tryParse(_heightCtrl.text);
-    final w = double.tryParse(_weightCtrl.text);
-    double? bmi;
-    if (h != null && w != null && h > 0) {
-      bmi = w / ((h / 100) * (h / 100));
-    }
 
     return Scaffold(
       backgroundColor: const Color(0xFF0A0E1A),
@@ -114,11 +123,11 @@ class _BmiScreenState extends ConsumerState<BmiScreen> {
               SizedBox(height: 14.h),
 
               Row(children: [
-                Expanded(child: _SmallInput(controller: _heightCtrl, label: 'Height (cm)', hint: '175', onChanged: (_) => setState(() {}))),
+                Expanded(child: _SmallInput(controller: _heightCtrl, label: 'Height (cm)', hint: '175')),
                 SizedBox(width: 10.w),
-                Expanded(child: _SmallInput(controller: _weightCtrl, label: 'Weight (kg)', hint: '70', onChanged: (_) => setState(() {}))),
+                Expanded(child: _SmallInput(controller: _weightCtrl, label: 'Weight (kg)', hint: '70')),
                 SizedBox(width: 10.w),
-                Expanded(child: _SmallInput(controller: _ageCtrl, label: 'Age', hint: '25', onChanged: (_) => setState(() {}))),
+                Expanded(child: _SmallInput(controller: _ageCtrl, label: 'Age', hint: '25')),
               ]),
               SizedBox(height: 16.h),
 
@@ -142,8 +151,16 @@ class _BmiScreenState extends ConsumerState<BmiScreen> {
           SizedBox(height: 20.h),
 
           // BMI Result
-          if (bmi != null) _BmiResult(bmi: bmi).animate().fadeIn(duration: NumExtension(400).ms).scale(begin: const Offset(0.95, 0.95)),
-          if (bmi != null) SizedBox(height: 20.h),
+          ValueListenableBuilder<double?>(
+            valueListenable: _bmiNotifier,
+            builder: (_, bmi, __) {
+              if (bmi == null) return const SizedBox.shrink();
+              return Column(children: [
+                _BmiResult(bmi: bmi).animate().fadeIn(duration: NumExtension(400).ms).scale(begin: const Offset(0.95, 0.95)),
+                SizedBox(height: 20.h),
+              ]);
+            },
+          ),
 
           // Weight History Chart
           weightsAsync.when(
@@ -322,8 +339,8 @@ class _GenderBtn extends StatelessWidget {
 }
 
 class _SmallInput extends StatelessWidget {
-  const _SmallInput({required this.controller, required this.label, required this.hint, this.onChanged});
-  final TextEditingController controller; final String label; final String hint; final void Function(String)? onChanged;
+  const _SmallInput({super.key, required this.controller, required this.label, required this.hint});
+  final TextEditingController controller; final String label; final String hint;
 
   @override
   Widget build(BuildContext context) => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -332,7 +349,6 @@ class _SmallInput extends StatelessWidget {
     TextField(
       controller: controller,
       keyboardType: TextInputType.number,
-      onChanged: onChanged,
       style: TextStyle(color: Colors.white, fontSize: 14.sp),
       decoration: InputDecoration(
         hintText: hint,

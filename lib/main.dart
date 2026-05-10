@@ -1,4 +1,4 @@
-// ignore_for_file: inference_failure_on_function_invocation, unnecessary_import, inference_failure_on_instance_creation
+// ignore_for_file: inference_failure_on_function_invocation, unnecessary_import, inference_failure_on_instance_creation, deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
