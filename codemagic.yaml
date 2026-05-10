@@ -10,11 +10,17 @@ workflows:
       - name: Get dependencies
         script: |
           flutter pub get
-      - name: Build iOS Simulator
+      - name: Install iOS pods
         script: |
-          flutter build ios --simulator --no-codesign
+          cd ios
+          rm -rf Pods Podfile.lock
+          pod install --repo-update || pod install
+          cd ..
+      - name: Build iOS
+        script: |
+          flutter build ios --no-codesign
     artifacts:
-      - build/ios/iphonesimulator/Runner.app
+      - build/ios/ipa/*.ipa
 
   android-workflow:
     name: Android Build
