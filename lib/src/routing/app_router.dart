@@ -23,6 +23,22 @@ import 'package:fit_tracker/src/features/water/presentation/screens/water_tracki
 import 'package:fit_tracker/src/features/sleep/presentation/screens/sleep_tracking_screen.dart';
 import 'package:fit_tracker/src/theme/fit_colors.dart';
 
+CustomTransitionPage _darkPage(Widget child, GoRouterState state) {
+  return CustomTransitionPage(
+    key: ValueKey(state.uri),
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      final theme = Theme.of(context);
+      return FadeTransition(
+        opacity: animation,
+        child: ColoredBox(color: theme.scaffoldBackgroundColor, child: child),
+      );
+    },
+    transitionDuration: Duration.zero,
+    reverseTransitionDuration: Duration.zero,
+  );
+}
+
 final GoRouter appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: AppRoutes.home,
@@ -58,27 +74,27 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: AppRoutes.home,
           name: 'home',
-          builder: (context, state) => const ModernDashboard(),
+          pageBuilder: (context, state) => _darkPage(const ModernDashboard(), state),
         ),
         GoRoute(
           path: '/fitness',
           name: 'fitness',
-          builder: (context, state) => const FitnessScreenContent(),
+          pageBuilder: (context, state) => _darkPage(const FitnessScreenContent(), state),
         ),
         GoRoute(
           path: '/nutrition',
           name: 'nutrition',
-          builder: (context, state) => const NutritionScreenContent(),
+          pageBuilder: (context, state) => _darkPage(const NutritionScreenContent(), state),
         ),
         GoRoute(
           path: '/water',
           name: 'water',
-          builder: (context, state) => const WaterScreenContent(),
+          pageBuilder: (context, state) => _darkPage(const WaterScreenContent(), state),
         ),
         GoRoute(
           path: '/profile',
           name: 'profile',
-          builder: (context, state) => const ProfileScreenContent(),
+          pageBuilder: (context, state) => _darkPage(const ProfileScreenContent(), state),
         ),
       ],
     ),

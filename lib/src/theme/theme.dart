@@ -320,6 +320,14 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppColorsExtension customColors) 
       hintStyle: WidgetStateProperty.all(textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant)),
     ),
 
+    // Page Transitions (fix white flash on dark theme)
+    pageTransitionsTheme: PageTransitionsTheme(
+      builders: {
+        TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+      },
+    ),
+
     // Badge Theme
     badgeTheme: BadgeThemeData(
       backgroundColor: colorScheme.error,
