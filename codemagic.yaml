@@ -7,8 +7,9 @@ workflows:
       xcode: latest
       cocoapods: default
     scripts:
-      - name: Get dependencies
+      - name: Clean and get dependencies
         script: |
+          flutter clean
           flutter pub get
       - name: Install iOS pods
         script: |
