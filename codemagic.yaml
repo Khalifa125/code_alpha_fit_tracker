@@ -20,7 +20,7 @@ workflows:
         script: |
           flutter build ios --no-codesign
     artifacts:
-      - build/ios/ipa/*.ipa
+      - build/ios/iphoneos/Runner.app
 
   android-workflow:
     name: Android Build
