@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fpdart/fpdart.dart';
 
 import '../imports/core_imports.dart';
@@ -12,7 +14,7 @@ FutureEither<T> runTask<T>(
   bool requiresNetwork = false,
 }) async {
   if (requiresNetwork) {
-    final hasNetwork = await InternetConnectionService().hasConnection();
+    final hasNetwork = await _checkConnectivity();
 
     if (!hasNetwork) {
       AppLogger.warning('Network unavailable for task');
@@ -38,5 +40,14 @@ FutureEither<T> runTask<T>(
 
     // Depending on logic, map error strings/types to specific Failure variants
     return left(ServerFailure(errorMessage, error: error));
+  }
+}
+
+Future<bool> _checkConnectivity() async {
+  try {
+    final result = await InternetAddress.lookup('google.com');
+    return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+  } catch (_) {
+    return false;
   }
 }
