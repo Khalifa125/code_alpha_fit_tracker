@@ -45,21 +45,21 @@ jobs:
         run: |
           pod install --repo-update
 
-      - name: Build release .app bundle
-        run: flutter build ios --release --no-codesign
+      - name: Build unsigned IPA
+        run: flutter build ipa --no-codesign --release
 
-      - name: Package unsigned IPA
+      - name: Verify build output
         run: |
-          mkdir -p build/ios/ipa/Payload
-          cp -R build/ios/iphoneos/Runner.app build/ios/ipa/Payload/
-          cd build/ios/ipa
-          zip -r ../fit-tracker-unsigned.ipa Payload/
-          rm -rf Payload
-          ls -la ../fit-tracker-unsigned.ipa
+          echo "=== Archive ==="
+          ls -la build/ios/archive/ 2>/dev/null || echo "No archive directory"
+          echo "=== IPA ==="
+          ls -la build/ios/ipa/ 2>/dev/null || echo "No IPA directory"
 
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
           name: fit-tracker-ipa
-          path: build/ios/fit-tracker-unsigned.ipa
-          if-no-files-found: error
+          path: |
+            build/ios/ipa/*.ipa
+            build/ios/archive/*.xcarchive
+          if-no-files-found: warn

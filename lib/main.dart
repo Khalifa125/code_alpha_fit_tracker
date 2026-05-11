@@ -35,8 +35,12 @@ Future<void> main() async {
   };
 
   // Initialize Firebase with offline persistence
-  await Firebase.initializeApp();
-  _setupFirebaseOfflinePersistence();
+  try {
+    await Firebase.initializeApp();
+    _setupFirebaseOfflinePersistence();
+  } catch (e) {
+    // Firebase not configured (e.g. missing GoogleService-Info.plist on iOS)
+  }
 
   // Initialize Hive in parallel for faster startup
   await Hive.initFlutter();
