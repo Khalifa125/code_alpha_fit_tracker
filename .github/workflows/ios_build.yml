@@ -45,24 +45,7 @@ jobs:
         run: |
           pod install --repo-update
 
-      - name: Create export options plist
-        run: |
-          cat > ios/exportOptions.plist << 'PLIST'
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-              <key>method</key>
-              <string>development</string>
-              <key>signingStyle</key>
-              <string>manual</string>
-              <key>signingDisabled</key>
-              <true/>
-          </dict>
-          </plist>
-          PLIST
-
-      - name: Build archive (unsigned)
+      - name: Build xcarchive
         working-directory: ios
         run: |
           xcodebuild -workspace Runner.xcworkspace \
@@ -74,30 +57,31 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO
 
-      - name: Export unsigned IPA from archive
-        working-directory: ios
+      - name: Package unsigned IPA from archive
         run: |
-          xcodebuild -exportArchive \
-            -archivePath ../build/ios/archive/Runner.xcarchive \
-            -exportPath ../build/ios/ipa \
-            -exportOptionsPlist exportOptions.plist \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO
+          APP_PATH="build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app"
+          if [ -d "$APP_PATH" ]; then
+            mkdir -p build/ios/ipa/Payload
+            cp -R "$APP_PATH" build/ios/ipa/Payload/
+            cd build/ios/ipa
+            zip -r ../Runner.ipa Payload/
+            rm -rf Payload
+            echo "IPA created at build/ios/Runner.ipa"
+          else
+            echo "ERROR: .app not found in archive at $APP_PATH"
+            ls -la build/ios/archive/Runner.xcarchive/Products/Applications/ 2>/dev/null || echo "No Applications dir"
+            ls -la build/ios/archive/ 2>/dev/null || echo "No archive dir"
+            exit 1
+          fi
 
       - name: Verify IPA
         run: |
-          echo "=== Archive ==="
-          ls -la build/ios/archive/ 2>/dev/null || echo "No archive"
-          echo "=== IPA ==="
-          ls -la build/ios/ipa/ 2>/dev/null || echo "No IPA"
-          file build/ios/ipa/*.ipa 2>/dev/null || echo "No IPA file"
+          ls -la build/ios/Runner.ipa
+          file build/ios/Runner.ipa
 
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
           name: fit-tracker-ipa
-          path: |
-            build/ios/ipa/*.ipa
-            build/ios/archive/*.xcarchive
+          path: build/ios/Runner.ipa
           if-no-files-found: error
