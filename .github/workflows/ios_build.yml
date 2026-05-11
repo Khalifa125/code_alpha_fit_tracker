@@ -45,15 +45,53 @@ jobs:
         run: |
           pod install --repo-update
 
-      - name: Build unsigned IPA
-        run: flutter build ipa --no-codesign --release
+      - name: Create export options plist
+        run: |
+          cat > ios/exportOptions.plist << 'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>development</string>
+              <key>signingStyle</key>
+              <string>manual</string>
+              <key>signingDisabled</key>
+              <true/>
+          </dict>
+          </plist>
+          PLIST
 
-      - name: Verify build output
+      - name: Build archive (unsigned)
+        working-directory: ios
+        run: |
+          xcodebuild -workspace Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -archivePath ../build/ios/archive/Runner.xcarchive \
+            archive \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO
+
+      - name: Export unsigned IPA from archive
+        working-directory: ios
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath ../build/ios/archive/Runner.xcarchive \
+            -exportPath ../build/ios/ipa \
+            -exportOptionsPlist exportOptions.plist \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO
+
+      - name: Verify IPA
         run: |
           echo "=== Archive ==="
-          ls -la build/ios/archive/ 2>/dev/null || echo "No archive directory"
+          ls -la build/ios/archive/ 2>/dev/null || echo "No archive"
           echo "=== IPA ==="
-          ls -la build/ios/ipa/ 2>/dev/null || echo "No IPA directory"
+          ls -la build/ios/ipa/ 2>/dev/null || echo "No IPA"
+          file build/ios/ipa/*.ipa 2>/dev/null || echo "No IPA file"
 
       - name: Upload IPA
         uses: actions/upload-artifact@v4
@@ -62,4 +100,4 @@ jobs:
           path: |
             build/ios/ipa/*.ipa
             build/ios/archive/*.xcarchive
-          if-no-files-found: warn
+          if-no-files-found: error
