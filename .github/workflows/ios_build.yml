@@ -29,6 +29,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pods-
 
+      - name: Clean build artifacts
+        run: flutter clean
+
       - name: Get dependencies
         run: flutter pub get
 
@@ -42,14 +45,23 @@ jobs:
         run: |
           pod install --repo-update
 
-      - name: Clean build artifacts
-        run: flutter clean
-
       - name: Build unsigned IPA
         run: flutter build ipa --no-codesign --release
+
+      - name: Verify build output
+        run: |
+          echo "=== Archive ==="
+          ls -la build/ios/archive/ 2>/dev/null || echo "No archive directory"
+          echo "=== IPA ==="
+          ls -la build/ios/ipa/ 2>/dev/null || echo "No IPA directory"
+          echo "=== App ==="
+          ls -la build/ios/app/ 2>/dev/null || echo "No app directory"
 
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
           name: fit-tracker-ipa
-          path: build/ios/ipa/*.ipa
+          path: |
+            build/ios/ipa/*.ipa
+            build/ios/archive/*.xcarchive
+          if-no-files-found: warn
