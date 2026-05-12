@@ -47,21 +47,21 @@ class ForgotPasswordScreen extends ConsumerWidget {
               style: const TextStyle(color: FitColors.textPrimary),
               decoration: InputDecoration(
                 hintText: 'Enter your email',
-                hintStyle: TextStyle(color: FitColors.textMuted),
-                prefixIcon: Icon(Icons.email_outlined, color: FitColors.textMuted),
+                hintStyle: const TextStyle(color: FitColors.textMuted),
+                prefixIcon: const Icon(Icons.email_outlined, color: FitColors.textMuted),
                 filled: true,
                 fillColor: FitColors.card,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: FitColors.border),
+                  borderSide: const BorderSide(color: FitColors.border),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: FitColors.border),
+                  borderSide: const BorderSide(color: FitColors.border),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: FitColors.neonGreen, width: 2),
+                  borderSide: const BorderSide(color: FitColors.neonGreen, width: 2),
                 ),
               ),
             ),
