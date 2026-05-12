@@ -69,7 +69,7 @@ dependencies:
   fl_chart: ^0.68.0
 
   # Step Counter & Location
-  pedometer_2: ^5.0.4
+  pedometer_2: ^5.0.0
   geolocator: ^11.1.0
   sensors_plus: ^6.1.1
 
