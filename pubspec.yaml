@@ -60,7 +60,6 @@ dependencies:
 
   # Device & System
   device_info_plus: ^11.2.0
-  app_version_update: ^6.2.0
 
   # Localization
   easy_localization: ^3.0.8
