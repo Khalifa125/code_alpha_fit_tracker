@@ -6,10 +6,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'src/imports/core_imports.dart';
 import 'src/app.dart';
 import 'src/services/notification_service.dart';
-import 'src/features/splash/presentation/screens/splash_screen.dart';
 import 'src/features/water/data/services/water_service.dart';
 import 'src/features/water/presentation/providers/water_provider.dart';
 import 'src/features/sleep/data/services/sleep_service.dart';
@@ -22,29 +22,26 @@ import 'src/features/fit_track/services/fittrack_service.dart';
 import 'src/features/fit_track/providers/auth_provider.dart';
 
 Future<void> main() async {
-  final WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  // Setup global error handling
-  FlutterError.onError = (FlutterErrorDetails details) {
+  FlutterError.onError = (details) {
     FlutterError.presentError(details);
   };
 
-  PlatformDispatcher.instance.onError = (Object error, StackTrace stackTrace) {
-    return true;
-  };
+  PlatformDispatcher.instance.onError = (error, stack) => true;
 
-  // Initialize Firebase with offline persistence
-  try {
-    await Firebase.initializeApp();
-    _setupFirebaseOfflinePersistence();
-  } catch (e) {
-    // Firebase not configured (e.g. missing GoogleService-Info.plist on iOS)
-  }
-
-  // Initialize Hive in parallel for faster startup
+  await _initFirebase();
   await Hive.initFlutter();
-  await _initHiveBoxes();
+  await Future.wait([
+    Hive.openBox('settings'),
+    Hive.openBox('user_data'),
+    Hive.openBox('workouts'),
+    Hive.openBox('nutrition'),
+    Hive.openBox('water'),
+    Hive.openBox('sleep'),
+    Hive.openBox('progress'),
+  ]);
 
   await EasyLocalization.ensureInitialized();
   try {
@@ -55,7 +52,6 @@ Future<void> main() async {
   await NotificationService().init();
   await NotificationService().requestPermissions();
 
-  // Initialize services in parallel
   final waterService = await WaterService.init();
   final sleepService = await SleepService.init();
   final heartRateService = await HeartRateService.init();
@@ -71,71 +67,15 @@ Future<void> main() async {
         progressPhotoServiceProvider.overrideWithValue(progressPhotoService),
         fitTrackServiceProvider.overrideWithValue(fitTrackService),
       ],
-      child: const LocalizationWrapper(child: SplashScreenWrapper()),
+      child: const LocalizationWrapper(child: App()),
     ),
   );
 }
 
-/// Initialize all Hive boxes in parallel for faster startup
-Future<void> _initHiveBoxes() async {
-  final boxes = [
-    Hive.openBox('settings'),
-    Hive.openBox('user_data'),
-    Hive.openBox('workouts'),
-    Hive.openBox('nutrition'),
-    Hive.openBox('water'),
-    Hive.openBox('sleep'),
-    Hive.openBox('progress'),
-  ];
-  await Future.wait(boxes);
-}
-
-/// Setup Firebase offline persistence
-void _setupFirebaseOfflinePersistence() {
-  // Enable Firestore offline persistence with cache
-  // FirebaseFirestore.instance.settings = const Settings(
-  //   persistenceEnabled: true,
-  //   cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
-  // );
-}
-
-class SplashScreenWrapper extends ConsumerStatefulWidget {
-  const SplashScreenWrapper({super.key});
-
-  @override
-  ConsumerState<SplashScreenWrapper> createState() => _SplashScreenWrapperState();
-}
-
-class _SplashScreenWrapperState extends ConsumerState<SplashScreenWrapper> {
-  bool _showSplash = true;
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeApp();
-  }
-
-  Future<void> _initializeApp() async {
-    await Future.delayed(const Duration(milliseconds: 2500));
-    
-    if (mounted) {
-      setState(() {
-        _showSplash = false;
-        _isLoading = false;
-      });
-      // Remove native splash screen
-      FlutterNativeSplash.remove();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_showSplash || _isLoading) {
-      return const SplashScreen();
-    }
-
-    // Go directly to home - no login required
-    return const App();
-  }
+Future<void> _initFirebase() async {
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (_) {}
 }

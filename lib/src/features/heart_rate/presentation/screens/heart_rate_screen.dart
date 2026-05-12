@@ -34,7 +34,7 @@ class HeartRateScreen extends ConsumerWidget {
         )),
       ),
       body: SafeArea(
-        child: ListView(
+        child: RepaintBoundary(child: ListView(
           padding: EdgeInsets.all(20.w),
           children: [
             _DateSelector(
@@ -73,7 +73,7 @@ class HeartRateScreen extends ConsumerWidget {
             SizedBox(height: 20.h),
             _HeartRateZones(),
           ],
-        ),
+        )),
       ),
     );
   }
@@ -153,14 +153,14 @@ class _HeartRateCard extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            FitColors.red.withOpacity(0.15),
-            FitColors.orange.withOpacity(0.1),
+            FitColors.red.withValues(alpha: 0.15),
+            FitColors.orange.withValues(alpha: 0.1),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24.r),
-        border: Border.all(color: FitColors.red.withOpacity(0.3)),
+        border: Border.all(color: FitColors.red.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -187,7 +187,7 @@ class _HeartRateCard extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
             decoration: BoxDecoration(
-              color: _getZoneColor(zone).withOpacity(0.2),
+              color: _getZoneColor(zone).withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(20.r),
             ),
             child: Text(zone, style: TextStyle(
@@ -278,9 +278,9 @@ class _AddHeartRateButton extends StatelessWidget {
     child: Container(
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: FitColors.red.withOpacity(0.1),
+        color: FitColors.red.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: FitColors.red.withOpacity(0.3)),
+        border: Border.all(color: FitColors.red.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -351,7 +351,7 @@ class _AddHeartRateButton extends StatelessWidget {
                 children: HeartRateScreen._activityTypes.map((activity) => ChoiceChip(
                   label: Text(activity),
                   selected: selectedActivity == activity,
-                  selectedColor: FitColors.red.withOpacity(0.3),
+                  selectedColor: FitColors.red.withValues(alpha: 0.3),
                   onSelected: (selected) => setState(() =>
                     selectedActivity = selected ? activity : null),
                 )).toList(),
@@ -421,7 +421,7 @@ class _HeartRateTile extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(10.r),
             decoration: BoxDecoration(
-              color: FitColors.red.withOpacity(0.1),
+              color: FitColors.red.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10.r),
             ),
             child: Icon(Icons.favorite, color: FitColors.red, size: 20.sp),
@@ -442,7 +442,7 @@ class _HeartRateTile extends StatelessWidget {
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                       decoration: BoxDecoration(
-                        color: _getZoneColor(entry.zone).withOpacity(0.2),
+                        color: _getZoneColor(entry.zone).withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(4.r),
                       ),
                       child: Text(entry.zone, style: TextStyle(

@@ -128,8 +128,6 @@ class MainShell extends StatefulWidget {
 }
 
 class _MainShellState extends State<MainShell> {
-  int _currentIndex = 0;
-
   static const _destinations = [
     ('/home', Icons.home_rounded, 'Home'),
     ('/fitness', Icons.fitness_center_rounded, 'Fitness'),
@@ -141,25 +139,31 @@ class _MainShellState extends State<MainShell> {
   @override
   Widget build(BuildContext context) {
     final location = GoRouterState.of(context).uri.path;
-    _currentIndex = _destinations.indexWhere((d) => d.$1 == location);
-    if (_currentIndex < 0) _currentIndex = 0;
+    final selectedIndex = _destinations.indexWhere((d) => d.$1 == location).clamp(0, _destinations.length - 1);
 
     return Scaffold(
       backgroundColor: FitColors.backgroundDark,
       body: widget.child,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (index) {
-          setState(() => _currentIndex = index);
-          context.go(_destinations[index].$1);
-        },
-        backgroundColor: FitColors.surfaceDark,
-        indicatorColor: FitColors.neonGreen.withOpacity(0.2),
-        destinations: _destinations.map((d) => NavigationDestination(
-          icon: Icon(d.$2, color: FitColors.textSecondary),
-          selectedIcon: Icon(d.$2, color: FitColors.neonGreen),
-          label: d.$3,
-        )).toList(),
+      bottomNavigationBar: NavigationBarTheme(
+        data: NavigationBarThemeData(
+          labelTextStyle: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600);
+            }
+            return const TextStyle(color: FitColors.textSecondary, fontSize: 12);
+          }),
+        ),
+        child: NavigationBar(
+          selectedIndex: selectedIndex,
+          onDestinationSelected: (index) => context.go(_destinations[index].$1),
+          backgroundColor: FitColors.surfaceDark,
+          indicatorColor: FitColors.neonGreen,
+          destinations: _destinations.map((d) => NavigationDestination(
+            icon: Icon(d.$2, color: FitColors.textSecondary),
+            selectedIcon: Icon(d.$2, color: Colors.white),
+            label: d.$3,
+          )).toList(),
+        ),
       ),
     );
   }

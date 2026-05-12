@@ -4,7 +4,7 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.7.0 <4.0.0"
+  sdk: ">=3.2.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -14,9 +14,6 @@ dependencies:
 
   # Navigation
   go_router: ^13.2.5
-
-  # Networking
-  # (intentionally left blank - connectivity checks unused)
 
   # State Management
   fpdart: ^1.2.0
@@ -38,9 +35,6 @@ dependencies:
   # Images & SVG
   cached_network_image: ^3.4.1
   flutter_svg: ^2.0.10+1
-
-  # UI / Loading
-  # skeletonizer removed - requires Flutter 3.31.0+
 
   # Responsive UI
   flutter_screenutil: ^5.9.3
@@ -109,6 +103,9 @@ dev_dependencies:
 
   # Splash screen
   flutter_native_splash: ^2.3.10
+
+  # Internationalization
+  intl_utils: ^2.8.7
 
 flutter:
   uses-material-design: true

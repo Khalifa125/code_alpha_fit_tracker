@@ -1,87 +1,39 @@
-name: iOS Build (unsigned IPA)
+name: Flutter iOS Build
 
 on:
+  push:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: macos-14
-    timeout-minutes: 45
+  build-ios:
+    runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.29.0
+          flutter-version: '3.19.0'
+          channel: 'stable'
 
-      - name: Setup Xcode
-        run: |
-          sudo xcode-select -switch /Applications/Xcode_16.1.app 2>/dev/null || true
-          xcodebuild -version
-
-      - name: Cache CocoaPods
-        uses: actions/cache@v4
-        with:
-          path: ios/Pods
-          key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pods-
-
-      - name: Clean build artifacts
-        run: flutter clean
-
-      - name: Get dependencies
+      - name: Install dependencies
         run: flutter pub get
 
-      - name: Update CocoaPods
-        run: |
-          gem install cocoapods -v 1.15.2 --no-document
-          pod --version
+      - name: Build iOS (no codesign)
+        run: flutter build ios --release --no-codesign
 
-      - name: Install iOS pods
-        working-directory: ios
+      - name: Create IPA
         run: |
-          pod install --repo-update
+          cd build/ios/iphoneos
+          mkdir Payload
+          cp -r Runner.app Payload/
+          zip -r app.ipa Payload
 
-      - name: Build xcarchive
-        working-directory: ios
-        run: |
-          xcodebuild -workspace Runner.xcworkspace \
-            -scheme Runner \
-            -configuration Release \
-            -archivePath ../build/ios/archive/Runner.xcarchive \
-            archive \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO
-
-      - name: Package unsigned IPA from archive
-        run: |
-          APP_PATH="build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app"
-          if [ -d "$APP_PATH" ]; then
-            mkdir -p build/ios/ipa/Payload
-            cp -R "$APP_PATH" build/ios/ipa/Payload/
-            cd build/ios/ipa
-            zip -r ../Runner.ipa Payload/
-            rm -rf Payload
-            echo "IPA created at build/ios/Runner.ipa"
-          else
-            echo "ERROR: .app not found in archive at $APP_PATH"
-            ls -la build/ios/archive/Runner.xcarchive/Products/Applications/ 2>/dev/null || echo "No Applications dir"
-            ls -la build/ios/archive/ 2>/dev/null || echo "No archive dir"
-            exit 1
-          fi
-
-      - name: Verify IPA
-        run: |
-          ls -la build/ios/Runner.ipa
-          file build/ios/Runner.ipa
-
-      - name: Upload IPA
+      - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
           name: fit-tracker-ipa
-          path: build/ios/Runner.ipa
-          if-no-files-found: error
+          path: build/ios/iphoneos/app.ipa

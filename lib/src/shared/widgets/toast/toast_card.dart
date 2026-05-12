@@ -38,7 +38,7 @@ class ToastCard extends StatelessWidget {
             blurRadius: 10,
             spreadRadius: 0,
             offset: Offset.zero,
-            color: shadowColor ?? Colors.black.withOpacity(0.05),
+            color: shadowColor ?? Colors.black.withValues(alpha: 0.05),
           ),
         ],
       ),

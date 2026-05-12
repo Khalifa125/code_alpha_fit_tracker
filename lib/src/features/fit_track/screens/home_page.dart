@@ -109,13 +109,13 @@ class FitTrackHomePage extends ConsumerWidget {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              FitColors.orange.withOpacity(0.2),
-                              FitColors.amber.withOpacity(0.1),
+                              FitColors.orange.withValues(alpha: 0.2),
+                              FitColors.amber.withValues(alpha: 0.1),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(20.r),
                           border: Border.all(
-                              color: FitColors.orange.withOpacity(0.5)),
+                              color: FitColors.orange.withValues(alpha: 0.5)),
                         ),
                         child: Row(
                           children: [
@@ -254,9 +254,9 @@ class _StatCard extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.all(16.r),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(16.r),
-            border: Border.all(color: color.withOpacity(0.2)),
+            border: Border.all(color: color.withValues(alpha: 0.2)),
           ),
           child: Column(
             children: [
@@ -292,15 +292,15 @@ class _TodayWorkoutCard extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                FitColors.neonGreen.withOpacity(0.2),
-                FitColors.neonGreen.withOpacity(0.05),
+                FitColors.neonGreen.withValues(alpha: 0.2),
+                FitColors.neonGreen.withValues(alpha: 0.05),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(24.r),
             border:
-                Border.all(color: FitColors.neonGreen.withOpacity(0.3)),
+                Border.all(color: FitColors.neonGreen.withValues(alpha: 0.3)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -319,7 +319,7 @@ class _TodayWorkoutCard extends StatelessWidget {
                     padding:
                         EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                     decoration: BoxDecoration(
-                      color: FitColors.neonGreen.withOpacity(0.2),
+                      color: FitColors.neonGreen.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Text(
@@ -437,16 +437,16 @@ class _QuickWorkoutButton extends ConsumerWidget {
         child: Container(
           padding: EdgeInsets.all(20.r),
           decoration: BoxDecoration(
-            color: FitColors.orange.withOpacity(0.1),
+            color: FitColors.orange.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(20.r),
-            border: Border.all(color: FitColors.orange.withOpacity(0.3)),
+            border: Border.all(color: FitColors.orange.withValues(alpha: 0.3)),
           ),
           child: Row(
             children: [
               Container(
                 padding: EdgeInsets.all(12.r),
                 decoration: BoxDecoration(
-                  color: FitColors.orange.withOpacity(0.2),
+                  color: FitColors.orange.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Icon(Icons.bolt, color: FitColors.orange, size: 24.sp),
@@ -501,16 +501,16 @@ class _QuickActionTile extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 16.h),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.08),
+            color: color.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(16.r),
-            border: Border.all(color: color.withOpacity(0.2)),
+            border: Border.all(color: color.withValues(alpha: 0.2)),
           ),
           child: Column(
             children: [
               Container(
                 padding: EdgeInsets.all(10.r),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.15),
+                  color: color.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Icon(icon, color: color, size: 20.sp),

@@ -183,7 +183,7 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppColorsExtension customColors) 
     // Input Decoration Theme
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+      fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         
@@ -202,8 +202,8 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppColorsExtension customColors) 
         borderSide: BorderSide(color: colorScheme.error),
       ),
       floatingLabelStyle: TextStyle(color: colorScheme.primary),
-      labelStyle: textTheme.labelMedium?.copyWith(color: colorScheme.onSurfaceVariant.withOpacity(0.5)),
-      hintStyle: textTheme.labelMedium?.copyWith(color: colorScheme.onSurfaceVariant.withOpacity(0.5)),
+      labelStyle: textTheme.labelMedium?.copyWith(color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5)),
+      hintStyle: textTheme.labelMedium?.copyWith(color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5)),
     ),
 
     // Navigation Bar Theme
@@ -348,7 +348,7 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppColorsExtension customColors) 
     // Tooltip Theme
     tooltipTheme: TooltipThemeData(
       decoration: BoxDecoration(
-        color: colorScheme.inverseSurface.withOpacity(0.9),
+        color: colorScheme.inverseSurface.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(8),
       ),
       textStyle: textTheme.labelSmall?.copyWith(color: colorScheme.onInverseSurface),

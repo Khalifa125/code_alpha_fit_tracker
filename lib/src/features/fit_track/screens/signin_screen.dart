@@ -49,7 +49,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     gradient: LinearGradient(
                       colors: [
                         FitColors.neonGreen,
-                        FitColors.neonGreen.withOpacity(0.6),
+                        FitColors.neonGreen.withValues(alpha: 0.6),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -57,7 +57,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     borderRadius: BorderRadius.circular(24.r),
                     boxShadow: [
                       BoxShadow(
-                        color: FitColors.neonGreen.withOpacity(0.4),
+                        color: FitColors.neonGreen.withValues(alpha: 0.4),
                         blurRadius: 20,
                         spreadRadius: -5,
                       ),

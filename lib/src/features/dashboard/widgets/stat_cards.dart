@@ -38,19 +38,19 @@ class AnimatedStatCard extends StatelessWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    gradientColors![0].withOpacity(0.15),
-                    gradientColors![1].withOpacity(0.05),
+                    gradientColors![0].withValues(alpha: 0.15),
+                    gradientColors![1].withValues(alpha: 0.05),
                   ],
                 )
               : null,
           color: gradientColors == null ? FitColors.cardDark : null,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: color.withOpacity(0.2),
+            color: color.withValues(alpha: 0.2),
           ),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -64,7 +64,7 @@ class AnimatedStatCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.2),
+                    color: color.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(icon, color: color, size: 22),
@@ -77,7 +77,7 @@ class AnimatedStatCard extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: color.withOpacity(0.15),
+                      color: color.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -141,7 +141,7 @@ class QuickStatTile extends StatelessWidget {
         color: FitColors.cardDark,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: color.withOpacity(0.15),
+          color: color.withValues(alpha: 0.15),
         ),
       ),
       child: Row(
@@ -149,7 +149,7 @@ class QuickStatTile extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.15),
+              color: color.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: color, size: 18),
@@ -185,7 +185,7 @@ class QuickStatTile extends StatelessWidget {
               children: [
                 CircularProgressIndicator(
                   value: progress.clamp(0.0, 1.0),
-                  backgroundColor: color.withOpacity(0.2),
+                  backgroundColor: color.withValues(alpha: 0.2),
                   valueColor: AlwaysStoppedAnimation(color),
                   strokeWidth: 3,
                 ),
@@ -234,7 +234,7 @@ class StreakCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: FitColors.amber.withOpacity(0.3),
+            color: FitColors.amber.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),

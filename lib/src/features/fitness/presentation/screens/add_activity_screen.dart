@@ -112,7 +112,7 @@ class _AddActivityScreenState extends ConsumerState<AddActivityScreen> {
                       duration: NumExtension(200).ms,
                       width: 80.w,
                       decoration: BoxDecoration(
-                        color: selected ? color.withOpacity(0.12) : FitColors.card,
+                        color: selected ? color.withValues(alpha: 0.12) : FitColors.card,
                         borderRadius: BorderRadius.circular(14.r),
                         border: Border.all(color: selected ? color : FitColors.border, width: 1.5),
                       ),
@@ -233,7 +233,7 @@ class _FitInput extends StatelessWidget {
         style: TextStyle(color: Colors.white, fontSize: 14.sp),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: TextStyle(color: FitColors.textSecondary.withOpacity(0.5), fontSize: 13.sp),
+          hintStyle: TextStyle(color: FitColors.textSecondary.withValues(alpha: 0.5), fontSize: 13.sp),
           prefixIcon: Icon(icon, color: FitColors.cyan, size: 18.sp),
           filled: true,
           fillColor: FitColors.card,

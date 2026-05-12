@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, deprecated_member_use
+// ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -67,7 +67,7 @@ class ModernDashboard extends ConsumerWidget {
                         size: 100.w,
                         strokeWidth: 8,
                         gradientColors: FitColors.caloriesGradient,
-                        backgroundColor: FitColors.calories.withOpacity(0.15),
+                        backgroundColor: FitColors.calories.withValues(alpha: 0.15),
                         label: '${(calorieProgress * 100).toInt()}%',
                         value: '${caloriesConsumed.toInt()}/${caloriesGoal.toInt()}',
                         valueStyle: TextStyle(
@@ -87,7 +87,7 @@ class ModernDashboard extends ConsumerWidget {
                         size: 100.w,
                         strokeWidth: 8,
                         gradientColors: FitColors.waterGradient,
-                        backgroundColor: FitColors.water.withOpacity(0.15),
+                        backgroundColor: FitColors.water.withValues(alpha: 0.15),
                         label: '${(waterProgress * 100).toInt()}%',
                         value: '${waterIntake.toInt()}/${waterGoal.toInt()} ml',
                         valueStyle: TextStyle(
@@ -107,7 +107,7 @@ class ModernDashboard extends ConsumerWidget {
                         size: 100.w,
                         strokeWidth: 8,
                         gradientColors: FitColors.stepsGradient,
-                        backgroundColor: FitColors.steps.withOpacity(0.15),
+                        backgroundColor: FitColors.steps.withValues(alpha: 0.15),
                         label: '${(stepsProgress * 100).toInt()}%',
                         value: '${steps.toInt()}',
                         valueStyle: TextStyle(
@@ -182,7 +182,7 @@ class ModernDashboard extends ConsumerWidget {
                         ),
                       ),
                       SizedBox(width: 12.w),
-                      Expanded(
+                      const Expanded(
                         child: AnimatedStatCard(
                           title: 'Streak',
                           value: '5 days',

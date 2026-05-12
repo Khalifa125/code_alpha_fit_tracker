@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fit_tracker/src/theme/fit_colors.dart';
@@ -16,19 +14,19 @@ class ForgotPasswordScreen extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: FitColors.background,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: FitColors.textPrimary),
+          icon: const Icon(Icons.arrow_back, color: FitColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Forgot Password', style: TextStyle(color: FitColors.textPrimary)),
+        title: const Text('Forgot Password', style: TextStyle(color: FitColors.textPrimary)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
             const SizedBox(height: 40),
-            Icon(Icons.lock_reset_rounded, color: FitColors.neonGreen, size: 64),
+            const Icon(Icons.lock_reset_rounded, color: FitColors.neonGreen, size: 64),
             const SizedBox(height: 24),
-            Text(
+            const Text(
               'Reset Password',
               style: TextStyle(
                 color: FitColors.textPrimary,
@@ -37,7 +35,7 @@ class ForgotPasswordScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 8),
-            Text(
+            const Text(
               'Enter your email to receive reset instructions',
               style: TextStyle(color: FitColors.textSecondary),
               textAlign: TextAlign.center,
@@ -46,7 +44,7 @@ class ForgotPasswordScreen extends ConsumerWidget {
             TextFormField(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
-              style: TextStyle(color: FitColors.textPrimary),
+              style: const TextStyle(color: FitColors.textPrimary),
               decoration: InputDecoration(
                 hintText: 'Enter your email',
                 hintStyle: TextStyle(color: FitColors.textMuted),
@@ -63,7 +61,7 @@ class ForgotPasswordScreen extends ConsumerWidget {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: FitColors.neonGreen, width: 2),
+                  borderSide: BorderSide(color: FitColors.neonGreen, width: 2),
                 ),
               ),
             ),

@@ -13,15 +13,18 @@ workflows:
       - name: Install iOS pods
         script: |
           cd ios
-          rm -rf Pods Podfile.lock
-          pod install --repo-update || pod install
+          pod install --repo-update
           cd ..
       - name: Build IPA
         script: |
-          flutter build ipa --no-codesign
+          flutter build ios --release --no-codesign
+          mkdir -p build/ios/ipa
+          cd build/ios/iphoneos
+          mkdir -p Payload
+          mv Runner.app Payload/
+          zip -r9 ../../ios/ipa/Runner.ipa Payload/
     artifacts:
       - build/ios/ipa/*.ipa
-      - build/ios/archive/*.xcarchive
 
   android-workflow:
     name: Android Build

@@ -40,6 +40,7 @@ class HistoryScreen extends ConsumerWidget {
           }
 
           return ListView.builder(
+            cacheExtent: 500,
             padding: EdgeInsets.all(16.r),
             itemCount: grouped.length,
             itemBuilder: (_, i) {

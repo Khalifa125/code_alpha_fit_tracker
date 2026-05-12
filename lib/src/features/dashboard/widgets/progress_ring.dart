@@ -186,7 +186,7 @@ class _ProgressRingPainter extends CustomPainter {
       // Glow effect at the end
       if (progress > 0.01) {
         final glowPaint = Paint()
-          ..color = gradientColors.last.withOpacity(0.5)
+          ..color = gradientColors.last.withValues(alpha: 0.5)
           ..style = PaintingStyle.stroke
           ..strokeWidth = strokeWidth + 4
           ..strokeCap = StrokeCap.round
@@ -230,7 +230,7 @@ class MiniProgressRing extends StatelessWidget {
       size: size,
       strokeWidth: strokeWidth,
       gradientColors: [color, color],
-      backgroundColor: color.withOpacity(0.2),
+      backgroundColor: color.withValues(alpha: 0.2),
       child: Text(
         '${(progress * 100).toInt()}%',
         style: TextStyle(
@@ -275,7 +275,7 @@ class DashboardProgressCard extends StatelessWidget {
           color: FitColors.cardDark,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: color.withOpacity(0.2),
+            color: color.withValues(alpha: 0.2),
           ),
         ),
         child: Column(
@@ -287,7 +287,7 @@ class DashboardProgressCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.15),
+                    color: color.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(icon, color: color, size: 20),
@@ -297,7 +297,7 @@ class DashboardProgressCard extends StatelessWidget {
                   size: 44,
                   strokeWidth: 4,
                   gradientColors: gradientColors ?? [color, color],
-                  backgroundColor: color.withOpacity(0.2),
+                  backgroundColor: color.withValues(alpha: 0.2),
                 ),
               ],
             ),
