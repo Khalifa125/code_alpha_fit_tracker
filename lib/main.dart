@@ -70,6 +70,8 @@ Future<void> main() async {
       child: const LocalizationWrapper(child: App()),
     ),
   );
+
+  FlutterNativeSplash.remove();
 }
 
 Future<void> _initFirebase() async {
