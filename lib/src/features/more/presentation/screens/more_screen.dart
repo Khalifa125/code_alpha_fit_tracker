@@ -11,6 +11,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:fit_tracker/src/theme/app_spacing.dart';
 import 'package:fit_tracker/src/theme/fit_colors.dart';
 import 'package:fit_tracker/src/features/settings/presentation/providers/theme_provider.dart';
+import 'package:fit_tracker/src/shared/widgets/glass_container.dart';
 
 class MoreScreen extends ConsumerWidget {
   const MoreScreen({super.key});
@@ -27,79 +28,89 @@ class MoreScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final themeMode = ref.watch(themeProvider);
 
     return Scaffold(
-      backgroundColor: FitColors.background,
-      body: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.all(20.w),
-          children: [
-            Text('More', style: TextStyle(
-              color: FitColors.textPrimary,
-              fontSize: 22.sp,
-              fontWeight: FontWeight.w700,
-            )),
-            SizedBox(height: 20.h),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              FitColors.neonGreen.withValues(alpha: 0.03),
+              isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
+              isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: ListView(
+            padding: EdgeInsets.all(20.w),
+            children: [
+              Text('More', style: TextStyle(
+                color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+                fontSize: 22.sp,
+                fontWeight: FontWeight.w700,
+              )),
+              SizedBox(height: 20.h),
 
-            // Quick Access Grid
-            _QuickAccessGrid(),
-            SizedBox(height: 20.h),
+              _QuickAccessGrid(),
+              SizedBox(height: 20.h),
 
-            // Settings Section
-            _SectionHeader(title: 'Settings'),
-            SizedBox(height: 12.h),
-            
-            _SettingsTile(
-              icon: Icons.palette_outlined,
-              title: 'Dark Mode',
-              subtitle: themeMode == ThemeMode.dark ? 'On' : 'Off',
-              trailing: Switch(
-                value: themeMode == ThemeMode.dark,
-                activeColor: FitColors.neonGreen,
-                onChanged: (v) => ref.read(themeProvider.notifier).setThemeMode(
-                  v ? ThemeMode.dark : ThemeMode.light,
+              _SectionHeader(title: 'Settings'),
+              SizedBox(height: 12.h),
+
+              _SettingsTile(
+                icon: Icons.palette_outlined,
+                title: 'Dark Mode',
+                subtitle: themeMode == ThemeMode.dark ? 'On' : 'Off',
+                trailing: Switch(
+                  value: themeMode == ThemeMode.dark,
+                  activeColor: FitColors.neonGreen,
+                  onChanged: (v) => ref.read(themeProvider.notifier).setThemeMode(
+                    v ? ThemeMode.dark : ThemeMode.light,
+                  ),
                 ),
               ),
-            ),
-            _SettingsTile(
-              icon: Icons.notifications_outlined,
-              title: 'Notifications',
-              subtitle: 'Manage alerts',
-              onTap: () {},
-            ),
-            _SettingsTile(
-              icon: Icons.security_outlined,
-              title: 'Privacy',
-              subtitle: 'Data & permissions',
-              onTap: () {},
-            ),
-            SizedBox(height: 20.h),
+              _SettingsTile(
+                icon: Icons.notifications_outlined,
+                title: 'Notifications',
+                subtitle: 'Manage alerts',
+                onTap: () {},
+              ),
+              _SettingsTile(
+                icon: Icons.security_outlined,
+                title: 'Privacy',
+                subtitle: 'Data & permissions',
+                onTap: () {},
+              ),
+              SizedBox(height: 20.h),
 
-            // Support Section
-            _SectionHeader(title: 'Support'),
-            SizedBox(height: 12.h),
-            
-            _SettingsTile(
-              icon: Icons.help_outline,
-              title: 'Help Center',
-              subtitle: 'FAQs & guides',
-              onTap: () => _launchUrl('https://fittracker.app/help'),
-            ),
-            _SettingsTile(
-              icon: Icons.feedback_outlined,
-              title: 'Send Feedback',
-              subtitle: 'Help us improve',
-              onTap: () => _showFeedbackDialog(context),
-            ),
-            _SettingsTile(
-              icon: Icons.info_outline,
-              title: 'About',
-              subtitle: 'Version 1.0.0',
-              onTap: () => _showAboutDialog(context),
-            ),
-            SizedBox(height: 40.h),
-          ],
+              _SectionHeader(title: 'Support'),
+              SizedBox(height: 12.h),
+
+              _SettingsTile(
+                icon: Icons.help_outline,
+                title: 'Help Center',
+                subtitle: 'FAQs & guides',
+                onTap: () => _launchUrl('https://fittracker.app/help'),
+              ),
+              _SettingsTile(
+                icon: Icons.feedback_outlined,
+                title: 'Send Feedback',
+                subtitle: 'Help us improve',
+                onTap: () => _showFeedbackDialog(context),
+              ),
+              _SettingsTile(
+                icon: Icons.info_outline,
+                title: 'About',
+                subtitle: 'Version 1.0.0',
+                onTap: () => _showAboutDialog(context),
+              ),
+              SizedBox(height: 40.h),
+            ],
+          ),
         ),
       ),
     );
@@ -111,35 +122,38 @@ class MoreScreen extends ConsumerWidget {
   }
 
   void _showFeedbackDialog(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: FitColors.card,
+      backgroundColor: Colors.transparent,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => Padding(
+      builder: (context) => GlassContainer(
+        opacity: isDark ? 0.06 : 0.2,
         padding: EdgeInsets.all(20.w),
+        radius: 20,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Send Feedback', style: TextStyle(
-              color: FitColors.textPrimary,
+              color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
               fontSize: 18.sp,
               fontWeight: FontWeight.w700,
             )),
             SizedBox(height: 16.h),
             TextField(
               maxLines: 4,
-              style: TextStyle(color: FitColors.textPrimary),
+              style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
               decoration: InputDecoration(
                 hintText: 'Tell us what you think...',
-                hintStyle: TextStyle(color: FitColors.textMuted),
+                hintStyle: TextStyle(color: isDark ? FitColors.textMutedDark : FitColors.textMutedLight),
                 filled: true,
-                fillColor: FitColors.background,
+                fillColor: isDark ? FitColors.surfaceDark : FitColors.surfaceLight,
                 border: OutlineInputBorder(
-                  borderSide: BorderSide(color: FitColors.border),
+                  borderSide: BorderSide(color: isDark ? FitColors.borderDark : FitColors.borderLight),
                   borderRadius: BorderRadius.circular(12.r),
                 ),
               ),
@@ -170,34 +184,51 @@ class MoreScreen extends ConsumerWidget {
   }
 
   void _showAboutDialog(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: FitColors.card,
-        title: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(8.r),
-              decoration: BoxDecoration(
-                color: FitColors.neonGreen.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(8.r),
+        backgroundColor: Colors.transparent,
+        content: GlassContainer(
+          opacity: isDark ? 0.06 : 0.2,
+          padding: EdgeInsets.all(20.r),
+          radius: 20,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(8.r),
+                    decoration: BoxDecoration(
+                      color: FitColors.neonGreen.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    child: Icon(Icons.fitness_center, color: FitColors.neonGreen),
+                  ),
+                  SizedBox(width: 12.w),
+                  Text('Fit Tracker', style: TextStyle(
+                    color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+                    fontSize: 18.sp, fontWeight: FontWeight.bold,
+                  )),
+                ],
               ),
-              child: Icon(Icons.fitness_center, color: FitColors.neonGreen),
-            ),
-            SizedBox(width: 12.w),
-            Text('Fit Tracker', style: TextStyle(color: FitColors.textPrimary)),
-          ],
-        ),
-        content: Text(
-          'Version 1.0.0\n\nTrack your fitness journey with step counting, workouts, nutrition, sleep, and more.\n\n© 2024 Fit Tracker',
-          style: TextStyle(color: FitColors.textSecondary),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Close', style: TextStyle(color: FitColors.neonGreen)),
+              SizedBox(height: 16.h),
+              Text(
+                'Version 1.0.0\n\nTrack your fitness journey with step counting, workouts, nutrition, sleep, and more.\n\n© 2024 Fit Tracker',
+                style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
+              ),
+              SizedBox(height: 16.h),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('Close', style: TextStyle(color: FitColors.neonGreen)),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -242,28 +273,30 @@ class _QuickAccessTile extends StatelessWidget {
   const _QuickAccessTile({super.key, required this.label, required this.icon, required this.color});
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-    onTap: () {},
-    child: DecoratedBox(
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GestureDetector(
+      onTap: () {},
+      child: GlassContainer(
+        opacity: isDark ? 0.06 : 0.2,
+        padding: EdgeInsets.zero,
+        radius: 16,
+        tint: color,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: color, size: 28.sp),
+            SizedBox(height: 6.h),
+            Text(label, style: TextStyle(
+              color: color,
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w600,
+            )),
+          ],
+        ),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: color, size: 28.sp),
-          SizedBox(height: 6.h),
-          Text(label, style: TextStyle(
-            color: color,
-            fontSize: 12.sp,
-            fontWeight: FontWeight.w600,
-          )),
-        ],
-      ),
-    ),
-  );
+    );
+  }
 }
 
 class _SectionHeader extends StatelessWidget {
@@ -272,11 +305,14 @@ class _SectionHeader extends StatelessWidget {
   const _SectionHeader({required this.title});
 
   @override
-  Widget build(BuildContext context) => Text(title, style: TextStyle(
-    color: FitColors.textPrimary,
-    fontSize: 16.sp,
-    fontWeight: FontWeight.w700,
-  ));
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Text(title, style: TextStyle(
+      color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+      fontSize: 16.sp,
+      fontWeight: FontWeight.w700,
+    ));
+  }
 }
 
 class _SettingsTile extends StatelessWidget {
@@ -295,33 +331,37 @@ class _SettingsTile extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: EdgeInsets.only(bottom: 8.h),
-    child: ListTile(
-      onTap: onTap,
-      contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      tileColor: FitColors.card,
-      leading: Container(
-        padding: EdgeInsets.all(8.r),
-        decoration: BoxDecoration(
-          color: FitColors.neonGreen.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8.r),
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8.h),
+      child: GlassCard(
+        opacity: isDark ? 0.06 : 0.2,
+        radius: 12,
+        padding: EdgeInsets.zero,
+        onTap: onTap,
+        child: ListTile(
+          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+          leading: Container(
+            padding: EdgeInsets.all(8.r),
+            decoration: BoxDecoration(
+              color: FitColors.neonGreen.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+            child: Icon(icon, color: FitColors.neonGreen, size: 20.sp),
+          ),
+          title: Text(title, style: TextStyle(
+            color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w600,
+          )),
+          subtitle: Text(subtitle, style: TextStyle(
+            color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
+            fontSize: 12.sp,
+          )),
+          trailing: trailing ?? Icon(Icons.chevron_right, color: isDark ? FitColors.textMutedDark : FitColors.textMutedLight),
         ),
-        child: Icon(icon, color: FitColors.neonGreen, size: 20.sp),
       ),
-      title: Text(title, style: TextStyle(
-        color: FitColors.textPrimary,
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w600,
-      )),
-      subtitle: Text(subtitle, style: TextStyle(
-        color: FitColors.textSecondary,
-        fontSize: 12.sp,
-      )),
-      trailing: trailing ?? Icon(Icons.chevron_right, color: FitColors.textMuted),
-    ),
-  );
+    );
+  }
 }

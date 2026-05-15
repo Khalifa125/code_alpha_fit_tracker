@@ -102,7 +102,9 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppColorsExtension customColors) 
     ],
     
     // --- Basic Elements ---
-    scaffoldBackgroundColor: FitColors.backgroundDark,
+    scaffoldBackgroundColor: colorScheme.brightness == Brightness.dark
+        ? FitColors.backgroundDark
+        : FitColors.backgroundLight,
     dividerTheme: DividerThemeData(
       color: colorScheme.outlineVariant,
       thickness: 1,
@@ -117,12 +119,14 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppColorsExtension customColors) 
 
     // App Bar Theme
     appBarTheme: AppBarTheme(
-      backgroundColor: colorScheme.surface,
+      backgroundColor: Colors.transparent,
       foregroundColor: colorScheme.onSurface,
       elevation: 0,
       centerTitle: true,
+      scrolledUnderElevation: 0,
       titleTextStyle: textTheme.titleMedium?.copyWith(
-        fontWeight: FontWeight.w600,
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
         color: colorScheme.onSurface,
       ),
     ),
@@ -171,13 +175,14 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppColorsExtension customColors) 
     // Card Theme
     cardTheme: CardThemeData(
       clipBehavior: Clip.antiAlias,
-      elevation: AppDesignTokens.fallback.cardElevation,
+      elevation: 0,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: colorScheme.outlineVariant, width: 1),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
       ),
-      color: colorScheme.surfaceContainerLow,
+      color: Colors.transparent,
+      shadowColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
     ),
 
     // Input Decoration Theme
@@ -209,13 +214,13 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppColorsExtension customColors) 
     // Navigation Bar Theme
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: colorScheme.surface,
-      indicatorColor: colorScheme.secondaryContainer,
-      elevation: 8,
+      indicatorColor: colorScheme.primary,
+      elevation: 0,
       labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
       height: 80,
       labelTextStyle: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
-          return textTheme.labelSmall?.copyWith(color: colorScheme.primary, fontWeight: FontWeight.bold);
+          return textTheme.labelSmall?.copyWith(color: colorScheme.onPrimary, fontWeight: FontWeight.bold);
         }
         return textTheme.labelSmall?.copyWith(color: colorScheme.onSurfaceVariant);
       }),
@@ -286,28 +291,30 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppColorsExtension customColors) 
     // SnackBar Theme
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 4,
-      backgroundColor: colorScheme.inverseSurface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      elevation: 0,
+      backgroundColor: Colors.transparent,
       contentTextStyle: textTheme.bodyMedium?.copyWith(color: colorScheme.onInverseSurface),
     ),
 
     // Dialog Theme
     dialogTheme: DialogThemeData(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       elevation: 0,
-      backgroundColor: colorScheme.surface,
+      backgroundColor: Colors.transparent,
       titleTextStyle: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
       contentTextStyle: textTheme.bodyMedium,
     ),
 
     // Bottom Sheet Theme
-    bottomSheetTheme: const BottomSheetThemeData(
+    bottomSheetTheme: BottomSheetThemeData(
       showDragHandle: true,
       elevation: 0,
+      backgroundColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(28),
+          top: Radius.circular(20),
         ),
       ),
     ),

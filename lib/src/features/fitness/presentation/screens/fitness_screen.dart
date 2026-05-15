@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:fit_tracker/src/theme/fit_colors.dart';
+import 'package:fit_tracker/src/shared/widgets/glass_container.dart';
 import 'package:fit_tracker/src/features/fitness/presentation/screens/category_screen.dart';
 import 'package:fit_tracker/src/features/fit_track/screens/workout_session_screen.dart';
 import 'package:fit_tracker/src/features/fit_track/providers/workout_provider.dart';
@@ -57,93 +58,121 @@ class _FitnessScreenState extends ConsumerState<FitnessScreen> with AutomaticKee
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return RepaintBoundary(
       child: Scaffold(
-        backgroundColor: FitColors.backgroundDark,
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(16.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Fitness',
-                      style: TextStyle(
-                        color: FitColors.textPrimaryDark,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: -0.5,
-                      ),
+        backgroundColor: isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                FitColors.neonGreen.withValues(alpha: 0.03),
+                isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
+                isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
+              ],
+            ),
+          ),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(16.w),
+              child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GlassContainer(
+              opacity: isDark ? 0.06 : 0.2,
+              padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
+              radius: 20,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Fitness',
+                    style: TextStyle(
+                      color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: -0.5,
                     ),
-                    GestureDetector(
-                      onTap: _generateQuickWorkout,
-                      child: Container(
-                        width: 36.w,
-                        height: 36.w,
-                        decoration: BoxDecoration(
-                          color: FitColors.surfaceDark,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: FitColors.borderDark),
-                        ),
-                        child: const Icon(Icons.add, color: FitColors.neonGreen, size: 18),
-                      ),
+                  ),
+                  GestureDetector(
+                    onTap: _generateQuickWorkout,
+                    child: GlassContainer(
+                      opacity: isDark ? 0.06 : 0.2,
+                      radius: 10,
+                      padding: EdgeInsets.all(8.w),
+                      tint: FitColors.neonGreen,
+                      child: Icon(Icons.add, color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight, size: 18),
                     ),
-                  ],
-                ).animate().fadeIn().slideX(begin: -0.1),
-                SizedBox(height: 16.h),
+                  ),
+                ],
+              ),
+            ).animate().fadeIn().slideX(begin: -0.1),
+            SizedBox(height: 16.h),
 
-                // Categories section
-                const Text(
-                  'Categories',
-                  style: TextStyle(
-                    color: FitColors.textSecondaryDark,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.5,
-                  ),
+            // Categories section
+            Text(
+              'Categories',
+              style: TextStyle(
+                color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.5,
+              ),
+            ),
+            SizedBox(height: 10.h),
+            GlassContainer(
+              opacity: isDark ? 0.06 : 0.2,
+              radius: 20,
+              padding: EdgeInsets.zero,
+              child: GridView.builder(
+                cacheExtent: 500,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 8.w,
+                  crossAxisSpacing: 8.w,
+                  childAspectRatio: 1.5,
                 ),
-                SizedBox(height: 10.h),
-                GridView.builder(
-                  cacheExtent: 500,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 8,
-                    childAspectRatio: 1.5,
-                  ),
-                  itemCount: _categories.length,
-                  itemBuilder: (context, index) {
-                    final cat = _categories[index];
-                    return _CategoryCard(
-                      key: ValueKey('cat_${cat['name']}'),
-                      icon: cat['icon'] as IconData,
-                      name: cat['name'] as String,
-                      count: cat['count'] as String,
-                      color: cat['color'] as Color,
-                      index: index,
-                      onTap: () => _onCategoryTap(cat['category'] as String),
-                    );
-                  },
-                ),
-                SizedBox(height: 16.h),
+                itemCount: _categories.length,
+                itemBuilder: (context, index) {
+                  final cat = _categories[index];
+                  return _CategoryCard(
+                    key: ValueKey('cat_${cat['name']}'),
+                    icon: cat['icon'] as IconData,
+                    name: cat['name'] as String,
+                    count: cat['count'] as String,
+                    color: cat['color'] as Color,
+                    index: index,
+                    onTap: () => _onCategoryTap(cat['category'] as String),
+                  );
+                },
+              ),
+            ),
+            SizedBox(height: 16.h),
 
-                // Workout plans section
-                const Text(
-                  'Workout plans',
-                  style: TextStyle(
-                    color: FitColors.textSecondaryDark,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                SizedBox(height: 10.h),
-                ...List.generate(_plans.length, (index) {
+            // Workout plans section
+            Text(
+              'Workout plans',
+              style: TextStyle(
+                color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.5,
+              ),
+            ),
+            SizedBox(height: 10.h),
+            GlassContainer(
+              opacity: isDark ? 0.06 : 0.2,
+              radius: 20,
+              padding: EdgeInsets.zero,
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _plans.length,
+                itemBuilder: (context, index) {
                   final plan = _plans[index];
                   return _PlanItem(
                     title: plan['title'] as String,
@@ -152,15 +181,18 @@ class _FitnessScreenState extends ConsumerState<FitnessScreen> with AutomaticKee
                     level: plan['level'] as String,
                     index: index,
                   );
-                }),
-
-                SizedBox(height: 80.h),
-              ],
+                },
+              ),
             ),
-          ),
+
+            SizedBox(height: 80.h),
+          ],
         ),
       ),
-    );
+    ),
+  ),
+),
+);
   }
 }
 
@@ -191,6 +223,7 @@ class _CategoryCardState extends State<_CategoryCard> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTapDown: (_) => setState(() => _isPressed = true),
       onTapUp: (_) {
@@ -201,13 +234,10 @@ class _CategoryCardState extends State<_CategoryCard> {
       child: AnimatedScale(
         scale: _isPressed ? 0.97 : 1.0,
         duration: const Duration(milliseconds: 100),
-        child: Container(
+        child: GlassCard(
+          opacity: isDark ? 0.06 : 0.2,
+          radius: 12,
           padding: EdgeInsets.all(12.r),
-          decoration: BoxDecoration(
-            color: FitColors.cardDark,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: FitColors.borderDark),
-          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -224,8 +254,8 @@ class _CategoryCardState extends State<_CategoryCard> {
               SizedBox(height: 8.h),
               Text(
                 widget.name,
-                style: const TextStyle(
-                  color: FitColors.textPrimaryDark,
+                style: TextStyle(
+                  color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                   letterSpacing: -0.1,
@@ -234,15 +264,15 @@ class _CategoryCardState extends State<_CategoryCard> {
               Text(
                 widget.count,
                 style: TextStyle(
-                  color: FitColors.textSecondaryDark.withValues(alpha: 0.7),
+                  color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.7),
                   fontSize: 10,
                 ),
               ),
             ],
           ),
         ),
-      ).animate().fadeIn(delay: (50 + widget.index * 30).ms).scale(begin: const Offset(0.95, 0.95)),
-    );
+      ),
+    ).animate().fadeIn(delay: (50 + widget.index * 30).ms).scale(begin: const Offset(0.95, 0.95));
   }
 }
 
@@ -263,17 +293,15 @@ class _PlanItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final levelLabel = level == 'beg' ? 'Beg' : level == 'inter' ? 'Inter' : 'Adv';
     final levelColor = level == 'beg' ? FitColors.neonGreen : level == 'inter' ? FitColors.orange : FitColors.red;
 
-    return Container(
-      margin: EdgeInsets.only(bottom: 8.h),
+    return GlassCard(
+      opacity: isDark ? 0.06 : 0.2,
+      radius: 12,
       padding: EdgeInsets.all(12.r),
-      decoration: BoxDecoration(
-        color: FitColors.cardDark,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: FitColors.borderDark),
-      ),
+      margin: EdgeInsets.only(bottom: 8.h),
       child: Row(
         children: [
           Container(
@@ -291,8 +319,8 @@ class _PlanItem extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    color: FitColors.textPrimaryDark,
+                  style: TextStyle(
+                    color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),
@@ -300,7 +328,7 @@ class _PlanItem extends StatelessWidget {
                 Text(
                   subtitle,
                   style: TextStyle(
-                    color: FitColors.textSecondaryDark.withValues(alpha: 0.7),
+                    color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.7),
                     fontSize: 10,
                   ),
                 ),

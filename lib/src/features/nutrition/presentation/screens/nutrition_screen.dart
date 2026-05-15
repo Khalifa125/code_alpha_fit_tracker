@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:fit_tracker/src/theme/fit_colors.dart';
+import 'package:fit_tracker/src/shared/widgets/glass_container.dart';
 
 class NutritionScreen extends ConsumerStatefulWidget {
   const NutritionScreen({super.key});
@@ -43,7 +44,7 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> with Automati
     HapticFeedback.mediumImpact();
     showModalBottomSheet(
       context: context,
-      backgroundColor: FitColors.surfaceDark,
+      backgroundColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24.r))),
       builder: (ctx) => _BarcodeScannerSheet(onScan: (barcode) {
         HapticFeedback.heavyImpact();
@@ -58,44 +59,68 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> with Automati
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return RepaintBoundary(
       child: Scaffold(
-        backgroundColor: FitColors.backgroundDark,
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 100.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Nutrition', style: TextStyle(color: FitColors.textPrimaryDark, fontSize: 22, fontWeight: FontWeight.w600, letterSpacing: -0.5)),
-                    Container(
-                      width: 32.w,
-                      height: 32.w,
-                      decoration: BoxDecoration(color: FitColors.cardDark, borderRadius: BorderRadius.circular(8), border: Border.all(color: FitColors.borderDark)),
-                      child: const Icon(Icons.add, color: FitColors.neonGreen, size: 18),
-                    ),
-                  ],
-                ).animate().fadeIn().slideX(begin: -0.1),
-                SizedBox(height: 16.h),
-                SizedBox(height: 24.h),
-                _CalorieRingChart(consumed: consumedCalories, goal: goalCalories),
-                SizedBox(height: 24.h),
-                _MacrosRow(protein: protein, carbs: carbs, fat: fat),
-                SizedBox(height: 24.h),
-                ..._meals.asMap().entries.map((e) => _MealSectionCard(
-                  name: e.value['name'] as String,
-                  icon: e.value['icon'] as IconData,
-                  calories: e.value['calories'] as int,
-                  index: e.key,
-                  onAddFood: () => _onAddFood(e.value['name'] as String),
-                  onScan: _onScanBarcode,
-                )),
-                SizedBox(height: 16.h),
-                _WaterMiniWidget(),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                FitColors.neonGreen.withValues(alpha: 0.03),
+                isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
+                isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
               ],
+            ),
+          ),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 100.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Nutrition', style: TextStyle(
+                        color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+                        fontSize: 22, fontWeight: FontWeight.w600, letterSpacing: -0.5,
+                      )),
+                      GlassContainer(
+                        opacity: isDark ? 0.06 : 0.2,
+                        radius: 8,
+                        padding: EdgeInsets.all(8.w),
+                        child: const Icon(Icons.add, color: FitColors.neonGreen, size: 18),
+                      ),
+                    ],
+                  ).animate().fadeIn().slideX(begin: -0.1),
+                  SizedBox(height: 16.h),
+                  SizedBox(height: 24.h),
+
+                  GlassContainer(
+                    opacity: isDark ? 0.06 : 0.2,
+                    padding: EdgeInsets.all(20.r),
+                    radius: 16,
+                    margin: EdgeInsets.only(bottom: 24.h),
+                    child: _CalorieRingChart(consumed: consumedCalories, goal: goalCalories),
+                  ),
+
+                  _MacrosRow(protein: protein, carbs: carbs, fat: fat),
+                  SizedBox(height: 24.h),
+
+                  ..._meals.asMap().entries.map((e) => _MealSectionCard(
+                    name: e.value['name'] as String,
+                    icon: e.value['icon'] as IconData,
+                    calories: e.value['calories'] as int,
+                    index: e.key,
+                    onAddFood: () => _onAddFood(e.value['name'] as String),
+                    onScan: _onScanBarcode,
+                  )),
+                  SizedBox(height: 16.h),
+                  _WaterMiniWidget(),
+                ],
+              ),
             ),
           ),
         ),
@@ -113,49 +138,51 @@ class _CalorieRingChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RepaintBoundary(
-      child: Container(
-        padding: EdgeInsets.all(20.r),
-        decoration: BoxDecoration(color: FitColors.cardDark, borderRadius: BorderRadius.circular(16.r), border: Border.all(color: FitColors.borderDark)),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 180.h,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  PieChart(
-                    PieChartData(
-                      sectionsSpace: 3,
-                      centerSpaceRadius: 60,
-                      sections: [
-                        PieChartSectionData(value: consumed.toDouble(), color: FitColors.neonGreen, radius: 22),
-                        PieChartSectionData(value: (goal - consumed).toDouble().clamp(1, goal.toDouble()), color: FitColors.surfaceDark, radius: 22),
-                      ],
-                    ),
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('$consumed', style: const TextStyle(color: FitColors.textPrimaryDark, fontSize: 28, fontWeight: FontWeight.w700, letterSpacing: -0.5)),
-                      Text('of $goal kcal', style: TextStyle(color: FitColors.textSecondaryDark.withValues(alpha: 0.7), fontSize: 12)),
+      child: Column(
+        children: [
+          SizedBox(
+            height: 180.h,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                PieChart(
+                  PieChartData(
+                    sectionsSpace: 3,
+                    centerSpaceRadius: 60,
+                    sections: [
+                      PieChartSectionData(value: consumed.toDouble(), color: FitColors.neonGreen, radius: 22),
+                      PieChartSectionData(value: (goal - consumed).toDouble().clamp(1, goal.toDouble()), color: FitColors.surfaceDark, radius: 22),
                     ],
                   ),
-                ],
-              ),
-            ),
-            SizedBox(height: 16.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _CalorieStat(label: 'Eaten', value: '$consumed', color: FitColors.neonGreen),
-                _CalorieStat(label: 'Left', value: '${goal - consumed}', color: FitColors.orange),
-                _CalorieStat(label: 'Goal', value: '$goal', color: FitColors.blue),
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('$consumed', style: TextStyle(
+                      color: Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+                      fontSize: 28, fontWeight: FontWeight.w700, letterSpacing: -0.5,
+                    )),
+                    Text('of $goal kcal', style: TextStyle(
+                      color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.7),
+                      fontSize: 12,
+                    )),
+                  ],
+                ),
               ],
             ),
-          ],
-        ),
-      ).animate().fadeIn().scale(begin: const Offset(0.95, 0.95)),
-    );
+          ),
+          SizedBox(height: 16.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _CalorieStat(label: 'Eaten', value: '$consumed', color: FitColors.neonGreen),
+              _CalorieStat(label: 'Left', value: '${goal - consumed}', color: FitColors.orange),
+              _CalorieStat(label: 'Goal', value: '$goal', color: FitColors.blue),
+            ],
+          ),
+        ],
+      ),
+    ).animate().fadeIn().scale(begin: const Offset(0.95, 0.95));
   }
 }
 
@@ -171,7 +198,10 @@ class _CalorieStat extends StatelessWidget {
     return Column(
       children: [
         Text(value, style: TextStyle(color: color, fontSize: 16, fontWeight: FontWeight.w700)),
-        Text(label, style: TextStyle(color: FitColors.textSecondaryDark.withValues(alpha: 0.7), fontSize: 11)),
+        Text(label, style: TextStyle(
+          color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.7),
+          fontSize: 11,
+        )),
       ],
     );
   }
@@ -208,20 +238,28 @@ class _MacroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GlassContainer(
+      opacity: isDark ? 0.06 : 0.2,
       padding: EdgeInsets.all(12.r),
-      decoration: BoxDecoration(color: FitColors.cardDark, borderRadius: BorderRadius.circular(12.r), border: Border.all(color: FitColors.borderDark)),
+      radius: 12,
       child: Column(
         children: [
-          Text(name, style: TextStyle(color: FitColors.textSecondaryDark.withValues(alpha: 0.7), fontSize: 10, fontWeight: FontWeight.w600, letterSpacing: 0.3)),
+          Text(name, style: TextStyle(
+            color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.7),
+            fontSize: 10, fontWeight: FontWeight.w600, letterSpacing: 0.3,
+          )),
           SizedBox(height: 6.h),
-          Text(value, style: const TextStyle(color: FitColors.textPrimaryDark, fontSize: 16, fontWeight: FontWeight.w700)),
+          Text(value, style: TextStyle(
+            color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+            fontSize: 16, fontWeight: FontWeight.w700,
+          )),
           SizedBox(height: 6.h),
           ClipRRect(
             borderRadius: BorderRadius.circular(3),
             child: LinearProgressIndicator(
               value: progress.clamp(0.0, 1.0),
-              backgroundColor: FitColors.surfaceDark,
+              backgroundColor: isDark ? FitColors.surfaceDark : FitColors.surfaceLight,
               valueColor: AlwaysStoppedAnimation(color),
               minHeight: 4,
             ),
@@ -251,10 +289,12 @@ class _MealSectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 8.h),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GlassCard(
+      opacity: isDark ? 0.06 : 0.2,
       padding: EdgeInsets.all(14.r),
-      decoration: BoxDecoration(color: FitColors.cardDark, borderRadius: BorderRadius.circular(12.r), border: Border.all(color: FitColors.borderDark)),
+      radius: 12,
+      margin: EdgeInsets.only(bottom: 8.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -262,9 +302,22 @@ class _MealSectionCard extends StatelessWidget {
             children: [
               Icon(icon, color: FitColors.neonGreen, size: 18),
               SizedBox(width: 8.w),
-              Text(name, style: const TextStyle(color: FitColors.textPrimaryDark, fontSize: 13, fontWeight: FontWeight.w600)),
+              Text(name, style: TextStyle(
+                color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+                fontSize: 13, fontWeight: FontWeight.w600,
+              )),
               const Spacer(),
-              Text('$calories kcal', style: TextStyle(color: FitColors.textSecondaryDark.withValues(alpha: 0.7), fontSize: 12)),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                decoration: BoxDecoration(
+                  color: FitColors.calories.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(6.r),
+                ),
+                child: Text('$calories kcal', style: TextStyle(
+                  color: FitColors.calories,
+                  fontSize: 11, fontWeight: FontWeight.w600,
+                )),
+              ),
             ],
           ),
           SizedBox(height: 12.h),
@@ -288,8 +341,8 @@ class _MealSectionCard extends StatelessWidget {
                 icon: const Icon(Icons.qr_code_scanner, size: 18),
                 label: const Text('Scan'),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: FitColors.textSecondary,
-                  side: const BorderSide(color: FitColors.borderDark),
+                  foregroundColor: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
+                  side: BorderSide(color: isDark ? FitColors.borderDark : FitColors.borderLight),
                   padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
                 ),
               ),
@@ -311,6 +364,7 @@ class _WaterMiniWidgetState extends State<_WaterMiniWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTapDown: (_) => setState(() => _isPressed = true),
       onTapUp: (_) {
@@ -321,32 +375,38 @@ class _WaterMiniWidgetState extends State<_WaterMiniWidget> {
       child: AnimatedScale(
         scale: _isPressed ? 0.98 : 1.0,
         duration: const Duration(milliseconds: 100),
-        child: Container(
+        child: GlassContainer(
+          opacity: isDark ? 0.06 : 0.2,
           padding: EdgeInsets.all(16.r),
-          decoration: BoxDecoration(
-            color: FitColors.blue.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(16.r),
-            border: Border.all(color: FitColors.blue.withValues(alpha: 0.3)),
-          ),
+          radius: 16,
+          tint: FitColors.blue,
           child: Row(
             children: [
               Icon(Icons.water_drop, color: FitColors.blue, size: 32.sp),
               SizedBox(width: 12.w),
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Water Intake', style: TextStyle(color: FitColors.textPrimary, fontSize: 16, fontWeight: FontWeight.bold)),
-                    Text('Tap to track water', style: TextStyle(color: FitColors.textSecondary, fontSize: 12)),
+                    Text('Water Intake', style: TextStyle(
+                      color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+                      fontSize: 16, fontWeight: FontWeight.bold,
+                    )),
+                    Text('Tap to track water', style: TextStyle(
+                      color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
+                      fontSize: 12,
+                    )),
                   ],
                 ),
               ),
-              const Text('1.2L', style: TextStyle(color: FitColors.blue, fontSize: 20, fontWeight: FontWeight.bold)),
+              Text('1.2L', style: TextStyle(
+                color: FitColors.blue, fontSize: 20, fontWeight: FontWeight.bold,
+              )),
             ],
           ),
         ),
-      ).animate().fadeIn(delay: 400.ms),
-    );
+      ),
+    ).animate().fadeIn(delay: 400.ms);
   }
 }
 
@@ -362,16 +422,24 @@ class _BarcodeScannerSheet extends StatefulWidget {
 class _BarcodeScannerSheetState extends State<_BarcodeScannerSheet> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GlassContainer(
+      opacity: isDark ? 0.06 : 0.2,
       padding: EdgeInsets.all(24.r),
+      radius: 24,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.qr_code_scanner, color: FitColors.neonGreen, size: 64.sp),
           SizedBox(height: 16.h),
-          const Text('Barcode Scanner', style: TextStyle(color: FitColors.textPrimary, fontSize: 20, fontWeight: FontWeight.bold)),
+          Text('Barcode Scanner', style: TextStyle(
+            color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+            fontSize: 20, fontWeight: FontWeight.bold,
+          )),
           SizedBox(height: 8.h),
-          const Text('Scan product barcode to get nutrition info', style: TextStyle(color: FitColors.textSecondary), textAlign: TextAlign.center),
+          Text('Scan product barcode to get nutrition info', style: TextStyle(
+            color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
+          ), textAlign: TextAlign.center),
           SizedBox(height: 24.h),
           ElevatedButton(
             onPressed: () => widget.onScan('123456789'),

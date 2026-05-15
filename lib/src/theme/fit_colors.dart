@@ -74,6 +74,15 @@ class FitColors {
   static const restingHR     = Color(0xFFEC4899);    // Pink - RHR
 
   // =====================================================
+  // GLASS / PREMIUM
+  // =====================================================
+  static const darkGlassTint   = Color(0xFF1E293B);
+  static const lightGlassTint  = Color(0xFFFFFFFF);
+  static const darkGlow        = Color(0xFF22C55E);
+  static const darkAccent      = Color(0xFF4ADE80);
+  static const darkWarmAccent  = Color(0xFFFF6B35);
+
+  // =====================================================
   // SECONDARY COLORS
   // =====================================================
   static const orange        = Color(0xFFFF6B35);
@@ -133,6 +142,10 @@ class FitThemeColors {
   final Color textPrimary;
   final Color textSecondary;
   final Color textMuted;
+  final Color glassTint;
+  final Color glow;
+  final Color accent;
+  final Color warmAccent;
 
   const FitThemeColors({
     required this.background,
@@ -143,6 +156,10 @@ class FitThemeColors {
     required this.textPrimary,
     required this.textSecondary,
     required this.textMuted,
+    this.glassTint = FitColors.darkGlassTint,
+    this.glow = FitColors.darkGlow,
+    this.accent = FitColors.darkAccent,
+    this.warmAccent = FitColors.darkWarmAccent,
   });
 
   static const dark = FitThemeColors(
@@ -154,6 +171,10 @@ class FitThemeColors {
     textPrimary: FitColors.textPrimaryDark,
     textSecondary: FitColors.textSecondaryDark,
     textMuted: FitColors.textMutedDark,
+    glassTint: FitColors.darkGlassTint,
+    glow: FitColors.darkGlow,
+    accent: FitColors.darkAccent,
+    warmAccent: FitColors.darkWarmAccent,
   );
 
   static const light = FitThemeColors(
@@ -165,6 +186,10 @@ class FitThemeColors {
     textPrimary: FitColors.textPrimaryLight,
     textSecondary: FitColors.textSecondaryLight,
     textMuted: FitColors.textMutedLight,
+    glassTint: FitColors.lightGlassTint,
+    glow: FitColors.darkGlow,
+    accent: FitColors.darkAccent,
+    warmAccent: FitColors.darkWarmAccent,
   );
 
   static FitThemeColors of(BuildContext context) {

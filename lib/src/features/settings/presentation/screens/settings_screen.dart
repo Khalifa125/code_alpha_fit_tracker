@@ -7,6 +7,7 @@ import 'package:fit_tracker/src/theme/fit_colors.dart';
 import 'package:fit_tracker/src/imports/core_imports.dart';
 import 'package:fit_tracker/src/features/settings/presentation/providers/theme_provider.dart';
 import 'package:fit_tracker/src/features/settings/data/repositories/settings_repository.dart';
+import 'package:fit_tracker/src/shared/widgets/glass_container.dart';
 
 final settingsRepoProvider = Provider<SettingsRepository>((ref) => SettingsRepository());
 
@@ -83,98 +84,128 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final themeMode = ref.watch(themeProvider);
     final notificationSettings = ref.watch(notificationSettingsProvider);
     final currentLocale = context.locale;
 
     return Scaffold(
-      backgroundColor: FitColors.background,
-      appBar: AppBar(
-        backgroundColor: FitColors.surface,
-        title: Text('Settings', style: TextStyle(color: FitColors.textPrimary, fontWeight: FontWeight.w700)),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: FitColors.textPrimary),
-          onPressed: () => Navigator.pop(context),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              FitColors.neonGreen.withValues(alpha: 0.03),
+              isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
+              isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
+            ],
+          ),
         ),
-      ),
-      body: ListView(
-        padding: EdgeInsets.all(16.r),
-        children: [
-          _SectionHeader(title: 'Appearance'),
-          SizedBox(height: 8.h),
-          _SettingsTile(
-            icon: Icons.dark_mode_rounded,
-            title: 'Dark Mode',
-            subtitle: _getThemeModeText(themeMode),
-            trailing: _ThemeModeSelector(currentMode: themeMode),
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(16.r),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.arrow_back, color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    SizedBox(width: 8.w),
+                    Text('Settings', style: TextStyle(
+                      color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+                      fontSize: 22.sp, fontWeight: FontWeight.bold,
+                    )),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.fromLTRB(16.r, 0, 16.r, 100.h),
+                  children: [
+                    _SectionHeader(title: 'Appearance'),
+                    SizedBox(height: 8.h),
+                    _SettingsTile(
+                      icon: Icons.dark_mode_rounded,
+                      title: 'Dark Mode',
+                      subtitle: _getThemeModeText(themeMode),
+                      trailing: _ThemeModeSelector(currentMode: themeMode),
+                    ),
+                    SizedBox(height: 24.h),
+                    _SectionHeader(title: 'Notifications'),
+                    SizedBox(height: 8.h),
+                    _SettingsTile(
+                      icon: Icons.fitness_center_rounded,
+                      title: 'Workout Reminders',
+                      subtitle: 'Get reminded to exercise',
+                      trailing: Switch(
+                        value: notificationSettings.workoutReminders,
+                        onChanged: (v) => ref.read(notificationSettingsProvider.notifier).setWorkoutReminders(v),
+                        activeColor: FitColors.neonGreen,
+                      ),
+                    ),
+                    _SettingsTile(
+                      icon: Icons.flag_rounded,
+                      title: 'Daily Goals',
+                      subtitle: 'Track your daily progress',
+                      trailing: Switch(
+                        value: notificationSettings.dailyGoals,
+                        onChanged: (v) => ref.read(notificationSettingsProvider.notifier).setDailyGoals(v),
+                        activeColor: FitColors.neonGreen,
+                      ),
+                    ),
+                    _SettingsTile(
+                      icon: Icons.celebration_rounded,
+                      title: 'Motivation',
+                      subtitle: 'Encouraging notifications',
+                      trailing: Switch(
+                        value: notificationSettings.motivationNotifications,
+                        onChanged: (v) => ref.read(notificationSettingsProvider.notifier).setMotivationNotifications(v),
+                        activeColor: FitColors.neonGreen,
+                      ),
+                    ),
+                    _SettingsTile(
+                      icon: Icons.timer_rounded,
+                      title: 'Reminder Interval',
+                      subtitle: '${notificationSettings.reminderIntervalHours} hours',
+                      onTap: () => _showIntervalPicker(context, ref, notificationSettings.reminderIntervalHours),
+                    ),
+                    SizedBox(height: 24.h),
+                    _SectionHeader(title: 'Language'),
+                    SizedBox(height: 8.h),
+                    _SettingsTile(
+                      icon: Icons.language_rounded,
+                      title: 'Language',
+                      subtitle: currentLocale.languageCode.toUpperCase(),
+                      onTap: () => _showLanguagePicker(context),
+                    ),
+                    SizedBox(height: 24.h),
+                    _SectionHeader(title: 'About'),
+                    SizedBox(height: 8.h),
+                    _SettingsTile(
+                      icon: Icons.info_rounded,
+                      title: 'Version',
+                      subtitle: '1.0.0',
+                    ),
+                    _SettingsTile(
+                      icon: Icons.privacy_tip_rounded,
+                      title: 'Privacy Policy',
+                      onTap: () {},
+                    ),
+                    _SettingsTile(
+                      icon: Icons.description_rounded,
+                      title: 'Terms of Service',
+                      onTap: () {},
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 24.h),
-          _SectionHeader(title: 'Notifications'),
-          SizedBox(height: 8.h),
-          _SettingsTile(
-            icon: Icons.fitness_center_rounded,
-            title: 'Workout Reminders',
-            subtitle: 'Get reminded to exercise',
-            trailing: Switch(
-              value: notificationSettings.workoutReminders,
-              onChanged: (v) => ref.read(notificationSettingsProvider.notifier).setWorkoutReminders(v),
-              activeColor: FitColors.neonGreen,
-            ),
-          ),
-          _SettingsTile(
-            icon: Icons.flag_rounded,
-            title: 'Daily Goals',
-            subtitle: 'Track your daily progress',
-            trailing: Switch(
-              value: notificationSettings.dailyGoals,
-              onChanged: (v) => ref.read(notificationSettingsProvider.notifier).setDailyGoals(v),
-              activeColor: FitColors.neonGreen,
-            ),
-          ),
-          _SettingsTile(
-            icon: Icons.celebration_rounded,
-            title: 'Motivation',
-            subtitle: 'Encouraging notifications',
-            trailing: Switch(
-              value: notificationSettings.motivationNotifications,
-              onChanged: (v) => ref.read(notificationSettingsProvider.notifier).setMotivationNotifications(v),
-              activeColor: FitColors.neonGreen,
-            ),
-          ),
-          _SettingsTile(
-            icon: Icons.timer_rounded,
-            title: 'Reminder Interval',
-            subtitle: '${notificationSettings.reminderIntervalHours} hours',
-            onTap: () => _showIntervalPicker(context, ref, notificationSettings.reminderIntervalHours),
-          ),
-          SizedBox(height: 24.h),
-          _SectionHeader(title: 'Language'),
-          SizedBox(height: 8.h),
-          _SettingsTile(
-            icon: Icons.language_rounded,
-            title: 'Language',
-            subtitle: currentLocale.languageCode.toUpperCase(),
-            onTap: () => _showLanguagePicker(context),
-          ),
-          SizedBox(height: 24.h),
-          _SectionHeader(title: 'About'),
-          SizedBox(height: 8.h),
-          _SettingsTile(
-            icon: Icons.info_rounded,
-            title: 'Version',
-            subtitle: '1.0.0',
-          ),
-          _SettingsTile(
-            icon: Icons.privacy_tip_rounded,
-            title: 'Privacy Policy',
-            onTap: () {},
-          ),
-          _SettingsTile(
-            icon: Icons.description_rounded,
-            title: 'Terms of Service',
-            onTap: () {},
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -193,24 +224,31 @@ class SettingsScreen extends ConsumerWidget {
   void _showIntervalPicker(BuildContext context, WidgetRef ref, int current) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: FitColors.surface,
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: EdgeInsets.all(16.r),
-            child: Text('Reminder Interval', style: TextStyle(color: FitColors.textPrimary, fontSize: 16.sp, fontWeight: FontWeight.w600)),
-          ),
-          ...[2, 4, 6, 8].map((h) => ListTile(
-            title: Text('$h hours', style: TextStyle(color: FitColors.textPrimary)),
-            trailing: current == h ? Icon(Icons.check, color: FitColors.neonGreen) : null,
-            onTap: () {
-              ref.read(notificationSettingsProvider.notifier).setReminderInterval(h);
-              Navigator.pop(context);
-            },
-          )),
-          SizedBox(height: 20.h),
-        ],
+      backgroundColor: Colors.transparent,
+      builder: (context) => _GlassBottomSheet(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(16.r),
+              child: Text('Reminder Interval', style: TextStyle(
+                color: Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+                fontSize: 16.sp, fontWeight: FontWeight.w600,
+              )),
+            ),
+            ...[2, 4, 6, 8].map((h) => ListTile(
+              title: Text('$h hours', style: TextStyle(
+                color: Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+              )),
+              trailing: current == h ? Icon(Icons.check, color: FitColors.neonGreen) : null,
+              onTap: () {
+                ref.read(notificationSettingsProvider.notifier).setReminderInterval(h);
+                Navigator.pop(context);
+              },
+            )),
+            SizedBox(height: 20.h),
+          ],
+        ),
       ),
     );
   }
@@ -218,33 +256,58 @@ class SettingsScreen extends ConsumerWidget {
   void _showLanguagePicker(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: FitColors.surface,
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: EdgeInsets.all(16.r),
-            child: Text('Select Language', style: TextStyle(color: FitColors.textPrimary, fontSize: 16.sp, fontWeight: FontWeight.w600)),
-          ),
-          ListTile(
-            title: Text('English', style: TextStyle(color: FitColors.textPrimary)),
-            trailing: context.locale.languageCode == 'en' ? Icon(Icons.check, color: FitColors.neonGreen) : null,
-            onTap: () {
-              context.setLocale(const Locale('en'));
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            title: Text('Arabic', style: TextStyle(color: FitColors.textPrimary)),
-            trailing: context.locale.languageCode == 'ar' ? Icon(Icons.check, color: FitColors.neonGreen) : null,
-            onTap: () {
-              context.setLocale(const Locale('ar'));
-              Navigator.pop(context);
-            },
-          ),
-          SizedBox(height: 20.h),
-        ],
+      backgroundColor: Colors.transparent,
+      builder: (context) => _GlassBottomSheet(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(16.r),
+              child: Text('Select Language', style: TextStyle(
+                color: Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+                fontSize: 16.sp, fontWeight: FontWeight.w600,
+              )),
+            ),
+            ListTile(
+              title: Text('English', style: TextStyle(
+                color: Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+              )),
+              trailing: context.locale.languageCode == 'en' ? Icon(Icons.check, color: FitColors.neonGreen) : null,
+              onTap: () {
+                context.setLocale(const Locale('en'));
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Arabic', style: TextStyle(
+                color: Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+              )),
+              trailing: context.locale.languageCode == 'ar' ? Icon(Icons.check, color: FitColors.neonGreen) : null,
+              onTap: () {
+                context.setLocale(const Locale('ar'));
+                Navigator.pop(context);
+              },
+            ),
+            SizedBox(height: 20.h),
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class _GlassBottomSheet extends StatelessWidget {
+  final Widget child;
+  const _GlassBottomSheet({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GlassContainer(
+      opacity: isDark ? 0.06 : 0.2,
+      radius: 20,
+      padding: EdgeInsets.only(top: 20.h),
+      child: child,
     );
   }
 }
@@ -254,15 +317,18 @@ class _SectionHeader extends StatelessWidget {
   const _SectionHeader({required this.title});
 
   @override
-  Widget build(BuildContext context) => Text(
-    title,
-    style: TextStyle(
-      color: FitColors.textSecondary,
-      fontSize: 13.sp,
-      fontWeight: FontWeight.w600,
-      letterSpacing: 0.5,
-    ),
-  );
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Text(
+      title,
+      style: TextStyle(
+        color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
+        fontSize: 13.sp,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.5,
+      ),
+    );
+  }
 }
 
 class _SettingsTile extends StatelessWidget {
@@ -281,28 +347,35 @@ class _SettingsTile extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Container(
-    margin: EdgeInsets.only(bottom: 8.h),
-    decoration: BoxDecoration(
-      color: FitColors.card,
-      borderRadius: BorderRadius.circular(12.r),
-      border: Border.all(color: FitColors.border),
-    ),
-    child: ListTile(
-      leading: Container(
-        padding: EdgeInsets.all(8.r),
-        decoration: BoxDecoration(
-          color: FitColors.neonGreen.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8.r),
-        ),
-        child: Icon(icon, color: FitColors.neonGreen, size: 20.sp),
-      ),
-      title: Text(title, style: TextStyle(color: FitColors.textPrimary, fontSize: 14.sp, fontWeight: FontWeight.w500)),
-      subtitle: subtitle != null ? Text(subtitle!, style: TextStyle(color: FitColors.textSecondary, fontSize: 12.sp)) : null,
-      trailing: trailing ?? (onTap != null ? Icon(Icons.chevron_right, color: FitColors.textMuted) : null),
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GlassCard(
+      opacity: isDark ? 0.06 : 0.2,
+      radius: 12,
+      padding: EdgeInsets.zero,
+      margin: EdgeInsets.only(bottom: 8.h),
       onTap: onTap,
-    ),
-  );
+      child: ListTile(
+        leading: Container(
+          padding: EdgeInsets.all(8.r),
+          decoration: BoxDecoration(
+            color: FitColors.neonGreen.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+          child: Icon(icon, color: FitColors.neonGreen, size: 20.sp),
+        ),
+        title: Text(title, style: TextStyle(
+          color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+          fontSize: 14.sp, fontWeight: FontWeight.w500,
+        )),
+        subtitle: subtitle != null ? Text(subtitle!, style: TextStyle(
+          color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
+          fontSize: 12.sp,
+        )) : null,
+        trailing: trailing ?? (onTap != null ? Icon(Icons.chevron_right, color: isDark ? FitColors.textMutedDark : FitColors.textMutedLight) : null),
+      ),
+    );
+  }
 }
 
 class _ThemeModeSelector extends ConsumerWidget {
@@ -311,14 +384,21 @@ class _ThemeModeSelector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return PopupMenuButton<ThemeMode>(
       initialValue: currentMode,
       onSelected: (mode) => ref.read(themeProvider.notifier).setThemeMode(mode),
-      color: FitColors.card,
+      color: isDark ? FitColors.cardDark : FitColors.cardLight,
       itemBuilder: (context) => [
-        PopupMenuItem(value: ThemeMode.system, child: Text('System', style: TextStyle(color: FitColors.textPrimary))),
-        PopupMenuItem(value: ThemeMode.light, child: Text('Light', style: TextStyle(color: FitColors.textPrimary))),
-        PopupMenuItem(value: ThemeMode.dark, child: Text('Dark', style: TextStyle(color: FitColors.textPrimary))),
+        PopupMenuItem(value: ThemeMode.system, child: Text('System', style: TextStyle(
+          color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+        ))),
+        PopupMenuItem(value: ThemeMode.light, child: Text('Light', style: TextStyle(
+          color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+        ))),
+        PopupMenuItem(value: ThemeMode.dark, child: Text('Dark', style: TextStyle(
+          color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+        ))),
       ],
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),

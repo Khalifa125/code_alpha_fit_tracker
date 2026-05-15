@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:fit_tracker/src/features/fitness/data/models/fitness_models.dart';
 import 'package:fit_tracker/src/features/fitness/presentation/providers/fitness_providers.dart';
+import 'package:fit_tracker/src/shared/widgets/glass_container.dart';
 import 'package:fit_tracker/src/features/fitness/presentation/widgets/fitness_widgets.dart';
 import 'package:fit_tracker/src/features/fitness/presentation/screens/add_activity_screen.dart';
 import 'package:fit_tracker/src/features/fitness/presentation/screens/history_screen.dart';
@@ -181,147 +182,171 @@ class _HomeTab extends ConsumerWidget {
       ref.invalidate(weightEntriesProvider);
     }
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: FitColors.background,
-      body: SafeArea(
-        child: RefreshIndicator(
-          color: FitColors.neonGreen,
-          backgroundColor: FitColors.card,
-          onRefresh: () async => invalidateAll(),
-          child: RepaintBoundary(child: CustomScrollView(
-            cacheExtent: 500,
-            slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 0),
-                  child: _HomeHeader(),
-                ),
-              ),
-
-              // KPI Row (matching mockup style)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
-                  child: summaryAsync.when(
-                    loading: () => _KPISkeletonRow(),
-                    error: (_, __) => _KPISkeletonRow(),
-                    data: (s) => _KPISummaryRow(
-                      summary: s,
-                      waterState: ref.watch(waterProvider),
-                      sleepState: ref.watch(sleepProvider),
-                    ),
+      backgroundColor: isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              FitColors.neonGreen.withValues(alpha: 0.03),
+              isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
+              isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: RefreshIndicator(
+            color: FitColors.neonGreen,
+            backgroundColor: FitColors.card,
+            onRefresh: () async => invalidateAll(),
+            child: RepaintBoundary(child: CustomScrollView(
+              cacheExtent: 500,
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 0),
+                    child: _HomeHeader(),
                   ),
                 ),
-              ),
 
-              // Today's Workout Card (matching mockup style)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
-                  child: _TodaysWorkoutCard(summary: summaryAsync.value),
-                ),
-              ),
-
-              // Weekly Chart
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
-                  child: weekAsync.when(
-                    loading: () => const SizedBox.shrink(),
-                    error: (_, __) => const SizedBox.shrink(),
-                    data: (w) => _WeeklyBarChart(activities: w),
-                  ),
-                ),
-              ),
-
-              // Quick Actions
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 12.h),
-                  child: _SectionHeader(
-                    title: 'Quick Actions',
-                    action: 'See All',
-                    onAction: () => Navigator.push<void>(
-                      context,
-                      MaterialPageRoute<void>(builder: (_) => const WorkoutPlansScreen()),
-                    ),
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 20.h),
-                  child: Row(children: [
-                    Expanded(
-                      child: _QuickActionTile(
-                        icon: Icons.fitness_center_rounded,
-                        label: 'Workouts',
-                        color: FitColors.purple,
-                        onTap: () => Navigator.push<void>(context,
-                          MaterialPageRoute<void>(builder: (_) => const WorkoutPlansScreen())),
+                // KPI Row (matching mockup style)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
+                    child: summaryAsync.when(
+                      loading: () => _KPISkeletonRow(),
+                      error: (_, __) => _KPISkeletonRow(),
+                      data: (s) => GlassContainer(
+                        opacity: isDark ? 0.06 : 0.2,
+                        padding: EdgeInsets.all(16.r),
+                        radius: 20,
+                        child: _KPISummaryRow(
+                          summary: s,
+                          waterState: ref.watch(waterProvider),
+                          sleepState: ref.watch(sleepProvider),
+                        ),
                       ),
                     ),
-                    SizedBox(width: 12.w),
-                    Expanded(
-                      child: _QuickActionTile(
-                        icon: Icons.monitor_weight_rounded,
-                        label: 'BMI',
-                        color: FitColors.neonGreen,
-                        onTap: () => Navigator.push<void>(context,
-                          MaterialPageRoute<void>(builder: (_) => const BmiScreen()))
+                  ),
+                ),
+
+                // Today's Workout Card (matching mockup style)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
+                    child: _TodaysWorkoutCard(summary: summaryAsync.value),
+                  ),
+                ),
+
+                // Weekly Chart
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
+                    child: weekAsync.when(
+                      loading: () => const SizedBox.shrink(),
+                      error: (_, __) => const SizedBox.shrink(),
+                      data: (w) => GlassContainer(
+                        opacity: isDark ? 0.06 : 0.2,
+                        padding: EdgeInsets.all(16.r),
+                        radius: 20,
+                        child: _WeeklyBarChart(activities: w),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Quick Actions
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 12.h),
+                    child: _SectionHeader(
+                      title: 'Quick Actions',
+                      action: 'See All',
+                      onAction: () => Navigator.push<void>(
+                        context,
+                        MaterialPageRoute<void>(builder: (_) => const WorkoutPlansScreen()),
+                      ),
+                    ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 20.h),
+                    child: Row(children: [
+                      Expanded(
+                        child: _QuickActionTile(
+                          icon: Icons.fitness_center_rounded,
+                          label: 'Workouts',
+                          color: FitColors.purple,
+                          onTap: () => Navigator.push<void>(context,
+                            MaterialPageRoute<void>(builder: (_) => const WorkoutPlansScreen())),
+                        ),
+                      ),
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: _QuickActionTile(
+                          icon: Icons.monitor_weight_rounded,
+                          label: 'BMI',
+                          color: FitColors.neonGreen,
+                          onTap: () => Navigator.push<void>(context,
+                            MaterialPageRoute<void>(builder: (_) => const BmiScreen()))
+                              .then((_) => invalidateAll()),
+                        ),
+                      ),
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: _QuickActionTile(
+                          icon: Icons.water_drop_rounded,
+                          label: 'Water',
+                          color: FitColors.blue,
+                          onTap: () => Navigator.push<void>(context,
+                            MaterialPageRoute<void>(builder: (_) => const WaterTrackingScreen())),
+                        ),
+                      ),
+                    ]),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 20.h),
+                    child: Row(children: [
+                      Expanded(
+                        child: _QuickActionTile(
+                          icon: Icons.nightlight_rounded,
+                          label: 'Sleep',
+                          color: FitColors.purple,
+                          onTap: () => Navigator.push<void>(context,
+                            MaterialPageRoute<void>(builder: (_) => const SleepTrackingScreen())),
+                        ),
+                      ),
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: _QuickActionTile(
+                          icon: Icons.favorite_rounded,
+                          label: 'Heart',
+                          color: FitColors.red,
+                          onTap: () => Navigator.push<void>(context,
+                            MaterialPageRoute<void>(builder: (_) => const HeartRateScreen())),
+                        ),
+                      ),
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: _QuickActionTile(
+                          icon: Icons.history_rounded,
+                          label: 'History',
+                          color: FitColors.orange,
+                          onTap: () => Navigator.push<void>(context,
+                            MaterialPageRoute<void>(builder: (_) => const HistoryScreen()))
                             .then((_) => invalidateAll()),
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 12.w),
-                    Expanded(
-                      child: _QuickActionTile(
-                        icon: Icons.water_drop_rounded,
-                        label: 'Water',
-                        color: FitColors.blue,
-                        onTap: () => Navigator.push<void>(context,
-                          MaterialPageRoute<void>(builder: (_) => const WaterTrackingScreen())),
-                      ),
-                    ),
-                  ]),
+                    ]),
+                  ),
                 ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 20.h),
-                  child: Row(children: [
-                    Expanded(
-                      child: _QuickActionTile(
-                        icon: Icons.nightlight_rounded,
-                        label: 'Sleep',
-                        color: FitColors.purple,
-                        onTap: () => Navigator.push<void>(context,
-                          MaterialPageRoute<void>(builder: (_) => const SleepTrackingScreen())),
-                      ),
-                    ),
-                    SizedBox(width: 12.w),
-                    Expanded(
-                      child: _QuickActionTile(
-                        icon: Icons.favorite_rounded,
-                        label: 'Heart',
-                        color: FitColors.red,
-                        onTap: () => Navigator.push<void>(context,
-                          MaterialPageRoute<void>(builder: (_) => const HeartRateScreen())),
-                      ),
-                    ),
-                    SizedBox(width: 12.w),
-                    Expanded(
-                      child: _QuickActionTile(
-                        icon: Icons.history_rounded,
-                        label: 'History',
-                        color: FitColors.orange,
-                        onTap: () => Navigator.push<void>(context,
-                          MaterialPageRoute<void>(builder: (_) => const HistoryScreen()))
-                          .then((_) => invalidateAll()),
-                      ),
-                    ),
-                  ]),
-                ),
-              ),
 
               // Today's Activities
               SliverToBoxAdapter(
@@ -365,7 +390,8 @@ class _HomeTab extends ConsumerWidget {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+    ),
+    floatingActionButton: FloatingActionButton.extended(
 onPressed: () => Navigator.push<void>(
           context,
           MaterialPageRoute<void>(builder: (_) => const AddActivityScreen()),
@@ -525,35 +551,25 @@ class _StepsHeroCard extends StatelessWidget {
     const stepGoal = 10000;
     final progress = (summary.totalSteps / stepGoal).clamp(0.0, 1.0);
 
-    return Container(
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GlassContainer(
+      opacity: isDark ? 0.06 : 0.2,
+      radius: 24,
       padding: EdgeInsets.all(20.r),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            FitColors.card,
-            FitColors.card.withValues(alpha: 0.95),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+      tint: FitColors.neonGreen.withValues(alpha: 0.5),
+      border: BorderSide(color: FitColors.neonGreen.withValues(alpha: 0.2)),
+      shadow: [
+        BoxShadow(
+          color: FitColors.neonGreen.withValues(alpha: 0.1),
+          blurRadius: 20,
+          offset: const Offset(0, 8),
         ),
-        borderRadius: BorderRadius.circular(24.r),
-        border: Border.all(
-          color: FitColors.neonGreen.withValues(alpha: 0.2),
-          width: 1,
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.2),
+          blurRadius: 10,
+          offset: const Offset(0, 4),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: FitColors.neonGreen.withValues(alpha: 0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+      ],
       child: Row(
         children: [
           // Circular progress with glow
@@ -717,13 +733,11 @@ class _GoalsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GlassContainer(
+      opacity: isDark ? 0.06 : 0.2,
+      radius: 20,
       padding: EdgeInsets.all(16.r),
-      decoration: BoxDecoration(
-        color: FitColors.card,
-        borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: FitColors.border),
-      ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Text("Today's Goals",
@@ -871,13 +885,11 @@ class _WeeklyBarChartState extends State<_WeeklyBarChart> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GlassContainer(
+      opacity: isDark ? 0.06 : 0.2,
+      radius: 20,
       padding: EdgeInsets.all(16.r),
-      decoration: BoxDecoration(
-        color: FitColors.card,
-        borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: FitColors.border),
-      ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Text('Activity',
@@ -970,12 +982,8 @@ class _PeriodChip extends StatelessWidget {
 // ─── Quick Action Tile ─────────────────────────────────────────────────────
 
 class _QuickActionTile extends StatelessWidget {
-  const _QuickActionTile({
-    required this.icon,
-    required this.label,
-    required this.color,
-    required this.onTap,
-  });
+  const _QuickActionTile({required this.icon, required this.label, required this.color, required this.onTap});
+
   final IconData icon;
   final String label;
   final Color color;
@@ -984,27 +992,18 @@ class _QuickActionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) => GestureDetector(
     onTap: onTap,
-    child: Container(
+    child: GlassContainer(
+      radius: 16,
       padding: EdgeInsets.symmetric(vertical: 14.h),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            color.withValues(alpha: 0.08),
-            color.withValues(alpha: 0.04),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+      tint: color,
+      border: BorderSide(color: color.withValues(alpha: 0.15)),
+      shadow: [
+        BoxShadow(
+          color: color.withValues(alpha: 0.1),
+          blurRadius: 8,
+          offset: const Offset(0, 2),
         ),
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: color.withValues(alpha: 0.15)),
-        boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      ],
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -1071,86 +1070,48 @@ class _FitEmptyCard extends StatelessWidget {
   final String message;
 
   @override
-  Widget build(BuildContext context) => Container(
-    width: double.infinity,
-    padding: EdgeInsets.symmetric(vertical: 32.h),
-    decoration: BoxDecoration(
-      color: FitColors.card,
-      borderRadius: BorderRadius.circular(16.r),
-      border: Border.all(color: FitColors.border),
-    ),
-    child: Column(children: [
-      Text(emoji, style: TextStyle(fontSize: 36.sp)),
-      SizedBox(height: 10.h),
-      Text(message,
-        textAlign: TextAlign.center,
-        style: TextStyle(color: FitColors.textSecondary, fontSize: 13.sp, height: 1.5)),
-    ]),
-  );
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GlassContainer(
+      opacity: isDark ? 0.06 : 0.2,
+      radius: 16,
+      padding: EdgeInsets.symmetric(vertical: 32.h),
+      child: Column(children: [
+        Text(emoji, style: TextStyle(fontSize: 36.sp)),
+        SizedBox(height: 10.h),
+        Text(message,
+          textAlign: TextAlign.center,
+          style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 13.sp, height: 1.5)),
+      ]),
+    );
+  }
 }
 
 // ─── Skeleton ──────────────────────────────────────────────────────────────
 
 class _StepsSkeletonCard extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => Container(
-    padding: EdgeInsets.all(20.r),
-    height: 150.h,
-    decoration: BoxDecoration(
-      color: FitColors.card,
-      borderRadius: BorderRadius.circular(24.r),
-      border: Border.all(color: FitColors.border.withValues(alpha: 0.3)),
-    ),
-    child: Row(
-      children: [
-        Container(
-          width: 100.w,
-          height: 100.w,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: FitColors.border,
-          ),
-        ).animate(onPlay: (c) => c.repeat())
-          .shimmer(duration: 1200.ms, color: FitColors.textMuted.withValues(alpha: 0.3)),
-        SizedBox(width: 20.w),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 80.w,
-                height: 14.h,
-                decoration: BoxDecoration(
-                  color: FitColors.border,
-                  borderRadius: BorderRadius.circular(4.r),
-                ),
-              ),
-              SizedBox(height: 12.h),
-              Container(
-                width: 120.w,
-                height: 10.h,
-                decoration: BoxDecoration(
-                  color: FitColors.border,
-                  borderRadius: BorderRadius.circular(4.r),
-                ),
-              ),
-              SizedBox(height: 8.h),
-              Container(
-                width: 100.w,
-                height: 10.h,
-                decoration: BoxDecoration(
-                  color: FitColors.border,
-                  borderRadius: BorderRadius.circular(4.r),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ),
-  ).animate(onPlay: (c) => c.repeat())
-    .shimmer(duration: 1200.ms, color: FitColors.neonGreen.withValues(alpha: 0.1));
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GlassContainer(
+      opacity: isDark ? 0.06 : 0.2,
+      radius: 24,
+      padding: EdgeInsets.all(20.r),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Container(height: 14, width: 140.w, decoration: BoxDecoration(color: FitColors.border, borderRadius: BorderRadius.circular(4))),
+        SizedBox(height: 16.h),
+        Row(children: [
+          Container(width: 80.w, height: 80.w, decoration: BoxDecoration(shape: BoxShape.circle, color: FitColors.border)),
+          SizedBox(width: 20.w),
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Container(height: 12, width: 100.w, decoration: BoxDecoration(color: FitColors.border, borderRadius: BorderRadius.circular(4))),
+            SizedBox(height: 8.h),
+            Container(height: 10, width: 60.w, decoration: BoxDecoration(color: FitColors.border, borderRadius: BorderRadius.circular(4))),
+          ]),
+        ]),
+      ]),
+    );
+  }
 }
 
 // ─── KPI Row (matching mockup) ───────────────────────────────────────────────
@@ -1191,22 +1152,20 @@ class _KPICard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Expanded(
-      child: Container(
+      child: GlassCard(
+        opacity: isDark ? 0.06 : 0.2,
+        radius: 12,
         padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
-        decoration: BoxDecoration(
-          color: FitColors.cardDark,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: FitColors.borderDark),
-        ),
         child: Column(
           children: [
             Icon(icon, color: color, size: 16),
             SizedBox(height: 4.h),
-            Text(value, style: TextStyle(color: FitColors.textPrimaryDark, fontSize: 13.sp, fontWeight: FontWeight.w700)),
+            Text(value, style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight, fontSize: 13.sp, fontWeight: FontWeight.w700)),
             Text(unit, style: TextStyle(color: color, fontSize: 9.sp, fontWeight: FontWeight.w600)),
             SizedBox(height: 2.h),
-            Text(label, style: TextStyle(color: FitColors.textSecondaryDark.withValues(alpha: 0.6), fontSize: 8.sp)),
+            Text(label, style: TextStyle(color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), fontSize: 8.sp)),
           ],
         ),
       ),
@@ -1217,18 +1176,18 @@ class _KPICard extends StatelessWidget {
 class _KPISkeletonRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       children: List.generate(4, (i) => Expanded(
-        child: Container(
-          margin: EdgeInsets.only(right: i < 3 ? 8.w : 0),
+        child: SizedBox(
           height: 82.h,
-          decoration: BoxDecoration(
-            color: FitColors.cardDark,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: FitColors.borderDark.withValues(alpha: 0.3)),
+          child: GlassContainer(
+            opacity: isDark ? 0.06 : 0.2,
+            radius: 12,
+            margin: EdgeInsets.only(right: i < 3 ? 8.w : 0),
           ),
         ).animate(onPlay: (c) => c.repeat())
-          .shimmer(duration: 1200.ms, color: FitColors.textSecondaryDark.withValues(alpha: 0.1)),
+          .shimmer(duration: 1200.ms, color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.1)),
       )),
     );
   }
@@ -1242,18 +1201,14 @@ class _TodaysWorkoutCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final hasWorkoutToday = (summary?.activityCount ?? 0) > 0;
-    return Container(
+    return GlassContainer(
+      opacity: isDark ? 0.06 : 0.2,
+      radius: 16,
       padding: EdgeInsets.all(16.r),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [FitColors.neonGreen.withValues(alpha: 0.15), FitColors.neonGreen.withValues(alpha: 0.05)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: FitColors.neonGreen.withValues(alpha: 0.3)),
-      ),
+      tint: FitColors.neonGreen.withValues(alpha: 0.5),
+      border: BorderSide(color: FitColors.neonGreen.withValues(alpha: 0.3)),
       child: Row(
         children: [
           Container(
@@ -1377,20 +1332,19 @@ class _ActivityTab extends ConsumerWidget {
 class _ActivityTabSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(children: [
       for (final label in ['Day', 'Week', 'Month', 'Year'])
         Padding(
           padding: EdgeInsets.only(right: 8.w),
-          child: Container(
+          child: GlassContainer(
+            opacity: label == 'Week' ? 0.9 : isDark ? 0.06 : 0.2,
+            radius: 20,
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-            decoration: BoxDecoration(
-              color: label == 'Week' ? FitColors.neonGreen : FitColors.card,
-              borderRadius: BorderRadius.circular(20.r),
-              border: Border.all(color: label == 'Week' ? FitColors.neonGreen : FitColors.border),
-            ),
+            tint: label == 'Week' ? FitColors.neonGreen : null,
             child: Text(label,
               style: TextStyle(
-                color: label == 'Week' ? FitColors.background : FitColors.textSecondary,
+                color: label == 'Week' ? FitColors.background : (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
                 fontSize: 12.sp,
                 fontWeight: label == 'Week' ? FontWeight.w700 : FontWeight.w400,
               )),
@@ -1405,24 +1359,24 @@ class _ActivityHeroStat extends StatelessWidget {
   final DailySummary summary;
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: EdgeInsets.all(16.r),
-    decoration: BoxDecoration(
-      color: FitColors.card,
-      borderRadius: BorderRadius.circular(20.r),
-      border: Border.all(color: FitColors.border),
-    ),
-    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text('${summary.totalSteps.toStringAsFixed(0)} steps',
-        style: TextStyle(color: FitColors.textPrimary, fontSize: 32.sp, fontWeight: FontWeight.w800)),
-      SizedBox(height: 4.h),
-      Row(children: [
-        Icon(Icons.arrow_upward_rounded, color: FitColors.neonGreen, size: 14.sp),
-        Text('+10% vs last week',
-          style: TextStyle(color: FitColors.neonGreen, fontSize: 12.sp, fontWeight: FontWeight.w600)),
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GlassContainer(
+      opacity: isDark ? 0.06 : 0.2,
+      radius: 20,
+      padding: EdgeInsets.all(16.r),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text('${summary.totalSteps.toStringAsFixed(0)} steps',
+          style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight, fontSize: 32.sp, fontWeight: FontWeight.w800)),
+        SizedBox(height: 4.h),
+        Row(children: [
+          Icon(Icons.arrow_upward_rounded, color: FitColors.neonGreen, size: 14.sp),
+          Text('+10% vs last week',
+            style: TextStyle(color: FitColors.neonGreen, fontSize: 12.sp, fontWeight: FontWeight.w600)),
+        ]),
       ]),
-    ]),
-  );
+    );
+  }
 }
 
 class _ActivityStatsRow extends StatelessWidget {
@@ -1430,33 +1384,33 @@ class _ActivityStatsRow extends StatelessWidget {
   final DailySummary summary;
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: EdgeInsets.all(16.r),
-    decoration: BoxDecoration(
-      color: FitColors.card,
-      borderRadius: BorderRadius.circular(20.r),
-      border: Border.all(color: FitColors.border),
-    ),
-    child: Row(children: [
-      Expanded(child: _ActivityStatCol(
-        label: 'Distance',
-        value: '${(summary.totalSteps * 0.0007).toStringAsFixed(1)} km',
-        color: FitColors.orange,
-      )),
-      Container(width: 0.5, height: 40.h, color: FitColors.border),
-      Expanded(child: _ActivityStatCol(
-        label: 'Calories',
-        value: '${summary.totalCalories.toStringAsFixed(0)} kcal',
-        color: FitColors.neonGreen,
-      )),
-      Container(width: 0.5, height: 40.h, color: FitColors.border),
-      Expanded(child: _ActivityStatCol(
-        label: 'Active Time',
-        value: '${(summary.totalMinutes ~/ 60)}h ${summary.totalMinutes % 60}m',
-        color: FitColors.blue,
-      )),
-    ]),
-  );
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GlassContainer(
+      opacity: isDark ? 0.06 : 0.2,
+      radius: 20,
+      padding: EdgeInsets.all(16.r),
+      child: Row(children: [
+        Expanded(child: _ActivityStatCol(
+          label: 'Distance',
+          value: '${(summary.totalSteps * 0.0007).toStringAsFixed(1)} km',
+          color: FitColors.orange,
+        )),
+        Container(width: 0.5, height: 40.h, color: FitColors.border),
+        Expanded(child: _ActivityStatCol(
+          label: 'Calories',
+          value: '${summary.totalCalories.toStringAsFixed(0)} kcal',
+          color: FitColors.neonGreen,
+        )),
+        Container(width: 0.5, height: 40.h, color: FitColors.border),
+        Expanded(child: _ActivityStatCol(
+          label: 'Active Time',
+          value: '${(summary.totalMinutes ~/ 60)}h ${summary.totalMinutes % 60}m',
+          color: FitColors.blue,
+        )),
+      ]),
+    );
+  }
 }
 
 class _ActivityStatCol extends StatelessWidget {
@@ -1482,6 +1436,7 @@ class _NutritionTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final nutritionState = ref.watch(nutritionProvider);
     final totalCals = nutritionState.totalCalories;
     final budget = nutritionState.calorieGoal;
@@ -1518,19 +1473,16 @@ class _NutritionTab extends ConsumerWidget {
             SizedBox(height: 20.h),
 
             // Calorie circle
-            Container(
+            GlassContainer(
+              opacity: isDark ? 0.06 : 0.2,
+              radius: 20,
               padding: EdgeInsets.all(20.r),
-              decoration: BoxDecoration(
-                color: FitColors.card,
-                borderRadius: BorderRadius.circular(20.r),
-                border: Border.all(color: FitColors.border),
-              ),
               child: Column(children: [
                 Text('Calorie Budget',
-                  style: TextStyle(color: FitColors.textSecondary, fontSize: 13.sp)),
+                  style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 13.sp)),
                 SizedBox(height: 4.h),
                 Text('$budget kcal',
-                  style: TextStyle(color: FitColors.textPrimary, fontSize: 18.sp, fontWeight: FontWeight.w700)),
+                  style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight, fontSize: 18.sp, fontWeight: FontWeight.w700)),
                 SizedBox(height: 16.h),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   SizedBox(
@@ -1601,14 +1553,11 @@ class _NutritionTab extends ConsumerWidget {
                     : entry.mealType == 'Lunch' ? FitColors.neonGreen
                     : entry.mealType == 'Dinner' ? FitColors.blue
                     : FitColors.purple;
-                return Container(
-                  margin: EdgeInsets.only(bottom: 10.h),
+                return GlassContainer(
+                  opacity: isDark ? 0.06 : 0.2,
+                  radius: 16,
                   padding: EdgeInsets.all(14.r),
-                  decoration: BoxDecoration(
-                    color: FitColors.card,
-                    borderRadius: BorderRadius.circular(16.r),
-                    border: Border.all(color: FitColors.border),
-                  ),
+                  margin: EdgeInsets.only(bottom: 10.h),
                   child: Row(children: [
                     Container(
                       padding: EdgeInsets.all(10.r),
@@ -1694,10 +1643,11 @@ class _ProfileTab extends ConsumerWidget {
     final profileAsync = ref.watch(fitnessProfileProvider);
     final authState = ref.watch(authStateProvider);
     final userName = authState.user?.name ?? 'Athlete';
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final userEmail = authState.user?.email ?? '';
 
     return Scaffold(
-      backgroundColor: FitColors.background,
+      backgroundColor: isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
       body: SafeArea(
         child: ListView(
           padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 80.h),
@@ -1735,13 +1685,10 @@ class _ProfileTab extends ConsumerWidget {
             SizedBox(height: 20.h),
 
             // Stats
-            Container(
+            GlassContainer(
+              opacity: isDark ? 0.06 : 0.2,
+              radius: 20,
               padding: EdgeInsets.all(16.r),
-              decoration: BoxDecoration(
-                color: FitColors.card,
-                borderRadius: BorderRadius.circular(20.r),
-                border: Border.all(color: FitColors.border),
-              ),
               child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
                 const _ProfileStat(label: 'Workouts', value: '48', color: FitColors.neonGreen),
                 Container(width: 0.5, height: 36.h, color: FitColors.border),
@@ -1756,14 +1703,11 @@ class _ProfileTab extends ConsumerWidget {
             profileAsync.maybeWhen(
               data: (profile) {
                 if (profile == null) return const SizedBox.shrink();
-                return Container(
-                  margin: EdgeInsets.only(bottom: 20.h),
+                return GlassContainer(
+                  opacity: isDark ? 0.06 : 0.2,
+                  radius: 20,
                   padding: EdgeInsets.all(16.r),
-                  decoration: BoxDecoration(
-                    color: FitColors.card,
-                    borderRadius: BorderRadius.circular(20.r),
-                    border: Border.all(color: FitColors.border),
-                  ),
+                  margin: EdgeInsets.only(bottom: 20.h),
                   child: Row(children: [
                     Expanded(child: _ProfileStat(label: 'Height', value: '${profile.heightCm.toInt()} cm', color: FitColors.purple)),
                     Container(width: 0.5, height: 36.h, color: FitColors.border),
@@ -1779,13 +1723,11 @@ class _ProfileTab extends ConsumerWidget {
             // Menu
             ...List.generate(_menuItems.length, (i) {
               final (icon, label, color) = _menuItems[i];
-              return Container(
+              return GlassContainer(
+                opacity: isDark ? 0.06 : 0.2,
+                radius: 14,
+                padding: EdgeInsets.zero,
                 margin: EdgeInsets.only(bottom: 8.h),
-                decoration: BoxDecoration(
-                  color: FitColors.card,
-                  borderRadius: BorderRadius.circular(14.r),
-                  border: Border.all(color: FitColors.border),
-                ),
                 child: ListTile(
                   leading: Container(
                     padding: EdgeInsets.all(8.r),
