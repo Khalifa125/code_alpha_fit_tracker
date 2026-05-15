@@ -42,8 +42,7 @@ class _FitnessScreenState extends ConsumerState<FitnessScreen> with AutomaticKee
   }
 
   void _generateQuickWorkout() {
-    HapticFeedback.mediumImpact();
-    final ref = ProviderScope.containerOf(context);
+    try { HapticFeedback.mediumImpact(); } catch (_) {}
     ref.read(workoutProvider.notifier).generateWorkout(
       goal: 'Stay Active',
       fitnessLevel: 'Intermediate',

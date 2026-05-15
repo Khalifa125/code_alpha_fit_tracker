@@ -29,7 +29,10 @@ Future<void> main() async {
     FlutterError.presentError(details);
   };
 
-  PlatformDispatcher.instance.onError = (error, stack) => true;
+  PlatformDispatcher.instance.onError = (error, stack) {
+    debugPrint('Unhandled platform error: $error\n$stack');
+    return false;
+  };
 
   await _initFirebase();
   await Hive.initFlutter();

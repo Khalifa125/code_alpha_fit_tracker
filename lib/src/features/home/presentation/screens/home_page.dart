@@ -1258,6 +1258,42 @@ class _WorkoutTab extends StatelessWidget {
 
 // ─── ACTIVITY TAB ──────────────────────────────────────────────────────────
 
+class _ActivitySkeleton extends StatelessWidget {
+  const _ActivitySkeleton({required this.height});
+  final double height;
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GlassContainer(
+      opacity: isDark ? 0.06 : 0.2,
+      radius: 20,
+      padding: EdgeInsets.all(16.r),
+    ).animate(onPlay: (c) => c.repeat())
+      .shimmer(duration: 1200.ms, color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.1));
+  }
+}
+
+class _ActivityError extends StatelessWidget {
+  const _ActivityError({required this.message});
+  final String message;
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GlassContainer(
+      opacity: isDark ? 0.06 : 0.2,
+      radius: 20,
+      padding: EdgeInsets.all(16.r),
+      child: Center(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Icon(Icons.error_outline_rounded, color: FitColors.orange, size: 32.sp),
+          SizedBox(height: 8.h),
+          Text('Something went wrong', style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 13.sp)),
+        ]),
+      ),
+    );
+  }
+}
+
 class _ActivityTab extends ConsumerWidget {
   const _ActivityTab();
 
@@ -1292,8 +1328,8 @@ class _ActivityTab extends ConsumerWidget {
               child: Padding(
                 padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 20.h),
                 child: summaryAsync.when(
-                  loading: () => const SizedBox.shrink(),
-                  error: (_, __) => const SizedBox.shrink(),
+                  loading: () => _ActivitySkeleton(height: 120.h),
+                  error: (e, _) => _ActivityError(message: e.toString()),
                   data: (s) => _ActivityHeroStat(summary: s),
                 ),
               ),
@@ -1304,8 +1340,8 @@ class _ActivityTab extends ConsumerWidget {
               child: Padding(
                 padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 20.h),
                 child: weekAsync.when(
-                  loading: () => const SizedBox.shrink(),
-                  error: (_, __) => const SizedBox.shrink(),
+                  loading: () => _ActivitySkeleton(height: 200.h),
+                  error: (e, _) => _ActivityError(message: e.toString()),
                   data: (w) => _WeeklyBarChart(activities: w),
                 ),
               ),
@@ -1316,8 +1352,8 @@ class _ActivityTab extends ConsumerWidget {
               child: Padding(
                 padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 80.h),
                 child: summaryAsync.when(
-                  loading: () => const SizedBox.shrink(),
-                  error: (_, __) => const SizedBox.shrink(),
+                  loading: () => _ActivitySkeleton(height: 80.h),
+                  error: (e, _) => _ActivityError(message: e.toString()),
                   data: (s) => _ActivityStatsRow(summary: s),
                 ),
               ),
@@ -1717,7 +1753,13 @@ class _ProfileTab extends ConsumerWidget {
                   ]),
                 );
               },
-              orElse: () => const SizedBox.shrink(),
+              orElse: () => GlassContainer(
+                opacity: isDark ? 0.06 : 0.2,
+                radius: 20,
+                padding: EdgeInsets.all(16.r),
+                margin: EdgeInsets.only(bottom: 20.h),
+                child: SizedBox(height: 36.h),
+              ),
             ),
 
             // Menu
