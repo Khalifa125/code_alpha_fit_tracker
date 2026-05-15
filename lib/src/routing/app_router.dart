@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:fit_tracker/src/routing/global_navigator.dart';
@@ -138,31 +139,37 @@ class _MainShellState extends State<MainShell> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final location = GoRouterState.of(context).uri.path;
     final selectedIndex = _destinations.indexWhere((d) => d.$1 == location).clamp(0, _destinations.length - 1);
 
     return Scaffold(
-      backgroundColor: FitColors.backgroundDark,
+      backgroundColor: isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
       body: widget.child,
-      bottomNavigationBar: NavigationBarTheme(
-        data: NavigationBarThemeData(
-          labelTextStyle: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) {
-              return const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600);
-            }
-            return const TextStyle(color: FitColors.textSecondary, fontSize: 12);
-          }),
-        ),
-        child: NavigationBar(
-          selectedIndex: selectedIndex,
-          onDestinationSelected: (index) => context.go(_destinations[index].$1),
-          backgroundColor: FitColors.surfaceDark,
-          indicatorColor: FitColors.neonGreen,
-          destinations: _destinations.map((d) => NavigationDestination(
-            icon: Icon(d.$2, color: FitColors.textSecondary),
-            selectedIcon: Icon(d.$2, color: Colors.white),
-            label: d.$3,
-          )).toList(),
+      bottomNavigationBar: ClipRRect(
+        child: BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: NavigationBarTheme(
+            data: NavigationBarThemeData(
+              labelTextStyle: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) {
+                  return TextStyle(color: isDark ? Colors.white : FitColors.textPrimaryLight, fontSize: 12, fontWeight: FontWeight.w600);
+                }
+                return TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 12);
+              }),
+            ),
+            child: NavigationBar(
+              selectedIndex: selectedIndex,
+              onDestinationSelected: (index) => context.go(_destinations[index].$1),
+              backgroundColor: (isDark ? FitColors.surfaceDark : Colors.white).withValues(alpha: 0.7),
+              indicatorColor: FitColors.neonGreen,
+              destinations: _destinations.map((d) => NavigationDestination(
+                icon: Icon(d.$2, color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
+                selectedIcon: Icon(d.$2, color: Colors.white),
+                label: d.$3,
+              )).toList(),
+            ),
+          ),
         ),
       ),
     );

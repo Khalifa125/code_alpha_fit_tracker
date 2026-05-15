@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -34,6 +35,7 @@ class _FitTrackShellState extends ConsumerState<FitTrackShell> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final currentPath = GoRouterState.of(context).uri.path;
     final index = _navItems.indexWhere((item) => item.path == currentPath);
     if (index != -1 && index != _currentIndex) {
@@ -43,29 +45,35 @@ class _FitTrackShellState extends ConsumerState<FitTrackShell> {
     }
 
     return Scaffold(
+      backgroundColor: isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
       body: widget.child,
-      bottomNavigationBar: DecoratedBox(
-        decoration: BoxDecoration(
-          color: FitColors.card,
-          border: Border(
-            top: BorderSide(color: FitColors.border.withValues(alpha: 0.3)),
-          ),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: _navItems.asMap().entries.map((entry) {
-                final item = entry.value;
-                final isSelected = entry.key == _currentIndex;
-                return _NavBarItem(
-                  icon: item.icon,
-                  label: item.label,
-                  isSelected: isSelected,
-                  onTap: () => _onTabTapped(entry.key),
-                );
-              }).toList(),
+      bottomNavigationBar: ClipRRect(
+        child: BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            decoration: BoxDecoration(
+              color: (isDark ? FitColors.surfaceDark : Colors.white).withValues(alpha: 0.7),
+              border: Border(
+                top: BorderSide(color: (isDark ? FitColors.borderDark : FitColors.borderLight).withValues(alpha: 0.3)),
+              ),
+            ),
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: _navItems.asMap().entries.map((entry) {
+                    final item = entry.value;
+                    final isSelected = entry.key == _currentIndex;
+                    return _NavBarItem(
+                      icon: item.icon,
+                      label: item.label,
+                      isSelected: isSelected,
+                      onTap: () => _onTabTapped(entry.key),
+                    );
+                  }).toList(),
+                ),
+              ),
             ),
           ),
         ),
@@ -97,6 +105,8 @@ class _NavBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final unselectedColor = isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight;
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -114,14 +124,14 @@ class _NavBarItem extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: isSelected ? FitColors.neonGreen : FitColors.textMuted,
+              color: isSelected ? FitColors.neonGreen : unselectedColor,
               size: 24,
             ),
             const SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
-                color: isSelected ? FitColors.neonGreen : FitColors.textMuted,
+                color: isSelected ? FitColors.neonGreen : unselectedColor,
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),

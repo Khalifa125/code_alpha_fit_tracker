@@ -6,6 +6,13 @@ import 'package:fit_tracker/src/imports/core_imports.dart';
 import 'package:fit_tracker/src/features/settings/presentation/providers/theme_provider.dart';
 import 'package:fit_tracker/src/shared/wrappers/error_boundary.dart';
 
+class _FitScrollBehavior extends ScrollBehavior {
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    return const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics());
+  }
+}
+
 class App extends ConsumerWidget {
   const App({super.key});
 
@@ -34,6 +41,10 @@ class App extends ConsumerWidget {
         Widget current = child!;
         current = SkeletonWrapper(child: current);
         current = SessionListenerWrapper(child: current);
+        current = ScrollConfiguration(
+          behavior: _FitScrollBehavior(),
+          child: current,
+        );
         return current;
       },
     );
