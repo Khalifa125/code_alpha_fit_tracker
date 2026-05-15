@@ -79,6 +79,7 @@ class _AnimatedProgressRingState extends State<AnimatedProgressRing>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
@@ -93,7 +94,7 @@ class _AnimatedProgressRingState extends State<AnimatedProgressRing>
                 painter: _ProgressRingPainter(
                   progress: _animation.value.clamp(0.0, 1.0),
                   strokeWidth: widget.strokeWidth,
-                  backgroundColor: widget.backgroundColor ?? FitColors.borderDark,
+                  backgroundColor: widget.backgroundColor ?? (isDark ? FitColors.borderDark : FitColors.borderLight),
                   gradientColors: widget.gradientColors ?? [FitColors.neonGreen, FitColors.neonGreen],
                 ),
               ),
@@ -107,7 +108,7 @@ class _AnimatedProgressRingState extends State<AnimatedProgressRing>
                         widget.value!,
                         style: widget.valueStyle ??
                             TextStyle(
-                              color: FitColors.textPrimary,
+                              color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
                               fontSize: widget.size * 0.18,
                               fontWeight: FontWeight.bold,
                             ),
@@ -117,7 +118,7 @@ class _AnimatedProgressRingState extends State<AnimatedProgressRing>
                         widget.label!,
                         style: widget.labelStyle ??
                             TextStyle(
-                              color: FitColors.textSecondary,
+                              color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
                               fontSize: widget.size * 0.1,
                             ),
                       ),
@@ -225,6 +226,7 @@ class MiniProgressRing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return AnimatedProgressRing(
       progress: progress,
       size: size,
@@ -234,7 +236,7 @@ class MiniProgressRing extends StatelessWidget {
       child: Text(
         '${(progress * 100).toInt()}%',
         style: TextStyle(
-          color: FitColors.textPrimary,
+          color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
           fontSize: size * 0.22,
           fontWeight: FontWeight.bold,
         ),
@@ -267,12 +269,13 @@ class DashboardProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: FitColors.cardDark,
+          color: isDark ? FitColors.cardDark : FitColors.cardLight,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: color.withValues(alpha: 0.2),
@@ -304,8 +307,8 @@ class DashboardProgressCard extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               value,
-              style: const TextStyle(
-                color: FitColors.textPrimary,
+              style: TextStyle(
+                color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
@@ -313,8 +316,8 @@ class DashboardProgressCard extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               title,
-              style: const TextStyle(
-                color: FitColors.textSecondary,
+              style: TextStyle(
+                color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
                 fontSize: 14,
               ),
             ),
@@ -322,8 +325,8 @@ class DashboardProgressCard extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 subtitle!,
-                style: const TextStyle(
-                  color: FitColors.textMuted,
+                style: TextStyle(
+                  color: isDark ? FitColors.textSecondaryDark.withValues(alpha: 0.6) : FitColors.textSecondaryLight.withValues(alpha: 0.6),
                   fontSize: 12,
                 ),
               ),

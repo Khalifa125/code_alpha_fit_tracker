@@ -7,17 +7,18 @@ class ForgotPasswordScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final emailController = TextEditingController();
 
     return Scaffold(
-      backgroundColor: FitColors.background,
+      backgroundColor: isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
       appBar: AppBar(
-        backgroundColor: FitColors.background,
+        backgroundColor: isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: FitColors.textPrimary),
+          icon: Icon(Icons.arrow_back, color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Forgot Password', style: TextStyle(color: FitColors.textPrimary)),
+        title: Text('Forgot Password', style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -26,38 +27,38 @@ class ForgotPasswordScreen extends ConsumerWidget {
             const SizedBox(height: 40),
             const Icon(Icons.lock_reset_rounded, color: FitColors.neonGreen, size: 64),
             const SizedBox(height: 24),
-            const Text(
+            Text(
               'Reset Password',
               style: TextStyle(
-                color: FitColors.textPrimary,
+                color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'Enter your email to receive reset instructions',
-              style: TextStyle(color: FitColors.textSecondary),
+              style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
             TextFormField(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
-              style: const TextStyle(color: FitColors.textPrimary),
+              style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
               decoration: InputDecoration(
                 hintText: 'Enter your email',
-                hintStyle: const TextStyle(color: FitColors.textMuted),
-                prefixIcon: const Icon(Icons.email_outlined, color: FitColors.textMuted),
+                hintStyle: TextStyle(color: isDark ? FitColors.textSecondaryDark.withValues(alpha: 0.6) : FitColors.textSecondaryLight.withValues(alpha: 0.6)),
+                prefixIcon: Icon(Icons.email_outlined, color: isDark ? FitColors.textSecondaryDark.withValues(alpha: 0.6) : FitColors.textSecondaryLight.withValues(alpha: 0.6)),
                 filled: true,
-                fillColor: FitColors.card,
+                fillColor: isDark ? FitColors.cardDark : FitColors.cardLight,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: FitColors.border),
+                  borderSide: BorderSide(color: isDark ? FitColors.borderDark : FitColors.borderLight),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: FitColors.border),
+                  borderSide: BorderSide(color: isDark ? FitColors.borderDark : FitColors.borderLight),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -81,7 +82,7 @@ class ForgotPasswordScreen extends ConsumerWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: FitColors.neonGreen,
-                  foregroundColor: FitColors.background,
+                  foregroundColor: isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),

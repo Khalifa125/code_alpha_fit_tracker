@@ -47,17 +47,18 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final authState = ref.watch(authStateProvider);
 
     return Scaffold(
-      backgroundColor: FitColors.background,
+      backgroundColor: isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
       appBar: AppBar(
-        backgroundColor: FitColors.background,
+        backgroundColor: isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: FitColors.textPrimary),
+          icon: Icon(Icons.arrow_back, color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Sign Up', style: TextStyle(color: FitColors.textPrimary)),
+        title: Text('Sign Up', style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -68,15 +69,15 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
               TextFormField(
                 controller: _nameController,
                 validator: (v) => v?.isEmpty == true ? 'Name required' : null,
-                style: TextStyle(color: FitColors.textPrimary),
+                style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
                 decoration: InputDecoration(
                   hintText: 'Full name',
-                  hintStyle: TextStyle(color: FitColors.textMuted),
+                  hintStyle: TextStyle(color: isDark ? FitColors.textSecondaryDark.withValues(alpha: 0.6) : FitColors.textSecondaryLight.withValues(alpha: 0.6)),
                   filled: true,
-                  fillColor: FitColors.card,
+                  fillColor: isDark ? FitColors.cardDark : FitColors.cardLight,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: FitColors.border),
+                    borderSide: BorderSide(color: isDark ? FitColors.borderDark : FitColors.borderLight),
                   ),
                 ),
               ),
@@ -85,15 +86,15 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 controller: _emailController,
                 validator: (v) => v?.isEmpty == true ? 'Email required' : null,
                 keyboardType: TextInputType.emailAddress,
-                style: TextStyle(color: FitColors.textPrimary),
+                style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
                 decoration: InputDecoration(
                   hintText: 'Email',
-                  hintStyle: TextStyle(color: FitColors.textMuted),
+                  hintStyle: TextStyle(color: isDark ? FitColors.textSecondaryDark.withValues(alpha: 0.6) : FitColors.textSecondaryLight.withValues(alpha: 0.6)),
                   filled: true,
-                  fillColor: FitColors.card,
+                  fillColor: isDark ? FitColors.cardDark : FitColors.cardLight,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: FitColors.border),
+                    borderSide: BorderSide(color: isDark ? FitColors.borderDark : FitColors.borderLight),
                   ),
                 ),
               ),
@@ -102,19 +103,22 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 controller: _passwordController,
                 validator: (v) => v?.isEmpty == true ? 'Password required' : null,
                 obscureText: _obscurePassword,
-                style: TextStyle(color: FitColors.textPrimary),
+                style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
                 decoration: InputDecoration(
                   hintText: 'Password',
-                  hintStyle: TextStyle(color: FitColors.textMuted),
+                  hintStyle: TextStyle(color: isDark ? FitColors.textSecondaryDark.withValues(alpha: 0.6) : FitColors.textSecondaryLight.withValues(alpha: 0.6)),
                   suffixIcon: IconButton(
-                    icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility, color: FitColors.textMuted),
+                    icon: Icon(
+                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      color: isDark ? FitColors.textSecondaryDark.withValues(alpha: 0.6) : FitColors.textSecondaryLight.withValues(alpha: 0.6),
+                    ),
                     onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                   ),
                   filled: true,
-                  fillColor: FitColors.card,
+                  fillColor: isDark ? FitColors.cardDark : FitColors.cardLight,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: FitColors.border),
+                    borderSide: BorderSide(color: isDark ? FitColors.borderDark : FitColors.borderLight),
                   ),
                 ),
               ),
@@ -126,7 +130,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   onPressed: authState.isLoading ? null : _signup,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: FitColors.neonGreen,
-                    foregroundColor: FitColors.background,
+                    foregroundColor: isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),

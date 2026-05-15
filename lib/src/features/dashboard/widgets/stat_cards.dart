@@ -28,6 +28,7 @@ class AnimatedStatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -43,7 +44,7 @@ class AnimatedStatCard extends StatelessWidget {
                   ],
                 )
               : null,
-          color: gradientColors == null ? FitColors.cardDark : null,
+          color: gradientColors == null ? (isDark ? FitColors.cardDark : FitColors.cardLight) : null,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: color.withValues(alpha: 0.2),
@@ -94,8 +95,8 @@ class AnimatedStatCard extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               value,
-              style: const TextStyle(
-                color: FitColors.textPrimary,
+              style: TextStyle(
+                color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
               ),
@@ -103,8 +104,8 @@ class AnimatedStatCard extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               title,
-              style: const TextStyle(
-                color: FitColors.textSecondary,
+              style: TextStyle(
+                color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
                 fontSize: 14,
               ),
             ),
@@ -135,10 +136,11 @@ class QuickStatTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: FitColors.cardDark,
+        color: isDark ? FitColors.cardDark : FitColors.cardLight,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: color.withValues(alpha: 0.15),
@@ -161,16 +163,16 @@ class QuickStatTile extends StatelessWidget {
               children: [
                 Text(
                   value,
-                  style: const TextStyle(
-                    color: FitColors.textPrimary,
+                  style: TextStyle(
+                    color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
                   label,
-                  style: const TextStyle(
-                    color: FitColors.textSecondary,
+                  style: TextStyle(
+                    color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
                     fontSize: 12,
                   ),
                 ),
@@ -191,8 +193,8 @@ class QuickStatTile extends StatelessWidget {
                 ),
                 Text(
                   '${(progress * 100).toInt()}%',
-                  style: const TextStyle(
-                    color: FitColors.textMuted,
+                  style: TextStyle(
+                    color: isDark ? FitColors.textSecondaryDark.withValues(alpha: 0.6) : FitColors.textSecondaryLight.withValues(alpha: 0.6),
                     fontSize: 9,
                     fontWeight: FontWeight.bold,
                   ),
