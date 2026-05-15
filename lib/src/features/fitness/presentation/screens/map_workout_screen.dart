@@ -145,7 +145,7 @@ class _MapWorkoutScreenState extends ConsumerState<MapWorkoutScreen> {
     final locationAsync = ref.watch(locationProvider);
 
     return Scaffold(
-      backgroundColor: FitColors.background,
+      backgroundColor: (Theme.of(context).brightness == Brightness.dark ? FitColors.backgroundDark : FitColors.backgroundLight),
       body: Stack(
         children: [
           RepaintBoundary(
@@ -163,9 +163,9 @@ class _MapWorkoutScreenState extends ConsumerState<MapWorkoutScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.location_off, color: FitColors.textMuted, size: 48),
+                    Icon(Icons.location_off, color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), size: 48),
                     SizedBox(height: 16.h),
-                    const Text('Location unavailable', style: TextStyle(color: FitColors.textSecondary)),
+                    Text('Location unavailable', style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight))),
                   ],
                 ),
               ),
@@ -182,7 +182,7 @@ class _MapWorkoutScreenState extends ConsumerState<MapWorkoutScreen> {
                     children: [
                       _RoundButton(
                         onTap: () => Navigator.pop(context),
-                        child: const Icon(Icons.arrow_back, color: FitColors.textPrimary),
+                        child: Icon(Icons.arrow_back, color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight)),
                       ),
                       _StatusBadge(isTracking: _isTracking),
                     ],
@@ -335,9 +335,9 @@ class _WorkoutStatsPanelState extends State<_WorkoutStatsPanel> {
       margin: EdgeInsets.all(16.r),
       padding: EdgeInsets.all(20.r),
       decoration: BoxDecoration(
-        color: FitColors.card.withValues(alpha: 0.95),
+        color: (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight).withValues(alpha: 0.95),
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: FitColors.border),
+        border: Border.all(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight)),
       ),
       child: Column(
         children: [
@@ -426,7 +426,7 @@ class _RoundButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: FitColors.card.withValues(alpha: 0.9),
+        color: (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight).withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: IconButton(
@@ -446,13 +446,13 @@ class _StatusBadge extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       decoration: BoxDecoration(
-        color: isTracking ? FitColors.neonGreen : FitColors.card.withValues(alpha: 0.9),
+        color: isTracking ? FitColors.neonGreen : (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight).withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(20.r),
       ),
       child: Text(
         isTracking ? 'Recording' : 'Ready',
         style: TextStyle(
-          color: isTracking ? Colors.white : FitColors.textPrimary,
+          color: isTracking ? Colors.white : (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -472,8 +472,8 @@ class _StatItem extends StatelessWidget {
     children: [
       Icon(icon, color: FitColors.neonGreen, size: 20.sp),
       SizedBox(height: 4.h),
-      Text(value, style: TextStyle(color: FitColors.textPrimary, fontSize: 18.sp, fontWeight: FontWeight.w700)),
-      Text(label, style: TextStyle(color: FitColors.textSecondary, fontSize: 11.sp)),
+      Text(value, style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight), fontSize: 18.sp, fontWeight: FontWeight.w700)),
+      Text(label, style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 11.sp)),
     ],
   );
 }

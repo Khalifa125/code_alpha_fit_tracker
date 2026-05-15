@@ -11,18 +11,19 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final authState = ref.watch(authProvider);
     final progress = ref.watch(progressProvider);
 
     return Scaffold(
-      backgroundColor: FitColors.background,
+      backgroundColor: (Theme.of(context).brightness == Brightness.dark ? FitColors.backgroundDark : FitColors.backgroundLight),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text(
+        title: Text(
           'Profile',
           style: TextStyle(
-            color: FitColors.textPrimary,
+            color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
@@ -53,8 +54,8 @@ class ProfileScreen extends ConsumerWidget {
                   const SizedBox(height: 16),
                   Text(
                     authState.user?.name ?? 'Athlete',
-                    style: const TextStyle(
-                      color: FitColors.textPrimary,
+                    style: TextStyle(
+                      color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
@@ -63,7 +64,7 @@ class ProfileScreen extends ConsumerWidget {
                   Text(
                     authState.user?.email ?? '',
                     style: TextStyle(
-                      color: FitColors.textSecondary,
+                      color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
                       fontSize: 14,
                     ),
                   ),
@@ -71,42 +72,42 @@ class ProfileScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 32),
-            _buildSectionTitle('Statistics'),
+            _buildSectionTitle('Statistics', context),
             const SizedBox(height: 16),
-            _buildStatCard(
+            _buildStatCard(context, 
               icon: Icons.fitness_center,
               label: 'Total Workouts',
               value: '${progress.totalWorkouts}',
               color: FitColors.neonGreen,
             ),
             const SizedBox(height: 12),
-            _buildStatCard(
+            _buildStatCard(context, 
               icon: Icons.local_fire_department,
               label: 'Current Streak',
               value: '${progress.currentStreak} days',
               color: FitColors.orange,
             ),
             const SizedBox(height: 12),
-            _buildStatCard(
+            _buildStatCard(context, 
               icon: Icons.timer,
               label: 'Total Minutes',
               value: '${progress.totalMinutes} min',
               color: FitColors.blue,
             ),
             const SizedBox(height: 32),
-            _buildSectionTitle('Account'),
+            _buildSectionTitle('Account', context),
             const SizedBox(height: 16),
-            _buildMenuItem(
+            _buildMenuItem(context, 
               icon: Icons.person_outline,
               label: 'Edit Profile',
               onTap: () {},
             ),
-            _buildMenuItem(
+            _buildMenuItem(context, 
               icon: Icons.notifications_outlined,
               label: 'Notifications',
               onTap: () {},
             ),
-            _buildMenuItem(
+            _buildMenuItem(context, 
               icon: Icons.settings_outlined,
               label: 'Settings',
               onTap: () {},
@@ -142,22 +143,26 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSectionTitle(String title) => Text(
-        title,
-        style: const TextStyle(
-          color: FitColors.textPrimary,
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-      );
+  Widget _buildSectionTitle(String title, BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Text(
+      title,
+      style: TextStyle(
+        color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
 
-  Widget _buildStatCard({
+  Widget _buildStatCard(BuildContext context, {
     required IconData icon,
     required String label,
     required String value,
     required Color color,
-  }) =>
-      Container(
+  }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: FitColors.cardDark,
@@ -179,15 +184,15 @@ class ProfileScreen extends ConsumerWidget {
               child: Text(
                 label,
                 style: TextStyle(
-                  color: FitColors.textSecondary,
+                  color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
                   fontSize: 14,
                 ),
               ),
             ),
             Text(
               value,
-              style: TextStyle(
-                color: FitColors.textPrimary,
+                style: TextStyle(
+                  color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -195,13 +200,15 @@ class ProfileScreen extends ConsumerWidget {
           ],
         ),
       );
-
-  Widget _buildMenuItem({
+  }
+}
+  Widget _buildMenuItem(BuildContext context, {
     required IconData icon,
     required String label,
     required VoidCallback onTap,
-  }) =>
-      Container(
+  }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
         margin: const EdgeInsets.only(bottom: 12),
         child: ListTile(
           onTap: onTap,
@@ -209,18 +216,18 @@ class ProfileScreen extends ConsumerWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          leading: Icon(icon, color: FitColors.textSecondary),
+          leading: Icon(icon, color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
           title: Text(
             label,
-            style: const TextStyle(
-              color: FitColors.textPrimary,
+            style: TextStyle(
+              color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
               fontSize: 16,
             ),
           ),
-          trailing: const Icon(
+          trailing: Icon(
             Icons.chevron_right,
-            color: FitColors.textSecondary,
+            color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
           ),
         ),
       );
-}
+  }

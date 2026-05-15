@@ -77,6 +77,7 @@ class _AddActivityScreenState extends ConsumerState<AddActivityScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       backgroundColor: const Color(0xFF0A0E1A),
       appBar: AppBar(
@@ -92,7 +93,7 @@ class _AddActivityScreenState extends ConsumerState<AddActivityScreen> {
           children: [
             // Activity Type Selector
             Text('Activity Type',
-                style: TextStyle(color: FitColors.textSecondary, fontSize: 13.sp, fontWeight: FontWeight.w600)),
+                style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 13.sp, fontWeight: FontWeight.w600)),
             SizedBox(height: 10.h),
             SizedBox(
               height: 100.h,
@@ -112,16 +113,16 @@ class _AddActivityScreenState extends ConsumerState<AddActivityScreen> {
                       duration: NumExtension(200).ms,
                       width: 80.w,
                       decoration: BoxDecoration(
-                        color: selected ? color.withValues(alpha: 0.12) : FitColors.card,
+                        color: selected ? color.withValues(alpha: 0.12) : isDark ? FitColors.cardDark : FitColors.cardLight,
                         borderRadius: BorderRadius.circular(14.r),
-                        border: Border.all(color: selected ? color : FitColors.border, width: 1.5),
+                        border: Border.all(color: selected ? color : isDark ? FitColors.borderDark : FitColors.borderLight, width: 1.5),
                       ),
                       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                        Icon(icon, color: selected ? color : FitColors.textSecondary, size: 26.sp),
+                        Icon(icon, color: selected ? color : isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, size: 26.sp),
                         SizedBox(height: 6.h),
                         Text(name,
                             style: TextStyle(
-                                color: selected ? color : FitColors.textSecondary,
+                                color: selected ? color : isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
                                 fontSize: 11.sp,
                                 fontWeight: selected ? FontWeight.bold : FontWeight.normal)),
                       ]),
@@ -221,8 +222,9 @@ class _FitInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label, style: TextStyle(color: FitColors.textSecondary, fontSize: 13.sp, fontWeight: FontWeight.w500)),
+      Text(label, style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 13.sp, fontWeight: FontWeight.w500)),
       SizedBox(height: 8.h),
       TextFormField(
         controller: controller,
@@ -233,12 +235,12 @@ class _FitInput extends StatelessWidget {
         style: TextStyle(color: Colors.white, fontSize: 14.sp),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: TextStyle(color: FitColors.textSecondary.withValues(alpha: 0.5), fontSize: 13.sp),
+          hintStyle: TextStyle(color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.5), fontSize: 13.sp),
           prefixIcon: Icon(icon, color: FitColors.cyan, size: 18.sp),
           filled: true,
-          fillColor: FitColors.card,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r), borderSide: const BorderSide(color: FitColors.border)),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r), borderSide: const BorderSide(color: FitColors.border)),
+          fillColor: isDark ? FitColors.cardDark : FitColors.cardLight,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r), borderSide: BorderSide(color: isDark ? FitColors.borderDark : FitColors.borderLight)),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r), borderSide: BorderSide(color: isDark ? FitColors.borderDark : FitColors.borderLight)),
           focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r), borderSide: const BorderSide(color: FitColors.cyan, width: 1.5)),
           errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r), borderSide: const BorderSide(color: Colors.redAccent)),
           focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r), borderSide: const BorderSide(color: Colors.redAccent)),

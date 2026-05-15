@@ -107,14 +107,14 @@ class _BmiScreenState extends ConsumerState<BmiScreen> {
           // Input Card
           Container(
             padding: EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(color: FitColors.card, borderRadius: BorderRadius.circular(16.r), border: Border.all(color: FitColors.border)),
+            decoration: BoxDecoration(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight), borderRadius: BorderRadius.circular(16.r), border: Border.all(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight))),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text('Your Measurements', style: TextStyle(color: Colors.white, fontSize: 15.sp, fontWeight: FontWeight.w700)),
               SizedBox(height: 16.h),
 
               // Gender
               Row(children: [
-                Text('Gender:', style: TextStyle(color: FitColors.textSecondary, fontSize: 13.sp)),
+                Text('Gender:', style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 13.sp)),
                 SizedBox(width: 12.w),
                 _GenderBtn(label: 'Male', icon: Icons.male_rounded, selected: _gender == 'male', onTap: () => setState(() => _gender = 'male')),
                 SizedBox(width: 8.w),
@@ -207,7 +207,7 @@ class _BmiResult extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: FitColors.card,
+        color: (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight),
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(color: _color.withValues(alpha: 0.4)),
       ),
@@ -257,9 +257,9 @@ class _BmiScale extends StatelessWidget {
       ]),
       SizedBox(height: 6.h),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text('18.5', style: TextStyle(color: FitColors.textSecondary, fontSize: 10.sp)),
-        Text('25.0', style: TextStyle(color: FitColors.textSecondary, fontSize: 10.sp)),
-        Text('30.0', style: TextStyle(color: FitColors.textSecondary, fontSize: 10.sp)),
+        Text('18.5', style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 10.sp)),
+        Text('25.0', style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 10.sp)),
+        Text('30.0', style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 10.sp)),
       ]),
     ]);
   }
@@ -277,7 +277,7 @@ class _WeightChart extends StatelessWidget {
 
     return Container(
       padding: EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(color: FitColors.card, borderRadius: BorderRadius.circular(16.r), border: Border.all(color: FitColors.border)),
+      decoration: BoxDecoration(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight), borderRadius: BorderRadius.circular(16.r), border: Border.all(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight))),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text('Weight History', style: TextStyle(color: Colors.white, fontSize: 15.sp, fontWeight: FontWeight.w700)),
         SizedBox(height: 20.h),
@@ -293,16 +293,16 @@ class _WeightChart extends StatelessWidget {
               dotData: FlDotData(getDotPainter: (_, __, ___, ____) => FlDotCirclePainter(radius: 3, color: FitColors.green, strokeWidth: 0)),
               belowBarData: BarAreaData(show: true, color: FitColors.green.withValues(alpha: 0.08)),
             )],
-            gridData: FlGridData(show: true, drawVerticalLine: false, getDrawingHorizontalLine: (_) => FlLine(color: FitColors.border, strokeWidth: 1)),
+            gridData: FlGridData(show: true, drawVerticalLine: false, getDrawingHorizontalLine: (_) => FlLine(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight), strokeWidth: 1)),
             titlesData: FlTitlesData(
-              leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, reservedSize: 36.w, getTitlesWidget: (v, _) => Text('${v.toInt()}', style: TextStyle(color: FitColors.textSecondary, fontSize: 10.sp)))),
+              leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, reservedSize: 36.w, getTitlesWidget: (v, _) => Text('${v.toInt()}', style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 10.sp)))),
               rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
               topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
               bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true,
                 getTitlesWidget: (v, _) {
                   final idx = v.toInt();
                   if (idx < 0 || idx >= weights.length) return const SizedBox.shrink();
-                  return Text(DateFormat('d/M').format(weights[idx].date), style: TextStyle(color: FitColors.textSecondary, fontSize: 9.sp));
+                  return Text(DateFormat('d/M').format(weights[idx].date), style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 9.sp));
                 },
               )),
             ),
@@ -325,14 +325,14 @@ class _GenderBtn extends StatelessWidget {
       duration: NumExtension(200).ms,
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: selected ? FitColors.cyan.withValues(alpha: 0.12) : FitColors.surface,
+        color: selected ? FitColors.cyan.withValues(alpha: 0.12) : (Theme.of(context).brightness == Brightness.dark ? FitColors.surfaceDark : FitColors.surfaceLight),
         borderRadius: BorderRadius.circular(10.r),
-        border: Border.all(color: selected ? FitColors.cyan : FitColors.border),
+        border: Border.all(color: selected ? FitColors.cyan : (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight)),
       ),
       child: Row(children: [
-        Icon(icon, color: selected ? FitColors.cyan : FitColors.textSecondary, size: 16.sp),
+        Icon(icon, color: selected ? FitColors.cyan : (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), size: 16.sp),
         SizedBox(width: 4.w),
-        Text(label, style: TextStyle(color: selected ? FitColors.cyan : FitColors.textSecondary, fontSize: 12.sp, fontWeight: selected ? FontWeight.w700 : FontWeight.w500)),
+        Text(label, style: TextStyle(color: selected ? FitColors.cyan : (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 12.sp, fontWeight: selected ? FontWeight.w700 : FontWeight.w500)),
       ]),
     ),
   );
@@ -344,7 +344,7 @@ class _SmallInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-    Text(label, style: TextStyle(color: FitColors.textSecondary, fontSize: 11.sp, fontWeight: FontWeight.w500)),
+    Text(label, style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 11.sp, fontWeight: FontWeight.w500)),
     SizedBox(height: 6.h),
     TextField(
       controller: controller,
@@ -352,11 +352,11 @@ class _SmallInput extends StatelessWidget {
       style: TextStyle(color: Colors.white, fontSize: 14.sp),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: TextStyle(color: FitColors.textSecondary.withValues(alpha: 0.4), fontSize: 13.sp),
+        hintStyle: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.4), fontSize: 13.sp),
         filled: true, fillColor: const Color(0xFF0A0E1A),
         contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r), borderSide: const BorderSide(color: FitColors.border)),
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r), borderSide: const BorderSide(color: FitColors.border)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r), borderSide: BorderSide(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight))),
+        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r), borderSide: BorderSide(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight))),
         focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r), borderSide: const BorderSide(color: FitColors.cyan, width: 1.5)),
       ),
     ),

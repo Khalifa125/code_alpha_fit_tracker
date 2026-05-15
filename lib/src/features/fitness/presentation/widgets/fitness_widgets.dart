@@ -36,7 +36,7 @@ class FitStatCard extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(14.r),
         decoration: BoxDecoration(
-          color: FitColors.card,
+          color: (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight),
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(color: color.withValues(alpha: 0.25)),
         ),
@@ -53,14 +53,14 @@ class FitStatCard extends StatelessWidget {
           Text(
             value,
             style: TextStyle(
-              color: FitColors.textPrimary,
+              color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
               fontSize: 18.sp,
               fontWeight: FontWeight.w800,
             ),
           ),
           Text(
             unit,
-            style: TextStyle(color: FitColors.textSecondary, fontSize: 9.sp),
+            style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 9.sp),
           ),
         ]),
       ),
@@ -97,12 +97,12 @@ class FitProgressBar extends StatelessWidget {
     return Column(children: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Text(label,
-          style: TextStyle(color: FitColors.textSecondary, fontSize: 12.sp)),
+          style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 12.sp)),
         Row(children: [
           Text(current.toStringAsFixed(0),
             style: TextStyle(color: color, fontSize: 12.sp, fontWeight: FontWeight.w700)),
           Text(' / ${goal.toStringAsFixed(0)} $unit',
-            style: TextStyle(color: FitColors.textSecondary, fontSize: 11.sp)),
+            style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 11.sp)),
           SizedBox(width: 6.w),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
@@ -124,7 +124,7 @@ class FitProgressBar extends StatelessWidget {
           curve: Curves.easeOutCubic,
           builder: (_, v, __) => LinearProgressIndicator(
             value: v,
-            backgroundColor: FitColors.border,
+            backgroundColor: (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight),
             valueColor: AlwaysStoppedAnimation(color),
             minHeight: 7.h,
           ),
@@ -182,9 +182,9 @@ class ActivityTile extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 10.h),
       padding: EdgeInsets.all(14.r),
       decoration: BoxDecoration(
-        color: FitColors.card,
+        color: (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight),
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: FitColors.border),
+        border: Border.all(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight)),
       ),
       child: Row(children: [
         Container(
@@ -200,18 +200,18 @@ class ActivityTile extends StatelessWidget {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
               activity.type,
-              style: TextStyle(color: FitColors.textPrimary, fontWeight: FontWeight.w700, fontSize: 14.sp),
+              style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight), fontWeight: FontWeight.w700, fontSize: 14.sp),
             ),
             SizedBox(height: 2.h),
             Text(
               '${activity.durationMinutes} min  •  ${activity.steps} steps',
-              style: TextStyle(color: FitColors.textSecondary, fontSize: 11.sp),
+              style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 11.sp),
             ),
             if (activity.notes.isNotEmpty) ...[
               SizedBox(height: 2.h),
               Text(
                 activity.notes,
-                style: TextStyle(color: FitColors.textMuted, fontSize: 10.sp),
+                style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), fontSize: 10.sp),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -226,7 +226,7 @@ class ActivityTile extends StatelessWidget {
           if (showDate)
             Text(
               '${activity.date.day}/${activity.date.month}',
-              style: TextStyle(color: FitColors.textMuted, fontSize: 10.sp),
+              style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), fontSize: 10.sp),
             ),
         ]),
       ]),
@@ -273,7 +273,7 @@ class FitSectionHeader extends StatelessWidget {
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       Text(title,
-        style: TextStyle(color: FitColors.textPrimary, fontSize: 16.sp, fontWeight: FontWeight.w700)),
+        style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight), fontSize: 16.sp, fontWeight: FontWeight.w700)),
       if (action != null)
         GestureDetector(
           onTap: onAction,
@@ -297,16 +297,16 @@ class FitEmptyState extends StatelessWidget {
     width: double.infinity,
     padding: EdgeInsets.symmetric(vertical: 32.h),
     decoration: BoxDecoration(
-      color: FitColors.card,
+      color: (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight),
       borderRadius: BorderRadius.circular(16.r),
-      border: Border.all(color: FitColors.border),
+      border: Border.all(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight)),
     ),
     child: Column(children: [
       Text(emoji, style: TextStyle(fontSize: 36.sp)),
       SizedBox(height: 10.h),
       Text(message,
         textAlign: TextAlign.center,
-        style: TextStyle(color: FitColors.textSecondary, fontSize: 13.sp, height: 1.5)),
+        style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 13.sp, height: 1.5)),
     ]),
   );
 }
@@ -331,16 +331,16 @@ class WorkoutPlanCardWidget extends StatelessWidget {
     child: Container(
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: FitColors.card,
+        color: (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight),
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: FitColors.border),
+        border: Border.all(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight)),
       ),
       child: Row(children: [
         Text(plan.emoji, style: TextStyle(fontSize: 36.sp)),
         SizedBox(width: 14.w),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(plan.name,
-            style: TextStyle(color: FitColors.textPrimary, fontSize: 15.sp, fontWeight: FontWeight.w700)),
+            style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight), fontSize: 15.sp, fontWeight: FontWeight.w700)),
           SizedBox(height: 4.h),
           Row(children: [
             _FitBadge(text: plan.level, color: _levelColor),
@@ -349,18 +349,18 @@ class WorkoutPlanCardWidget extends StatelessWidget {
           ]),
           SizedBox(height: 6.h),
           Row(children: [
-            Icon(Icons.timer_rounded, color: FitColors.textMuted, size: 12.sp),
+            Icon(Icons.timer_rounded, color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), size: 12.sp),
             SizedBox(width: 3.w),
             Text('${plan.durationMins} min',
-              style: TextStyle(color: FitColors.textSecondary, fontSize: 11.sp)),
+              style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 11.sp)),
             SizedBox(width: 10.w),
-            Icon(Icons.local_fire_department_rounded, color: FitColors.textMuted, size: 12.sp),
+            Icon(Icons.local_fire_department_rounded, color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), size: 12.sp),
             SizedBox(width: 3.w),
             Text('~${plan.calories} kcal',
-              style: TextStyle(color: FitColors.textSecondary, fontSize: 11.sp)),
+              style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 11.sp)),
           ]),
         ])),
-        Icon(Icons.chevron_right_rounded, color: FitColors.textMuted, size: 18.sp),
+        Icon(Icons.chevron_right_rounded, color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), size: 18.sp),
       ]),
     ),
   );

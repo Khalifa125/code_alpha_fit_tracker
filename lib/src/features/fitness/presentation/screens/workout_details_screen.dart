@@ -15,18 +15,19 @@ class WorkoutDetailsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: FitColors.background,
+      backgroundColor: isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
       body: CustomScrollView(
         slivers: [
           // App Bar
           SliverAppBar(
-            backgroundColor: FitColors.background,
+            backgroundColor: isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios_new, color: FitColors.textPrimary),
+              icon: Icon(Icons.arrow_back_ios_new, color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
               onPressed: () => Navigator.pop(context),
             ),
-            title: Text('Workout', style: TextStyle(color: FitColors.textPrimary)),
+            title: Text('Workout', style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight)),
             centerTitle: true,
             expandedHeight: 200.h,
             pinned: true,
@@ -38,7 +39,7 @@ class WorkoutDetailsScreen extends ConsumerWidget {
                     end: Alignment.bottomCenter,
                     colors: [
                       FitColors.neonGreen.withValues(alpha: 0.3),
-                      FitColors.background,
+                      isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
                     ],
                   ),
                 ),
@@ -64,7 +65,7 @@ class WorkoutDetailsScreen extends ConsumerWidget {
                   Text(
                     workout.name,
                     style: TextStyle(
-                      color: FitColors.textPrimary,
+                      color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
                       fontSize: 28.sp,
                       fontWeight: FontWeight.w800,
                     ),
@@ -108,7 +109,7 @@ class WorkoutDetailsScreen extends ConsumerWidget {
                   Text(
                     'About this workout',
                     style: TextStyle(
-                      color: FitColors.textPrimary,
+                      color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w700,
                     ),
@@ -117,7 +118,7 @@ class WorkoutDetailsScreen extends ConsumerWidget {
                   Text(
                     workout.description,
                     style: TextStyle(
-                      color: FitColors.textSecondary,
+                      color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
                       fontSize: 14.sp,
                       height: 1.6,
                     ),
@@ -128,7 +129,7 @@ class WorkoutDetailsScreen extends ConsumerWidget {
                   Text(
                     'Exercises',
                     style: TextStyle(
-                      color: FitColors.textPrimary,
+                      color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w700,
                     ),
@@ -141,9 +142,9 @@ class WorkoutDetailsScreen extends ConsumerWidget {
                       margin: EdgeInsets.only(bottom: 12.h),
                       padding: EdgeInsets.all(16.r),
                       decoration: BoxDecoration(
-                        color: FitColors.card,
+                        color: isDark ? FitColors.cardDark : FitColors.cardLight,
                         borderRadius: BorderRadius.circular(16.r),
-                        border: Border.all(color: FitColors.border),
+                        border: Border.all(color: isDark ? FitColors.borderDark : FitColors.borderLight),
                       ),
                       child: Row(
                         children: [
@@ -172,21 +173,21 @@ class WorkoutDetailsScreen extends ConsumerWidget {
                                 Text(
                                   exercise.name,
                                   style: TextStyle(
-                                    color: FitColors.textPrimary,
+                                    color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 Text(
                                   '${exercise.sets} sets × ${exercise.reps} reps',
                                   style: TextStyle(
-                                    color: FitColors.textSecondary,
+                                    color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
                                     fontSize: 12.sp,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          Icon(Icons.chevron_right, color: FitColors.textMuted),
+                          Icon(Icons.chevron_right, color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6)),
                         ],
                       ),
                     ).animate(delay: (400 + index * 50).ms).fadeIn().slideX(begin: 0.05, end: 0);
@@ -208,7 +209,7 @@ class WorkoutDetailsScreen extends ConsumerWidget {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: FitColors.neonGreen,
-                        foregroundColor: FitColors.background,
+                        foregroundColor: isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16.r),
                         ),
@@ -257,21 +258,22 @@ class _InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Expanded(
       child: Container(
         padding: EdgeInsets.all(12.r),
         decoration: BoxDecoration(
-          color: FitColors.card,
+          color: isDark ? FitColors.cardDark : FitColors.cardLight,
           borderRadius: BorderRadius.circular(16.r),
-          border: Border.all(color: FitColors.border),
+          border: Border.all(color: isDark ? FitColors.borderDark : FitColors.borderLight),
         ),
         child: Column(
           children: [
             Icon(icon, color: FitColors.neonGreen, size: 20.sp),
             SizedBox(height: 8.h),
-            Text(value, style: TextStyle(color: FitColors.textPrimary, fontWeight: FontWeight.w700, fontSize: 14.sp)),
+            Text(value, style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight, fontWeight: FontWeight.w700, fontSize: 14.sp)),
             SizedBox(height: 2.h),
-            Text(label, style: TextStyle(color: FitColors.textSecondary, fontSize: 10.sp)),
+            Text(label, style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 10.sp)),
           ],
         ),
       ),

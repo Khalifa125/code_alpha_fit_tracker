@@ -16,11 +16,12 @@ class CategoryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final allPlans = ref.watch(workoutPlansProvider);
     final categoryWorkouts = allPlans.where((p) => p.category == category || category == 'For You').toList();
 
     return Scaffold(
-      backgroundColor: FitColors.background,
+      backgroundColor: isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
       body: SafeArea(
         child: Column(
           children: [
@@ -34,11 +35,11 @@ class CategoryScreen extends ConsumerWidget {
                     child: Container(
                       padding: EdgeInsets.all(10.r),
                       decoration: BoxDecoration(
-                        color: FitColors.card,
+                        color: isDark ? FitColors.cardDark : FitColors.cardLight,
                         borderRadius: BorderRadius.circular(12.r),
-                        border: Border.all(color: FitColors.border),
+                        border: Border.all(color: isDark ? FitColors.borderDark : FitColors.borderLight),
                       ),
-                      child: Icon(Icons.arrow_back_ios_new, color: FitColors.textPrimary, size: 18.sp),
+                      child: Icon(Icons.arrow_back_ios_new, color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight, size: 18.sp),
                     ),
                   ),
                   SizedBox(width: 16.w),
@@ -48,7 +49,7 @@ class CategoryScreen extends ConsumerWidget {
                       Text(
                         category,
                         style: TextStyle(
-                          color: FitColors.textPrimary,
+                          color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
                           fontSize: 24.sp,
                           fontWeight: FontWeight.w800,
                         ),
@@ -56,7 +57,7 @@ class CategoryScreen extends ConsumerWidget {
                       Text(
                         '${categoryWorkouts.length} workouts',
                         style: TextStyle(
-                          color: FitColors.textSecondary,
+                          color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
                           fontSize: 12.sp,
                         ),
                       ),
@@ -73,11 +74,11 @@ class CategoryScreen extends ConsumerWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.fitness_center_rounded, color: FitColors.textMuted, size: 64.sp),
+                          Icon(Icons.fitness_center_rounded, color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), size: 64.sp),
                           SizedBox(height: 16.h),
                           Text(
                             'No workouts found',
-                            style: TextStyle(color: FitColors.textSecondary, fontSize: 16.sp),
+                            style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 16.sp),
                           ),
                         ],
                       ),
@@ -120,15 +121,16 @@ class _WorkoutCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         margin: EdgeInsets.only(bottom: 16.h),
         padding: EdgeInsets.all(16.r),
         decoration: BoxDecoration(
-          color: FitColors.card,
+          color: isDark ? FitColors.cardDark : FitColors.cardLight,
           borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(color: FitColors.border),
+          border: Border.all(color: isDark ? FitColors.borderDark : FitColors.borderLight),
         ),
         child: Row(
           children: [
@@ -156,7 +158,7 @@ class _WorkoutCard extends StatelessWidget {
                   Text(
                     workout.name,
                     style: TextStyle(
-                      color: FitColors.textPrimary,
+                      color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w700,
                     ),
@@ -164,11 +166,11 @@ class _WorkoutCard extends StatelessWidget {
                   SizedBox(height: 4.h),
                   Row(
                     children: [
-                      Icon(Icons.timer_outlined, color: FitColors.textMuted, size: 14.sp),
+                      Icon(Icons.timer_outlined, color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), size: 14.sp),
                       SizedBox(width: 4.w),
                       Text(
                         '${workout.durationMins} min',
-                        style: TextStyle(color: FitColors.textSecondary, fontSize: 12.sp),
+                        style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 12.sp),
                       ),
                       SizedBox(width: 12.w),
                       Container(
@@ -193,7 +195,7 @@ class _WorkoutCard extends StatelessWidget {
             ),
 
             // Arrow
-            Icon(Icons.chevron_right_rounded, color: FitColors.textMuted, size: 24.sp),
+            Icon(Icons.chevron_right_rounded, color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), size: 24.sp),
           ],
         ),
       ),

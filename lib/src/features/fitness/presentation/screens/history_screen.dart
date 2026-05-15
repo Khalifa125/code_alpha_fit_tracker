@@ -15,6 +15,7 @@ class HistoryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final activitiesAsync = ref.watch(allActivitiesProvider);
 
     return Scaffold(
@@ -26,7 +27,7 @@ class HistoryScreen extends ConsumerWidget {
       ),
       body: activitiesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator(color: FitColors.cyan, strokeWidth: 2)),
-        error: (_, __) => const Center(child: Text('Error loading history', style: TextStyle(color: FitColors.textSecondary))),
+        error: (_, __) => Center(child: Text('Error loading history', style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight))),
         data: (activities) {
           if (activities.isEmpty) {
             return const Center(child: FitEmptyState(emoji: '📋', message: 'No activities yet.\nStart logging your workouts!'));
@@ -52,7 +53,7 @@ class HistoryScreen extends ConsumerWidget {
                 Padding(
                   padding: EdgeInsets.only(bottom: 10.h, top: i == 0 ? 0 : 8.h),
                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                    Text(dateKey, style: TextStyle(color: FitColors.textSecondary, fontSize: 12.sp, fontWeight: FontWeight.w600)),
+                    Text(dateKey, style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 12.sp, fontWeight: FontWeight.w600)),
                     Text('${totalCals.toStringAsFixed(0)} kcal', style: TextStyle(color: FitColors.orange, fontSize: 12.sp, fontWeight: FontWeight.w600)),
                   ]),
                 ),

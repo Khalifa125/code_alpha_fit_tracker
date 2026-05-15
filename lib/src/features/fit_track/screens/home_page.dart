@@ -40,11 +40,11 @@ class FitTrackHomePage extends ConsumerWidget {
     final workout = ref.watch(workoutProvider).currentWorkout;
 
     return Scaffold(
-      backgroundColor: FitColors.background,
+      backgroundColor: (Theme.of(context).brightness == Brightness.dark ? FitColors.backgroundDark : FitColors.backgroundLight),
       body: SafeArea(
         child: RefreshIndicator(
           color: FitColors.neonGreen,
-          backgroundColor: FitColors.card,
+          backgroundColor: (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight),
           onRefresh: () async {
             ref.invalidate(progressProvider);
           },
@@ -61,7 +61,7 @@ class FitTrackHomePage extends ConsumerWidget {
                       Text(
                         'Hi, $userName 👋',
                         style: TextStyle(
-                          color: FitColors.textPrimary,
+                          color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
                           fontSize: 24.sp,
                           fontWeight: FontWeight.w800,
                         ),
@@ -70,7 +70,7 @@ class FitTrackHomePage extends ConsumerWidget {
                       Text(
                         "Let's crush your goals today",
                         style: TextStyle(
-                          color: FitColors.textSecondary,
+                          color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
                           fontSize: 14.sp,
                         ),
                       ),
@@ -97,7 +97,7 @@ class FitTrackHomePage extends ConsumerWidget {
                           ),
                           child: Icon(
                             Icons.person_outline,
-                            color: FitColors.textPrimary,
+                            color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
                             size: 24.sp,
                           ),
                         ),
@@ -185,7 +185,7 @@ class FitTrackHomePage extends ConsumerWidget {
               Text(
                 'Quick Actions',
                 style: TextStyle(
-                  color: FitColors.textPrimary,
+                  color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
                 ),
@@ -270,7 +270,7 @@ class _StatCard extends StatelessWidget {
                   )),
               Text(label,
                   style: TextStyle(
-                    color: FitColors.textSecondary,
+                    color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
                     fontSize: 10.sp,
                   )),
             ],
@@ -311,7 +311,7 @@ class _TodayWorkoutCard extends StatelessWidget {
                   Text(
                     "Today's Workout",
                     style: TextStyle(
-                      color: FitColors.textSecondary,
+                      color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
                       fontSize: 12.sp,
                     ),
                   ),
@@ -337,7 +337,7 @@ class _TodayWorkoutCard extends StatelessWidget {
               Text(
                 workout.title,
                 style: TextStyle(
-                  color: FitColors.textPrimary,
+                  color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w800,
                 ),
@@ -346,18 +346,18 @@ class _TodayWorkoutCard extends StatelessWidget {
               Row(
                 children: [
                   Icon(Icons.timer,
-                      color: FitColors.textSecondary, size: 14.sp),
+                      color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), size: 14.sp),
                   SizedBox(width: 4.w),
                   Text('${workout.durationMinutes} min',
                       style: TextStyle(
-                          color: FitColors.textSecondary, fontSize: 12.sp)),
+                          color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 12.sp)),
                   SizedBox(width: 16.w),
                   Icon(Icons.fitness_center,
-                      color: FitColors.textSecondary, size: 14.sp),
+                      color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), size: 14.sp),
                   SizedBox(width: 4.w),
                   Text('${workout.exercises.length} exercises',
                       style: TextStyle(
-                          color: FitColors.textSecondary, fontSize: 12.sp)),
+                          color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 12.sp)),
                 ],
               ),
               SizedBox(height: 16.h),
@@ -399,18 +399,18 @@ class _NoWorkoutCard extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         padding: EdgeInsets.all(20.r),
         decoration: BoxDecoration(
-          color: FitColors.card,
+          color: (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight),
           borderRadius: BorderRadius.circular(24.r),
-          border: Border.all(color: FitColors.border),
+          border: Border.all(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight)),
         ),
         child: Column(
           children: [
-            Icon(Icons.fitness_center, color: FitColors.textMuted, size: 48.sp),
+            Icon(Icons.fitness_center, color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), size: 48.sp),
             SizedBox(height: 12.h),
             Text(
               'No workout today',
               style: TextStyle(
-                color: FitColors.textPrimary,
+                color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
               ),
@@ -419,7 +419,7 @@ class _NoWorkoutCard extends StatelessWidget {
             Text(
               'Generate your daily workout!',
               style: TextStyle(
-                color: FitColors.textSecondary,
+                color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
                 fontSize: 12.sp,
               ),
             ),
@@ -459,7 +459,7 @@ class _QuickWorkoutButton extends ConsumerWidget {
                     Text(
                       'I have 10 minutes',
                       style: TextStyle(
-                        color: FitColors.textPrimary,
+                        color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w700,
                       ),
@@ -467,7 +467,7 @@ class _QuickWorkoutButton extends ConsumerWidget {
                     Text(
                       'Generate a quick workout',
                       style: TextStyle(
-                        color: FitColors.textSecondary,
+                        color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
                         fontSize: 12.sp,
                       ),
                     ),

@@ -28,14 +28,15 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       backgroundColor: FitColors.backgroundDark,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text('Edit Profile', style: TextStyle(color: FitColors.textPrimary)),
+        title: Text('Edit Profile', style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight)),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: FitColors.textPrimary),
+          icon: Icon(Icons.arrow_back, color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -44,11 +45,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Name', style: TextStyle(color: FitColors.textSecondary, fontSize: 14)),
+            Text('Name', style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 14)),
             const SizedBox(height: 8),
             TextField(
               controller: _nameController,
-              style: const TextStyle(color: FitColors.textPrimary, fontSize: 18),
+              style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight, fontSize: 18),
               decoration: InputDecoration(
                 filled: true,
                 fillColor: FitColors.cardDark,

@@ -27,7 +27,7 @@ class WorkoutPlansScreen extends ConsumerWidget {
     final todayPlan = plans.isNotEmpty ? plans.first : null;
 
     return Scaffold(
-      backgroundColor: FitColors.background,
+      backgroundColor: (Theme.of(context).brightness == Brightness.dark ? FitColors.backgroundDark : FitColors.backgroundLight),
       body: SafeArea(
         child: Column(children: [
           // Header
@@ -37,7 +37,7 @@ class WorkoutPlansScreen extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Workouts',
-                  style: TextStyle(color: FitColors.textPrimary, fontSize: 22.sp, fontWeight: FontWeight.w700)),
+                  style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight), fontSize: 22.sp, fontWeight: FontWeight.w700)),
                 Row(
                   children: [
                     GestureDetector(
@@ -59,7 +59,7 @@ class WorkoutPlansScreen extends ConsumerWidget {
                       ),
                     ),
                     SizedBox(width: 8.w),
-                    Icon(Icons.search_rounded, color: FitColors.textSecondary, size: 22.sp),
+                    Icon(Icons.search_rounded, color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), size: 22.sp),
                   ],
                 ),
               ],
@@ -98,13 +98,13 @@ class WorkoutPlansScreen extends ConsumerWidget {
                       color: selected ? FitColors.neonGreen : Colors.transparent,
                       borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
-                        color: selected ? FitColors.neonGreen : FitColors.border,
+                        color: selected ? FitColors.neonGreen : (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight),
                       ),
                     ),
                     child: Text(
                       labels[i],
                       style: TextStyle(
-                        color: selected ? FitColors.background : FitColors.textSecondary,
+                        color: selected ? (Theme.of(context).brightness == Brightness.dark ? FitColors.backgroundDark : FitColors.backgroundLight) : (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
                         fontSize: 12.sp,
                         fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
                       ),
@@ -123,7 +123,7 @@ class WorkoutPlansScreen extends ConsumerWidget {
                 // Today's Plan banner
                 if (todayPlan != null) ...[
                   Text("Today's Plan",
-                    style: TextStyle(color: FitColors.textPrimary, fontSize: 16.sp, fontWeight: FontWeight.w700)),
+                    style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight), fontSize: 16.sp, fontWeight: FontWeight.w700)),
                   SizedBox(height: 12.h),
                   GestureDetector(
                     onTap: () => Navigator.push<void>(
@@ -143,7 +143,7 @@ class WorkoutPlansScreen extends ConsumerWidget {
 
                 // Categories grid
                 Text('Categories',
-                  style: TextStyle(color: FitColors.textPrimary, fontSize: 16.sp, fontWeight: FontWeight.w700)),
+                  style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight), fontSize: 16.sp, fontWeight: FontWeight.w700)),
                 SizedBox(height: 12.h),
                 Row(children: [
                   Expanded(child: _CategoryCard(
@@ -194,14 +194,14 @@ class WorkoutPlansScreen extends ConsumerWidget {
                           duration: 200.ms,
                           padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
                           decoration: BoxDecoration(
-                            color: selected ? FitColors.neonGreen.withValues(alpha: 0.12) : FitColors.card,
+                            color: selected ? FitColors.neonGreen.withValues(alpha: 0.12) : (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight),
                             borderRadius: BorderRadius.circular(20.r),
                             border: Border.all(
-                              color: selected ? FitColors.neonGreen : FitColors.border,
+                              color: selected ? FitColors.neonGreen : (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight),
                             ),
                           ),
                           child: Text(f, style: TextStyle(
-                            color: selected ? FitColors.neonGreen : FitColors.textSecondary,
+                            color: selected ? FitColors.neonGreen : (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
                             fontSize: 12.sp,
                             fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
                           )),
@@ -242,23 +242,23 @@ class _TodayPlanBanner extends StatelessWidget {
       height: 140.h,
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: FitColors.card,
+        color: (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight),
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: FitColors.border),
+        border: Border.all(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight)),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [FitColors.card, FitColors.neonGreen.withValues(alpha: 0.06)],
+          colors: [(Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight), FitColors.neonGreen.withValues(alpha: 0.06)],
         ),
       ),
       child: Row(children: [
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
             Text(plan.name,
-              style: TextStyle(color: FitColors.textPrimary, fontSize: 18.sp, fontWeight: FontWeight.w800)),
+              style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight), fontSize: 18.sp, fontWeight: FontWeight.w800)),
             SizedBox(height: 6.h),
             Text('${plan.durationMins} min  •  ${plan.level}',
-              style: TextStyle(color: FitColors.textSecondary, fontSize: 12.sp)),
+              style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 12.sp)),
             SizedBox(height: 12.h),
             SizedBox(
               height: 40.h,
@@ -267,7 +267,7 @@ class _TodayPlanBanner extends StatelessWidget {
                   MaterialPageRoute<void>(builder: (_) => _WorkoutDetailScreen(plan: plan))),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: FitColors.neonGreen,
-                  foregroundColor: FitColors.background,
+                  foregroundColor: (Theme.of(context).brightness == Brightness.dark ? FitColors.backgroundDark : FitColors.backgroundLight),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
                   elevation: 0,
                 ),
@@ -313,7 +313,7 @@ class _CategoryCard extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(left: 14.w),
             child: Text(label,
-              style: TextStyle(color: FitColors.textPrimary, fontSize: 14.sp, fontWeight: FontWeight.w700)),
+              style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight), fontSize: 14.sp, fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -342,9 +342,9 @@ class _WorkoutPlanCard extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 10.h),
       padding: EdgeInsets.all(14.r),
       decoration: BoxDecoration(
-        color: FitColors.card,
+        color: (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight),
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: FitColors.border),
+        border: Border.all(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight)),
       ),
       child: Row(children: [
         Container(
@@ -358,10 +358,10 @@ class _WorkoutPlanCard extends StatelessWidget {
         SizedBox(width: 12.w),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(plan.name,
-            style: TextStyle(color: FitColors.textPrimary, fontSize: 14.sp, fontWeight: FontWeight.w700)),
+            style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight), fontSize: 14.sp, fontWeight: FontWeight.w700)),
           SizedBox(height: 4.h),
           Text('${plan.durationMins} min  •  ${plan.exercises.length} exercises',
-            style: TextStyle(color: FitColors.textSecondary, fontSize: 11.sp)),
+            style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 11.sp)),
           SizedBox(height: 6.h),
           Row(children: [
             _Badge(text: plan.level, color: _levelColor),
@@ -369,7 +369,7 @@ class _WorkoutPlanCard extends StatelessWidget {
             _Badge(text: plan.category, color: FitColors.blue),
           ]),
         ])),
-        Icon(Icons.chevron_right_rounded, color: FitColors.textMuted, size: 18.sp),
+        Icon(Icons.chevron_right_rounded, color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), size: 18.sp),
       ]),
     ),
   );
@@ -400,12 +400,12 @@ class _WorkoutDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: FitColors.background,
+      backgroundColor: (Theme.of(context).brightness == Brightness.dark ? FitColors.backgroundDark : FitColors.backgroundLight),
       appBar: AppBar(
-        backgroundColor: FitColors.background,
+        backgroundColor: (Theme.of(context).brightness == Brightness.dark ? FitColors.backgroundDark : FitColors.backgroundLight),
         title: Text(plan.name,
-          style: TextStyle(color: FitColors.textPrimary, fontSize: 17.sp, fontWeight: FontWeight.w700)),
-        iconTheme: const IconThemeData(color: FitColors.textPrimary),
+          style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight), fontSize: 17.sp, fontWeight: FontWeight.w700)),
+        iconTheme: IconThemeData(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight)),
         elevation: 0,
       ),
       body: ListView(
@@ -415,9 +415,9 @@ class _WorkoutDetailScreen extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(16.r),
             decoration: BoxDecoration(
-              color: FitColors.card,
+              color: (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight),
               borderRadius: BorderRadius.circular(20.r),
-              border: Border.all(color: FitColors.border),
+              border: Border.all(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight)),
             ),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
@@ -425,10 +425,10 @@ class _WorkoutDetailScreen extends StatelessWidget {
                 SizedBox(width: 14.w),
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(plan.name,
-                    style: TextStyle(color: FitColors.textPrimary, fontSize: 18.sp, fontWeight: FontWeight.w800)),
+                    style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight), fontSize: 18.sp, fontWeight: FontWeight.w800)),
                   SizedBox(height: 4.h),
                   Text(plan.description,
-                    style: TextStyle(color: FitColors.textSecondary, fontSize: 12.sp, height: 1.4)),
+                    style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 12.sp, height: 1.4)),
                 ])),
               ]),
               SizedBox(height: 16.h),
@@ -443,7 +443,7 @@ class _WorkoutDetailScreen extends StatelessWidget {
           SizedBox(height: 20.h),
 
           Text('Exercises',
-            style: TextStyle(color: FitColors.textPrimary, fontSize: 16.sp, fontWeight: FontWeight.w700)),
+            style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight), fontSize: 16.sp, fontWeight: FontWeight.w700)),
           SizedBox(height: 12.h),
 
           ...plan.exercises.asMap().entries.map((e) {
@@ -453,9 +453,9 @@ class _WorkoutDetailScreen extends StatelessWidget {
               margin: EdgeInsets.only(bottom: 10.h),
               padding: EdgeInsets.all(14.r),
               decoration: BoxDecoration(
-                color: FitColors.card,
+                color: (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight),
                 borderRadius: BorderRadius.circular(14.r),
-                border: Border.all(color: FitColors.border),
+                border: Border.all(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight)),
               ),
               child: Row(children: [
                 Container(
@@ -473,18 +473,18 @@ class _WorkoutDetailScreen extends StatelessWidget {
                 SizedBox(width: 12.w),
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(ex.name,
-                    style: TextStyle(color: FitColors.textPrimary, fontSize: 14.sp, fontWeight: FontWeight.w600)),
+                    style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight), fontSize: 14.sp, fontWeight: FontWeight.w600)),
                   Text(ex.muscle,
-                    style: TextStyle(color: FitColors.textSecondary, fontSize: 11.sp)),
+                    style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 11.sp)),
                 ])),
                 Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
                   Text('${ex.sets} × ${ex.reps}',
                     style: TextStyle(color: FitColors.neonGreen, fontSize: 13.sp, fontWeight: FontWeight.w700)),
                   Text('Rest: ${ex.rest}',
-                    style: TextStyle(color: FitColors.textMuted, fontSize: 10.sp)),
+                    style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), fontSize: 10.sp)),
                 ]),
                 SizedBox(width: 8.w),
-                Icon(Icons.chevron_right_rounded, color: FitColors.textMuted, size: 16.sp),
+                Icon(Icons.chevron_right_rounded, color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), size: 16.sp),
               ]),
             ).animate(delay: (i * 50).ms).fadeIn(duration: 300.ms).slideX(begin: 0.08, end: 0);
           }),
@@ -499,7 +499,7 @@ class _WorkoutDetailScreen extends StatelessWidget {
                 MaterialPageRoute<void>(builder: (_) => _WorkoutPlayerScreen(plan: plan))),
               style: ElevatedButton.styleFrom(
                 backgroundColor: FitColors.neonGreen,
-                foregroundColor: FitColors.background,
+                foregroundColor: (Theme.of(context).brightness == Brightness.dark ? FitColors.backgroundDark : FitColors.backgroundLight),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
                 elevation: 0,
               ),
@@ -523,7 +523,7 @@ class _DetailStat extends StatelessWidget {
   Widget build(BuildContext context) => Column(children: [
     Text(value, style: TextStyle(color: color, fontSize: 14.sp, fontWeight: FontWeight.w800)),
     SizedBox(height: 2.h),
-    Text(label, style: TextStyle(color: FitColors.textSecondary, fontSize: 10.sp)),
+    Text(label, style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 10.sp)),
   ]);
 }
 
@@ -562,14 +562,14 @@ class _WorkoutPlayerScreenState extends State<_WorkoutPlayerScreen> {
     final total = widget.plan.exercises.length;
 
     return Scaffold(
-      backgroundColor: FitColors.background,
+      backgroundColor: (Theme.of(context).brightness == Brightness.dark ? FitColors.backgroundDark : FitColors.backgroundLight),
       appBar: AppBar(
-        backgroundColor: FitColors.background,
+        backgroundColor: (Theme.of(context).brightness == Brightness.dark ? FitColors.backgroundDark : FitColors.backgroundLight),
         title: Text(
           '${_ex.name}  ${_currentExercise + 1} / $total',
-          style: TextStyle(color: FitColors.textPrimary, fontSize: 15.sp, fontWeight: FontWeight.w600),
+          style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight), fontSize: 15.sp, fontWeight: FontWeight.w600),
         ),
-        iconTheme: const IconThemeData(color: FitColors.textPrimary),
+        iconTheme: IconThemeData(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight)),
         elevation: 0,
       ),
       body: Padding(
@@ -580,20 +580,20 @@ class _WorkoutPlayerScreenState extends State<_WorkoutPlayerScreen> {
             flex: 3,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: FitColors.card,
+                color: (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight),
                 borderRadius: BorderRadius.circular(24.r),
-                border: Border.all(color: FitColors.border),
+                border: Border.all(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight)),
               ),
               child: Center(
                 child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                   Text(widget.plan.emoji, style: TextStyle(fontSize: 80.sp)),
                   SizedBox(height: 12.h),
                   Text(_ex.name,
-                    style: TextStyle(color: FitColors.textPrimary, fontSize: 18.sp, fontWeight: FontWeight.w700),
+                    style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight), fontSize: 18.sp, fontWeight: FontWeight.w700),
                     textAlign: TextAlign.center),
                   SizedBox(height: 4.h),
                   Text(_ex.muscle,
-                    style: TextStyle(color: FitColors.textSecondary, fontSize: 13.sp)),
+                    style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 13.sp)),
                 ]),
               ),
             ),
@@ -605,7 +605,7 @@ class _WorkoutPlayerScreenState extends State<_WorkoutPlayerScreen> {
             flex: 2,
             child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text('Reps',
-                style: TextStyle(color: FitColors.textSecondary, fontSize: 14.sp, fontWeight: FontWeight.w500)),
+                style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 14.sp, fontWeight: FontWeight.w500)),
               SizedBox(height: 4.h),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 GestureDetector(
@@ -613,17 +613,17 @@ class _WorkoutPlayerScreenState extends State<_WorkoutPlayerScreen> {
                   child: Container(
                     padding: EdgeInsets.all(12.r),
                     decoration: BoxDecoration(
-                      color: FitColors.card,
+                      color: (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight),
                       borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(color: FitColors.border),
+                      border: Border.all(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight)),
                     ),
-                    child: Icon(Icons.remove_rounded, color: FitColors.textPrimary, size: 20.sp),
+                    child: Icon(Icons.remove_rounded, color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight), size: 20.sp),
                   ),
                 ),
                 SizedBox(width: 24.w),
                 Text('$_reps',
                   style: TextStyle(
-                    color: FitColors.textPrimary,
+                    color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
                     fontSize: 64.sp,
                     fontWeight: FontWeight.w900,
                   )),
@@ -643,7 +643,7 @@ class _WorkoutPlayerScreenState extends State<_WorkoutPlayerScreen> {
               ]),
               SizedBox(height: 8.h),
               Text('Rest Time: 00:${_restSeconds.toString().padLeft(2, '0')}',
-                style: TextStyle(color: FitColors.textSecondary, fontSize: 14.sp)),
+                style: TextStyle(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight), fontSize: 14.sp)),
             ]),
           ),
 
@@ -652,7 +652,7 @@ class _WorkoutPlayerScreenState extends State<_WorkoutPlayerScreen> {
             _ControlBtn(
               icon: Icons.skip_previous_rounded,
               onTap: _prev,
-              color: FitColors.textSecondary,
+              color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
             ),
             SizedBox(width: 16.w),
             GestureDetector(
@@ -666,7 +666,7 @@ class _WorkoutPlayerScreenState extends State<_WorkoutPlayerScreen> {
                 ),
                 child: Icon(
                   _isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                  color: FitColors.background,
+                  color: (Theme.of(context).brightness == Brightness.dark ? FitColors.backgroundDark : FitColors.backgroundLight),
                   size: 30.sp,
                 ),
               ),
@@ -675,7 +675,7 @@ class _WorkoutPlayerScreenState extends State<_WorkoutPlayerScreen> {
             _ControlBtn(
               icon: Icons.skip_next_rounded,
               onTap: _next,
-              color: FitColors.textSecondary,
+              color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
             ),
           ]),
           SizedBox(height: 20.h),
@@ -699,8 +699,8 @@ class _ControlBtn extends StatelessWidget {
       height: 48.w,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: FitColors.card,
-        border: Border.all(color: FitColors.border),
+        color: (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight),
+        border: Border.all(color: (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight)),
       ),
       child: Icon(icon, color: color, size: 22.sp),
     ),

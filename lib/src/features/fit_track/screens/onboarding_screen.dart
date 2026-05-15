@@ -32,7 +32,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: FitColors.background,
+      backgroundColor: (Theme.of(context).brightness == Brightness.dark ? FitColors.backgroundDark : FitColors.backgroundLight),
       body: SafeArea(
         child: Column(
           children: [
@@ -47,7 +47,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     decoration: BoxDecoration(
                       color: i <= _currentPage 
                           ? FitColors.neonGreen 
-                          : FitColors.border,
+                          : (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight),
                       borderRadius: BorderRadius.circular(2.r),
                     ),
                   ),
@@ -80,7 +80,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         Text(
           'What is your\nfitness goal?',
           style: TextStyle(
-            color: FitColors.textPrimary,
+            color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
             fontSize: 28.sp,
             fontWeight: FontWeight.w800,
             height: 1.2,
@@ -90,7 +90,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         Text(
           'We\'ll personalize your workouts\nto help you achieve it',
           style: TextStyle(
-            color: FitColors.textSecondary,
+            color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
             fontSize: 14.sp,
           ),
         ).animate().fadeIn(delay: 100.ms),
@@ -139,7 +139,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         Text(
           'What\'s your\nfitness level?',
           style: TextStyle(
-            color: FitColors.textPrimary,
+            color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
             fontSize: 28.sp,
             fontWeight: FontWeight.w800,
             height: 1.2,
@@ -149,7 +149,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         Text(
           'This helps us choose the right exercises',
           style: TextStyle(
-            color: FitColors.textSecondary,
+            color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
             fontSize: 14.sp,
           ),
         ).animate().fadeIn(delay: 100.ms),
@@ -198,7 +198,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         Text(
           'How much time\ndo you have?',
           style: TextStyle(
-            color: FitColors.textPrimary,
+            color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
             fontSize: 28.sp,
             fontWeight: FontWeight.w800,
             height: 1.2,
@@ -208,7 +208,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         Text(
           'We\'ll create a workout that fits your schedule',
           style: TextStyle(
-            color: FitColors.textSecondary,
+            color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
             fontSize: 14.sp,
           ),
         ).animate().fadeIn(delay: 100.ms),
@@ -226,12 +226,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   decoration: BoxDecoration(
                     color: _selectedMinutes == minutes
                         ? FitColors.neonGreen.withValues(alpha: 0.15)
-                        : FitColors.card,
+                        : (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight),
                     borderRadius: BorderRadius.circular(20.r),
                     border: Border.all(
                       color: _selectedMinutes == minutes
                           ? FitColors.neonGreen
-                          : FitColors.border,
+                          : (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight),
                       width: 2,
                     ),
                   ),
@@ -242,7 +242,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         style: TextStyle(
                           color: _selectedMinutes == minutes
                               ? FitColors.neonGreen
-                              : FitColors.textPrimary,
+                              : (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
                           fontSize: 32.sp,
                           fontWeight: FontWeight.w800,
                         ),
@@ -250,7 +250,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       Text(
                         'min',
                         style: TextStyle(
-                          color: FitColors.textSecondary,
+                          color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
                           fontSize: 14.sp,
                         ),
                       ),
@@ -282,10 +282,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         duration: 300.ms,
         padding: EdgeInsets.all(20.w),
         decoration: BoxDecoration(
-          color: isSelected ? color.withValues(alpha: 0.15) : FitColors.card,
+          color: isSelected ? color.withValues(alpha: 0.15) : (Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight),
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
-            color: isSelected ? color : FitColors.border,
+            color: isSelected ? color : (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight),
             width: 2,
           ),
           boxShadow: isSelected ? [
@@ -314,7 +314,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   Text(
                     title,
                     style: TextStyle(
-                      color: FitColors.textPrimary,
+                      color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w700,
                     ),
@@ -323,7 +323,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   Text(
                     subtitle,
                     style: TextStyle(
-                      color: FitColors.textSecondary,
+                      color: (Theme.of(context).brightness == Brightness.dark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
                       fontSize: 12.sp,
                     ),
                   ),
@@ -349,7 +349,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       } : null,
       style: ElevatedButton.styleFrom(
         backgroundColor: FitColors.neonGreen,
-        disabledBackgroundColor: FitColors.border,
+        disabledBackgroundColor: (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight),
         padding: EdgeInsets.symmetric(vertical: 16.h),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.r),
@@ -372,7 +372,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       onPressed: _canComplete() ? _completeOnboarding : null,
       style: ElevatedButton.styleFrom(
         backgroundColor: FitColors.neonGreen,
-        disabledBackgroundColor: FitColors.border,
+        disabledBackgroundColor: (Theme.of(context).brightness == Brightness.dark ? FitColors.borderDark : FitColors.borderLight),
         padding: EdgeInsets.symmetric(vertical: 16.h),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.r),
