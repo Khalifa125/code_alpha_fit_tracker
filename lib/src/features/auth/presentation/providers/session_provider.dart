@@ -41,7 +41,7 @@ class SessionNotifier extends Notifier<SessionState> {
 
 @override
   SessionState build() {
-    _init();
+    Future.microtask(() => _init());
     ref.onDispose(() {
       _authSub?.cancel();
     });
@@ -49,8 +49,9 @@ class SessionNotifier extends Notifier<SessionState> {
   }
 
   Future<void> _init() async {
-    final repository = ref.read(authRepositoryProvider);
-    final result = await repository.checkAuthState();
+    try {
+      final repository = ref.read(authRepositoryProvider);
+      final result = await repository.checkAuthState();
     result.fold(
       (_) => state = const SessionState(status: SessionStatus.unauthenticated),
       (user) {
@@ -69,6 +70,9 @@ class SessionNotifier extends Notifier<SessionState> {
         state = const SessionState(status: SessionStatus.unauthenticated);
       }
     });
+    } catch (_) {
+      state = const SessionState(status: SessionStatus.unauthenticated);
+    }
   }
 
   Future<void> logout() async {

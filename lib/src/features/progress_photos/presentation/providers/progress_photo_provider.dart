@@ -38,14 +38,18 @@ class ProgressPhotosNotifier extends Notifier<ProgressPhotosState> {
   @override
   ProgressPhotosState build() {
     final service = ref.watch(progressPhotoServiceProvider);
-    _loadPhotos(service);
+    Future.microtask(() => _loadPhotos(service));
     return ProgressPhotosState();
   }
 
   Future<void> _loadPhotos(ProgressPhotoService service) async {
-    state = state.copyWith(isLoading: true);
-    final photos = await service.getAllPhotos();
-    state = state.copyWith(photos: photos, isLoading: false);
+    try {
+      state = state.copyWith(isLoading: true);
+      final photos = await service.getAllPhotos();
+      state = state.copyWith(photos: photos, isLoading: false);
+    } catch (_) {
+      state = state.copyWith(isLoading: false);
+    }
   }
 
   Future<void> addPhotoFromCamera({String? category, String? note, double? weight}) async {

@@ -40,15 +40,19 @@ class HeartRateNotifier extends Notifier<HeartRateState> {
   @override
   HeartRateState build() {
     final service = ref.watch(heartRateServiceProvider);
-    _loadData(service);
+    Future.microtask(() => _loadData(service));
     return HeartRateState();
   }
 
   Future<void> _loadData(HeartRateService service) async {
-    state = state.copyWith(isLoading: true);
-    final entries = await service.getEntriesForDate(state.selectedDate);
-    final stats = await service.getStatsForDate(state.selectedDate);
-    state = state.copyWith(entries: entries, stats: stats, isLoading: false);
+    try {
+      state = state.copyWith(isLoading: true);
+      final entries = await service.getEntriesForDate(state.selectedDate);
+      final stats = await service.getStatsForDate(state.selectedDate);
+      state = state.copyWith(entries: entries, stats: stats, isLoading: false);
+    } catch (_) {
+      state = state.copyWith(isLoading: false);
+    }
   }
 
   Future<void> addHeartRate(int bpm, {String? activity, String? note}) async {

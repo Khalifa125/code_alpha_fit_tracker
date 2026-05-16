@@ -7,7 +7,7 @@ enum AppThemeMode { system, light, dark }
 class ThemeNotifier extends Notifier<ThemeMode> {
   @override
   ThemeMode build() {
-    _loadTheme();
+    Future.microtask(() => _loadTheme());
     return ThemeMode.system;
   }
 

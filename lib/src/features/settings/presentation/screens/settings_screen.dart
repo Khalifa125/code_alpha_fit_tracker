@@ -44,14 +44,20 @@ class NotificationSettings {
 class NotificationSettingsNotifier extends Notifier<NotificationSettings> {
   @override
   NotificationSettings build() {
-    final repository = ref.read(settingsRepoProvider);
-    _loadSettings(repository);
+    Future.microtask(() {
+      try {
+        final repository = ref.read(settingsRepoProvider);
+        _loadSettings(repository);
+      } catch (_) {}
+    });
     return const NotificationSettings();
   }
 
   Future<void> _loadSettings(SettingsRepository repository) async {
-    final settings = await repository.getNotificationSettings();
-    state = settings;
+    try {
+      final settings = await repository.getNotificationSettings();
+      state = settings;
+    } catch (_) {}
   }
 
   Future<void> setWorkoutReminders(bool value) async {

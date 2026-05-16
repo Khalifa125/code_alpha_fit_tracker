@@ -46,19 +46,23 @@ class WaterNotifier extends Notifier<WaterState> {
   @override
   WaterState build() {
     final service = ref.watch(waterServiceProvider);
-    _loadData(service);
+    Future.microtask(() => _loadData(service));
     return WaterState(goal: service.getGoal());
   }
 
   Future<void> _loadData(WaterService service) async {
-    state = state.copyWith(isLoading: true);
-    final entries = await service.getEntriesForDate(state.selectedDate);
-    final reminders = service.getReminders();
-    state = state.copyWith(
-      entries: entries,
-      reminders: reminders,
-      isLoading: false,
-    );
+    try {
+      state = state.copyWith(isLoading: true);
+      final entries = await service.getEntriesForDate(state.selectedDate);
+      final reminders = service.getReminders();
+      state = state.copyWith(
+        entries: entries,
+        reminders: reminders,
+        isLoading: false,
+      );
+    } catch (_) {
+      state = state.copyWith(isLoading: false);
+    }
   }
 
   Future<void> addWater(int amount, {String? note}) async {

@@ -42,14 +42,18 @@ class SleepNotifier extends Notifier<SleepState> {
   @override
   SleepState build() {
     final service = ref.watch(sleepServiceProvider);
-    _loadData(service);
+    Future.microtask(() => _loadData(service));
     return SleepState();
   }
 
   Future<void> _loadData(SleepService service) async {
-    state = state.copyWith(isLoading: true);
-    final entries = await service.getEntriesForDate(state.selectedDate);
-    state = state.copyWith(entries: entries, isLoading: false);
+    try {
+      state = state.copyWith(isLoading: true);
+      final entries = await service.getEntriesForDate(state.selectedDate);
+      state = state.copyWith(entries: entries, isLoading: false);
+    } catch (_) {
+      state = state.copyWith(isLoading: false);
+    }
   }
 
   Future<void> addSleep({

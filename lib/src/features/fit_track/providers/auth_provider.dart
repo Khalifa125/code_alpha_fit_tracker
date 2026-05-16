@@ -41,19 +41,23 @@ class AuthState {
 class AuthNotifier extends Notifier<AuthState> {
   @override
   AuthState build() {
-    _checkAuthStatus();
+    Future.microtask(() => _checkAuthStatus());
     return AuthState();
   }
 
   void _checkAuthStatus() {
-    final service = ref.read(fitTrackServiceProvider);
-    final user = service.getUser();
-    if (user != null) {
-      state = state.copyWith(
-        status: AuthStatus.authenticated,
-        user: user,
-      );
-    } else {
+    try {
+      final service = ref.read(fitTrackServiceProvider);
+      final user = service.getUser();
+      if (user != null) {
+        state = state.copyWith(
+          status: AuthStatus.authenticated,
+          user: user,
+        );
+      } else {
+        state = state.copyWith(status: AuthStatus.unauthenticated);
+      }
+    } catch (_) {
       state = state.copyWith(status: AuthStatus.unauthenticated);
     }
   }

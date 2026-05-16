@@ -32,18 +32,22 @@ class AuthState {
 class AuthNotifier extends Notifier<AuthState> {
   @override
   AuthState build() {
-    _checkAuthStatus();
+    Future.microtask(() => _checkAuthStatus());
     return const AuthState();
   }
 
   Future<void> _checkAuthStatus() async {
-    final authService = ref.read(authServiceProvider);
-    state = state.copyWith(isLoading: true);
-    final isLoggedIn = await authService.isLoggedIn();
-    if (isLoggedIn) {
-      final user = await authService.getCurrentUser();
-      state = AuthState(user: user, isLoggedIn: true, isLoading: false);
-    } else {
+    try {
+      final authService = ref.read(authServiceProvider);
+      state = state.copyWith(isLoading: true);
+      final isLoggedIn = await authService.isLoggedIn();
+      if (isLoggedIn) {
+        final user = await authService.getCurrentUser();
+        state = AuthState(user: user, isLoggedIn: true, isLoading: false);
+      } else {
+        state = const AuthState(isLoading: false);
+      }
+    } catch (_) {
       state = const AuthState(isLoading: false);
     }
   }
