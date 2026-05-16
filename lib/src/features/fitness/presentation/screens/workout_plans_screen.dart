@@ -248,7 +248,7 @@ class _TodayPlanBanner extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [(Theme.of(context).brightness == Brightness.dark ? FitColors.cardDark : FitColors.cardLight), FitColors.neonGreen.withValues(alpha: 0.06)],
+          colors: [if (Theme.of(context).brightness == Brightness.dark) FitColors.cardDark else FitColors.cardLight, FitColors.neonGreen.withValues(alpha: 0.06)],
         ),
       ),
       child: Row(children: [

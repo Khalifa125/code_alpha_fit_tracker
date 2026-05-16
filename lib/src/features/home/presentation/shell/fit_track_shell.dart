@@ -50,7 +50,7 @@ class _FitTrackShellState extends ConsumerState<FitTrackShell> {
       bottomNavigationBar: ClipRRect(
         child: BackdropFilter(
           filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
+          child: DecoratedBox(
             decoration: BoxDecoration(
               color: (isDark ? FitColors.surfaceDark : Colors.white).withValues(alpha: 0.7),
               border: Border(

@@ -62,15 +62,15 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> with Automati
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return RepaintBoundary(
       child: Scaffold(
-        body: Container(
+        body: DecoratedBox(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
                 FitColors.neonGreen.withValues(alpha: 0.03),
-                isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
-                isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
+                if (isDark) FitColors.backgroundDark else FitColors.backgroundLight,
+                if (isDark) FitColors.backgroundDark else FitColors.backgroundLight,
               ],
             ),
           ),
@@ -313,7 +313,7 @@ class _MealSectionCard extends StatelessWidget {
                   color: FitColors.calories.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(6.r),
                 ),
-                child: Text('$calories kcal', style: TextStyle(
+                child: Text('$calories kcal', style: const TextStyle(
                   color: FitColors.calories,
                   fontSize: 11, fontWeight: FontWeight.w600,
                 )),
@@ -399,7 +399,7 @@ class _WaterMiniWidgetState extends State<_WaterMiniWidget> {
                   ],
                 ),
               ),
-              Text('1.2L', style: TextStyle(
+              const Text('1.2L', style: TextStyle(
                 color: FitColors.blue, fontSize: 20, fontWeight: FontWeight.bold,
               )),
             ],

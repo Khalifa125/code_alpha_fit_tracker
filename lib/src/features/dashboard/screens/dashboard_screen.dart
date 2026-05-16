@@ -30,15 +30,15 @@ class ModernDashboard extends ConsumerWidget {
     final waterProgress = (waterIntake / waterGoal).clamp(0.0, 1.0);
     final stepsProgress = (steps / 10000).clamp(0.0, 1.0);
 
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
             FitColors.neonGreen.withValues(alpha: 0.03),
-            isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
-            isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
+            if (isDark) FitColors.backgroundDark else FitColors.backgroundLight,
+            if (isDark) FitColors.backgroundDark else FitColors.backgroundLight,
           ],
         ),
       ),
@@ -214,7 +214,7 @@ class ModernDashboard extends ConsumerWidget {
                             opacity: isDark ? 0.06 : 0.2,
                             radius: 16,
                             padding: const EdgeInsets.all(16),
-                            child: _StatContent(
+                            child: const _StatContent(
                               title: 'Streak',
                               value: '5 days',
                               subtitle: 'Personal best!',

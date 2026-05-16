@@ -20,15 +20,15 @@ class WaterTrackingScreen extends ConsumerWidget {
     final state = ref.watch(waterProvider);
 
     return Scaffold(
-      body: Container(
+      body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
               FitColors.blue.withValues(alpha: 0.03),
-              isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
-              isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
+              if (isDark) FitColors.backgroundDark else FitColors.backgroundLight,
+              if (isDark) FitColors.backgroundDark else FitColors.backgroundLight,
             ],
           ),
         ),

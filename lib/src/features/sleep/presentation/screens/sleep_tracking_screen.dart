@@ -19,15 +19,15 @@ class SleepTrackingScreen extends ConsumerWidget {
     final state = ref.watch(sleepProvider);
 
     return Scaffold(
-      body: Container(
+      body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
               FitColors.purple.withValues(alpha: 0.03),
-              isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
-              isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
+              if (isDark) FitColors.backgroundDark else FitColors.backgroundLight,
+              if (isDark) FitColors.backgroundDark else FitColors.backgroundLight,
             ],
           ),
         ),

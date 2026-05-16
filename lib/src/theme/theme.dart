@@ -307,7 +307,7 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppColorsExtension customColors) 
     ),
 
     // Bottom Sheet Theme
-    bottomSheetTheme: BottomSheetThemeData(
+    bottomSheetTheme: const BottomSheetThemeData(
       showDragHandle: true,
       elevation: 0,
       backgroundColor: Colors.transparent,

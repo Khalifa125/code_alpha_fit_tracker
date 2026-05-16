@@ -186,15 +186,15 @@ class _HomeTab extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
-      body: Container(
+      body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
               FitColors.neonGreen.withValues(alpha: 0.03),
-              isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
-              isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
+              if (isDark) FitColors.backgroundDark else FitColors.backgroundLight,
+              if (isDark) FitColors.backgroundDark else FitColors.backgroundLight,
             ],
           ),
         ),

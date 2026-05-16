@@ -39,7 +39,7 @@ class WorkoutDetailsScreen extends ConsumerWidget {
                     end: Alignment.bottomCenter,
                     colors: [
                       FitColors.neonGreen.withValues(alpha: 0.3),
-                      isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
+                      if (isDark) FitColors.backgroundDark else FitColors.backgroundLight,
                     ],
                   ),
                 ),

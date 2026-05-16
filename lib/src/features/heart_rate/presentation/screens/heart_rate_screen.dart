@@ -23,15 +23,15 @@ class HeartRateScreen extends ConsumerWidget {
     final state = ref.watch(heartRateProvider);
 
     return Scaffold(
-      body: Container(
+      body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
               FitColors.red.withValues(alpha: 0.03),
-              isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
-              isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
+              if (isDark) FitColors.backgroundDark else FitColors.backgroundLight,
+              if (isDark) FitColors.backgroundDark else FitColors.backgroundLight,
             ],
           ),
         ),
