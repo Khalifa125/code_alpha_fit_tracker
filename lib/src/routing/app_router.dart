@@ -17,8 +17,6 @@ import 'package:fit_tracker/src/features/settings/presentation/screens/settings_
 import 'package:fit_tracker/src/features/fitness/presentation/screens/map_workout_screen.dart';
 import 'package:fit_tracker/src/features/profile/presentation/screens/profile_screen.dart';
 
-import 'package:fit_tracker/src/features/home/presentation/screens/home_page.dart';
-import 'package:fit_tracker/src/features/fit_track/screens/home_page.dart' show FitTrackHomePage;
 import 'package:fit_tracker/src/features/dashboard/screens/dashboard_screen.dart' show ModernDashboard;
 import 'package:fit_tracker/src/features/fitness/presentation/screens/fitness_screen.dart';
 import 'package:fit_tracker/src/features/nutrition/presentation/screens/nutrition_screen.dart';
@@ -265,13 +263,6 @@ class _MainShellState extends State<MainShell> with SingleTickerProviderStateMix
 }
 
 // Content-only screen wrappers (no Scaffold)
-class HomeScreenContent extends StatelessWidget {
-  const HomeScreenContent({super.key});
-
-  @override
-  Widget build(BuildContext context) => const FitTrackShell(child: FitTrackHomePage());
-}
-
 class FitnessScreenContent extends StatelessWidget {
   const FitnessScreenContent({super.key});
 
