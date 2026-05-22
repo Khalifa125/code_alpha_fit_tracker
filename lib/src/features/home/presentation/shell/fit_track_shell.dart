@@ -20,8 +20,8 @@ class _FitTrackShellState extends ConsumerState<FitTrackShell> {
 
   final List<_NavItem> _navItems = [
     _NavItem(icon: Icons.home_rounded, label: 'Home', path: '/home'),
-    _NavItem(icon: Icons.fitness_center_rounded, label: 'Workout', path: '/workout'),
-    _NavItem(icon: Icons.directions_run_rounded, label: 'Activity', path: '/activity'),
+    _NavItem(icon: Icons.fitness_center_rounded, label: 'Fitness', path: '/fitness'),
+    _NavItem(icon: Icons.water_drop_rounded, label: 'Water', path: '/water'),
     _NavItem(icon: Icons.restaurant_rounded, label: 'Nutrition', path: '/nutrition'),
     _NavItem(icon: Icons.person_rounded, label: 'Profile', path: '/profile'),
   ];

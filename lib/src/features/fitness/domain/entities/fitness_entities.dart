@@ -106,6 +106,13 @@ class WorkoutExercise extends Equatable {
     required this.reps,
     required this.rest,
     required this.muscle,
+    this.tips = '',
+    this.equipment = '',
+    this.difficulty = 'Beginner',
+    this.caloriesBurnRate = 0,
+    this.imageUrl = '',
+    this.isWarmup = false,
+    this.animationHint = '',
   });
 
   final String name;
@@ -113,9 +120,16 @@ class WorkoutExercise extends Equatable {
   final String reps;
   final String rest;
   final String muscle;
+  final String tips;
+  final String equipment;
+  final String difficulty;
+  final double caloriesBurnRate;
+  final String imageUrl;
+  final bool isWarmup;
+  final String animationHint;
 
   @override
-  List<Object?> get props => [name, sets, reps, rest, muscle];
+  List<Object?> get props => [name, sets, reps, rest, muscle, tips, equipment, difficulty, isWarmup];
 }
 
 class WorkoutPlan extends Equatable {
@@ -129,17 +143,52 @@ class WorkoutPlan extends Equatable {
     required this.calories,
     required this.exercises,
     required this.emoji,
+    this.equipment = const [],
+    this.targetMuscles = const [],
+    this.benefits = const [],
+    this.rating = 4.5,
+    this.completions = 0,
+    this.weeklyFrequency = 3,
+    this.tags = const [],
+    this.equipmentLevel = 'none',
+    this.suitableFor = const [],
   });
 
   final String id;
   final String name;
   final String description;
-  final String level; // beginner / intermediate / advanced
-  final String category; // strength / cardio / hiit / flexibility
+  final String level;
+  final String category;
   final int durationMins;
   final int calories;
   final List<WorkoutExercise> exercises;
   final String emoji;
+  final List<String> equipment;
+  final List<String> targetMuscles;
+  final List<String> benefits;
+  final double rating;
+  final int completions;
+  final int weeklyFrequency;
+  final List<String> tags;
+  final String equipmentLevel; // 'none' | 'minimal' | 'full'
+  final List<String> suitableFor;
+
+  int get totalSets => exercises.fold(0, (sum, e) => sum + (int.tryParse(e.sets) ?? 0));
+  int get averageRestSeconds {
+    if (exercises.isEmpty) return 30;
+    final total = exercises.fold(0, (int sum, e) {
+      final restNum = int.tryParse(e.rest.replaceAll(RegExp(r'[^0-9]'), '')) ?? 30;
+      return sum + restNum;
+    });
+    return total ~/ exercises.length;
+  }
+
+  String get intensity => switch (level) {
+    'Beginner' => 'Low',
+    'Intermediate' => 'Moderate',
+    'Advanced' => 'High',
+    _ => 'Moderate',
+  };
 
   @override
   List<Object?> get props => [id, name, level, category];

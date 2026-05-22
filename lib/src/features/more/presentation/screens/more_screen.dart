@@ -1,30 +1,20 @@
-// ignore_for_file: unused_import, unused_field, inference_failure_on_function_invocation, prefer_const_constructors, deprecated_member_use
+// ignore_for_file: deprecated_member_use
 
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:fit_tracker/src/theme/app_spacing.dart';
 import 'package:fit_tracker/src/theme/fit_colors.dart';
 import 'package:fit_tracker/src/features/settings/presentation/providers/theme_provider.dart';
 import 'package:fit_tracker/src/shared/widgets/glass_container.dart';
+import 'package:fit_tracker/src/features/water/presentation/screens/water_tracking_screen.dart';
+import 'package:fit_tracker/src/features/sleep/presentation/screens/sleep_tracking_screen.dart';
+import 'package:fit_tracker/src/features/heart_rate/presentation/screens/heart_rate_screen.dart';
+import 'package:fit_tracker/src/features/settings/presentation/screens/settings_screen.dart';
+import 'package:fit_tracker/src/features/gamification/presentation/screens/achievements_screen.dart';
+import 'package:fit_tracker/src/features/social/presentation/screens/leaderboard_screen.dart';
 
 class MoreScreen extends ConsumerWidget {
   const MoreScreen({super.key});
-
-  static const _features = [
-    ('Water Tracking', Icons.water_drop, FitColors.blue),
-    ('Sleep Tracking', Icons.nightlight_round, FitColors.purple),
-    ('Heart Rate', Icons.favorite, FitColors.red),
-    ('Progress Photos', Icons.camera_alt, FitColors.orange),
-    ('Achievements', Icons.emoji_events, FitColors.amber),
-    ('Export Data', Icons.download, FitColors.neonGreen),
-    ('Help & Support', Icons.help_outline, FitColors.textSecondary),
-  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -58,7 +48,7 @@ class MoreScreen extends ConsumerWidget {
               _QuickAccessGrid(),
               SizedBox(height: 20.h),
 
-              _SectionHeader(title: 'Settings'),
+              const _SectionHeader(title: 'Settings'),
               SizedBox(height: 12.h),
 
               _SettingsTile(
@@ -77,24 +67,24 @@ class MoreScreen extends ConsumerWidget {
                 icon: Icons.notifications_outlined,
                 title: 'Notifications',
                 subtitle: 'Manage alerts',
-                onTap: () {},
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen())),
               ),
               _SettingsTile(
                 icon: Icons.security_outlined,
                 title: 'Privacy',
                 subtitle: 'Data & permissions',
-                onTap: () {},
+                onTap: () => _showPrivacyDialog(context),
               ),
               SizedBox(height: 20.h),
 
-              _SectionHeader(title: 'Support'),
+              const _SectionHeader(title: 'Support'),
               SizedBox(height: 12.h),
 
               _SettingsTile(
                 icon: Icons.help_outline,
                 title: 'Help Center',
                 subtitle: 'FAQs & guides',
-                onTap: () => _launchUrl('https://fittracker.app/help'),
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen())),
               ),
               _SettingsTile(
                 icon: Icons.feedback_outlined,
@@ -116,14 +106,28 @@ class MoreScreen extends ConsumerWidget {
     );
   }
 
-  void _launchUrl(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) await launchUrl(uri);
+  void _showPrivacyDialog(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: isDark ? FitColors.cardDark : FitColors.cardLight,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('Privacy', style: TextStyle(fontWeight: FontWeight.w700)),
+        content: const Text('Your data is stored locally on your device. No personal information is shared with third parties.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('OK', style: TextStyle(color: FitColors.neonGreen)),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showFeedbackDialog(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -170,7 +174,7 @@ class MoreScreen extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(12.r),
                   ),
                 ),
-                child: Text('Send', style: TextStyle(
+                child: const Text('Send', style: TextStyle(
                   color: FitColors.background,
                   fontWeight: FontWeight.w600,
                 )),
@@ -185,7 +189,7 @@ class MoreScreen extends ConsumerWidget {
 
   void _showAboutDialog(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.transparent,
@@ -204,7 +208,7 @@ class MoreScreen extends ConsumerWidget {
                       color: FitColors.neonGreen.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(8.r),
                     ),
-                    child: Icon(Icons.fitness_center, color: FitColors.neonGreen),
+                    child: const Icon(Icons.fitness_center, color: FitColors.neonGreen),
                   ),
                   SizedBox(width: 12.w),
                   Text('Fit Tracker', style: TextStyle(
@@ -223,7 +227,7 @@ class MoreScreen extends ConsumerWidget {
                 width: double.infinity,
                 child: TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text('Close', style: TextStyle(color: FitColors.neonGreen)),
+                  child: const Text('Close', style: TextStyle(color: FitColors.neonGreen)),
                 ),
               ),
             ],
@@ -241,9 +245,9 @@ class _QuickAccessGrid extends StatelessWidget {
       ('Water', Icons.water_drop, FitColors.blue),
       ('Sleep', Icons.nightlight_round, FitColors.purple),
       ('Heart Rate', Icons.favorite, FitColors.red),
-      ('Photos', Icons.camera_alt, FitColors.orange),
+      ('Leaderboard', Icons.leaderboard_rounded, FitColors.orange),
       ('Achievements', Icons.emoji_events, FitColors.amber),
-      ('Export', Icons.download, FitColors.neonGreen),
+      ('Photos', Icons.camera_alt, FitColors.teal),
     ];
 
     return GridView.builder(
@@ -272,11 +276,38 @@ class _QuickAccessTile extends StatelessWidget {
 
   const _QuickAccessTile({super.key, required this.label, required this.icon, required this.color});
 
+  void _onTap(BuildContext context) {
+    switch (label) {
+      case 'Water':
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const WaterTrackingScreen()));
+        break;
+      case 'Sleep':
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const SleepTrackingScreen()));
+        break;
+      case 'Heart Rate':
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const HeartRateScreen()));
+        break;
+      case 'Leaderboard':
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const LeaderboardScreen()));
+        break;
+      case 'Achievements':
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const AchievementsScreen()));
+        break;
+      case 'Photos':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Progress Photos coming soon'), behavior: SnackBarBehavior.floating),
+        );
+        break;
+      default:
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
-      onTap: () {},
+      onTap: () => _onTap(context),
       child: GlassContainer(
         opacity: isDark ? 0.06 : 0.2,
         padding: EdgeInsets.zero,

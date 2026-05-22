@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:fit_tracker/src/features/auth/presentation/providers/auth_provider.dart';
 import 'package:fit_tracker/src/features/auth/presentation/screens/signin_screen.dart';
@@ -9,6 +10,10 @@ import 'package:fit_tracker/src/features/settings/presentation/screens/settings_
 import 'package:fit_tracker/src/features/profile/presentation/screens/edit_profile_screen.dart';
 import 'package:fit_tracker/src/theme/fit_colors.dart';
 import 'package:fit_tracker/src/shared/widgets/glass_container.dart';
+import 'package:fit_tracker/src/features/gamification/presentation/widgets/gamification_widgets.dart';
+import 'package:fit_tracker/src/features/gamification/presentation/screens/achievements_screen.dart';
+import 'package:fit_tracker/src/features/gamification/presentation/screens/daily_challenges_screen.dart';
+import 'package:fit_tracker/src/features/gamification/presentation/providers/gamification_provider.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -111,7 +116,27 @@ class ProfileScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
+                SizedBox(height: 16.h),
+                const XpBar(),
+                SizedBox(height: 8.h),
+                Row(
+                  children: [
+                    StreakIndicator(streak: ref.watch(gamificationProvider).streak.currentStreak),
+                    const Spacer(),
+                    Text('${ref.watch(achievementsProvider).where((a) => a.isUnlocked).length} / ${ref.watch(achievementsProvider).length} achievements', style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 11.sp)),
+                  ],
+                ),
                 const SizedBox(height: 32),
+                _ProfileMenuItem(
+                  icon: Icons.emoji_events_outlined,
+                  title: 'Achievements',
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AchievementsScreen())),
+                ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.1, end: 0),
+                _ProfileMenuItem(
+                  icon: Icons.task_alt_rounded,
+                  title: 'Daily Challenges',
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DailyChallengesScreen())),
+                ).animate().fadeIn(delay: 250.ms).slideX(begin: -0.1, end: 0),
                 _ProfileMenuItem(
                   icon: Icons.person_outline,
                   title: 'Edit Profile',

@@ -1,16 +1,16 @@
 // ignore_for_file: deprecated_member_use, inference_failure_on_function_return_type, inference_failure_on_function_invocation, unused_import, prefer_const_constructors
 
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:fit_tracker/src/theme/app_spacing.dart';
 import 'package:fit_tracker/src/theme/fit_colors.dart';
+import 'package:fit_tracker/src/shared/widgets/glass_container.dart';
 import 'package:fit_tracker/src/features/heart_rate/data/models/heart_rate_models.dart';
 import 'package:fit_tracker/src/features/heart_rate/presentation/providers/heart_rate_provider.dart';
-import 'package:fit_tracker/src/shared/widgets/glass_container.dart';
 
 class HeartRateScreen extends ConsumerWidget {
   const HeartRateScreen({super.key});
@@ -58,6 +58,9 @@ class HeartRateScreen extends ConsumerWidget {
 
               if (state.stats != null) _HeartRateStats(stats: state.stats!),
               SizedBox(height: 20.h),
+
+              if (state.entries.length >= 2) _HeartRateZoneChart(entries: state.entries),
+              if (state.entries.length >= 2) SizedBox(height: 20.h),
 
               _AddHeartRateButton(
                 onAdd: (bpm, activity) => ref.read(heartRateProvider.notifier).addHeartRate(bpm, activity: activity),
@@ -165,7 +168,14 @@ class _HeartRateCard extends StatelessWidget {
       tint: FitColors.red,
       child: Column(
         children: [
-          Icon(Icons.favorite, color: FitColors.red, size: 48.sp),
+          TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0, end: 1),
+            duration: const Duration(milliseconds: 1200),
+            builder: (_, value, __) => Transform.scale(
+              scale: 1 + 0.06 * math.sin(value * math.pi * 2),
+              child: Icon(Icons.favorite, color: FitColors.red, size: 48.sp),
+            ),
+          ),
           SizedBox(height: 12.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -490,6 +500,89 @@ class _HeartRateTile extends StatelessWidget {
       case 'Max': return FitColors.red;
       default: return const Color(0xFF6B7280);
     }
+  }
+}
+
+class _HeartRateZoneChart extends StatelessWidget {
+  final List<HeartRateEntry> entries;
+
+  const _HeartRateZoneChart({required this.entries});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final counts = <String, int>{};
+    for (final entry in entries) {
+      counts[entry.zone] = (counts[entry.zone] ?? 0) + 1;
+    }
+    final total = counts.values.fold(0, (a, b) => a + b);
+    if (total == 0) return const SizedBox();
+
+    final zoneColors = {
+      'Rest': const Color(0xFF6B7280),
+      'Resting': FitColors.neonGreen,
+      'Light': FitColors.blue,
+      'Moderate': FitColors.amber,
+      'Hard': FitColors.orange,
+      'Max': FitColors.red,
+    };
+
+    return GlassContainer(
+      opacity: isDark ? 0.06 : 0.2,
+      padding: EdgeInsets.all(16.r),
+      radius: 16,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Zone Distribution', style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight, fontSize: 14.sp, fontWeight: FontWeight.w700)),
+              Text('$total readings', style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 10.sp)),
+            ],
+          ),
+          SizedBox(height: 12.h),
+          SizedBox(
+            height: 100.h,
+            child: Row(
+              children: [
+                Expanded(
+                  child: PieChart(PieChartData(
+                    sectionsSpace: 2,
+                    centerSpaceRadius: 24,
+                    sections: counts.entries.map((e) {
+                      return PieChartSectionData(
+                        value: e.value.toDouble(),
+                        color: zoneColors[e.key] ?? Colors.grey,
+                        radius: 28,
+                        title: '${(e.value / total * 100).toInt()}%',
+                        titleStyle: TextStyle(color: Colors.white, fontSize: 9.sp, fontWeight: FontWeight.w700),
+                      );
+                    }).toList(),
+                  )),
+                ),
+                SizedBox(width: 16.w),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: counts.entries.map((e) => Padding(
+                    padding: EdgeInsets.only(bottom: 4.h),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(width: 8.w, height: 8.w, decoration: BoxDecoration(color: zoneColors[e.key] ?? Colors.grey, borderRadius: BorderRadius.circular(2.r))),
+                        SizedBox(width: 4.w),
+                        Text('${e.key}  ${e.value}', style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 10.sp)),
+                      ],
+                    ),
+                  )).toList(),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn(duration: 400.ms);
   }
 }
 

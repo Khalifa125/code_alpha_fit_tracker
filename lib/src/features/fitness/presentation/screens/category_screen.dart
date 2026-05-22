@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,6 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:fit_tracker/src/features/fitness/domain/entities/fitness_entities.dart';
 import 'package:fit_tracker/src/features/fitness/presentation/providers/fitness_providers.dart';
 import 'package:fit_tracker/src/features/fitness/presentation/screens/workout_details_screen.dart';
+import 'package:fit_tracker/src/features/fitness/presentation/widgets/fitness_widgets.dart';
 import 'package:fit_tracker/src/theme/fit_colors.dart';
 
 class CategoryScreen extends ConsumerWidget {
@@ -19,6 +18,9 @@ class CategoryScreen extends ConsumerWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final allPlans = ref.watch(workoutPlansProvider);
     final categoryWorkouts = allPlans.where((p) => p.category == category || category == 'For You').toList();
+
+    final totalMins = categoryWorkouts.fold(0, (int sum, p) => sum + p.durationMins);
+    final totalCal = categoryWorkouts.fold(0, (int sum, p) => sum + p.calories);
 
     return Scaffold(
       backgroundColor: isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
@@ -47,19 +49,12 @@ class CategoryScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        category,
-                        style: TextStyle(
-                          color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
-                          fontSize: 24.sp,
-                          fontWeight: FontWeight.w800,
-                        ),
+                        category == 'For You' ? 'Recommended' : category,
+                        style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight, fontSize: 22.sp, fontWeight: FontWeight.w800),
                       ),
                       Text(
-                        '${categoryWorkouts.length} workouts',
-                        style: TextStyle(
-                          color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
-                          fontSize: 12.sp,
-                        ),
+                        '${categoryWorkouts.length} workouts • $totalMins min • ~$totalCal kcal',
+                        style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 11.sp),
                       ),
                     ],
                   ),
@@ -76,10 +71,9 @@ class CategoryScreen extends ConsumerWidget {
                         children: [
                           Icon(Icons.fitness_center_rounded, color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), size: 64.sp),
                           SizedBox(height: 16.h),
-                          Text(
-                            'No workouts found',
-                            style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 16.sp),
-                          ),
+                          Text('No workouts found', style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 16.sp)),
+                          SizedBox(height: 8.h),
+                          Text('Try a different category', style: TextStyle(color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), fontSize: 12.sp)),
                         ],
                       ),
                     )
@@ -119,13 +113,20 @@ class _WorkoutCard extends StatelessWidget {
 
   const _WorkoutCard({super.key, required this.workout, required this.onTap});
 
+  Color get _levelColor => switch (workout.level) {
+    'Beginner' => FitColors.neonGreen,
+    'Intermediate' => FitColors.orange,
+    'Advanced' => FitColors.pink,
+    _ => FitColors.cyan,
+  };
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.only(bottom: 16.h),
+        margin: EdgeInsets.only(bottom: 14.h),
         padding: EdgeInsets.all(16.r),
         decoration: BoxDecoration(
           color: isDark ? FitColors.cardDark : FitColors.cardLight,
@@ -133,100 +134,71 @@ class _WorkoutCard extends StatelessWidget {
           border: Border.all(color: isDark ? FitColors.borderDark : FitColors.borderLight),
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Icon
             Container(
-              width: 60.w,
-              height: 60.w,
+              width: 56.w,
+              height: 56.w,
               decoration: BoxDecoration(
                 color: FitColors.neonGreen.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(16.r),
               ),
-              child: Icon(
-                _getIconForCategory(workout.category),
-                color: FitColors.neonGreen,
-                size: 28.sp,
-              ),
+              child: Center(child: Text(workout.emoji, style: TextStyle(fontSize: 28.sp))),
             ),
-            SizedBox(width: 16.w),
-
-            // Info
+            SizedBox(width: 14.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    workout.name,
-                    style: TextStyle(
-                      color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                  Text(workout.name, style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight, fontSize: 15.sp, fontWeight: FontWeight.w700)),
                   SizedBox(height: 4.h),
                   Row(
                     children: [
-                      Icon(Icons.timer_outlined, color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), size: 14.sp),
-                      SizedBox(width: 4.w),
-                      Text(
-                        '${workout.durationMins} min',
-                        style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 12.sp),
-                      ),
-                      SizedBox(width: 12.w),
+                      Icon(Icons.timer_outlined, color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), size: 13.sp),
+                      SizedBox(width: 3.w),
+                      Text('${workout.durationMins} min', style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 11.sp)),
+                      SizedBox(width: 10.w),
+                      Icon(Icons.local_fire_department_rounded, color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), size: 13.sp),
+                      SizedBox(width: 3.w),
+                      Text('~${workout.calories} kcal', style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 11.sp)),
+                      SizedBox(width: 10.w),
+                      Icon(Icons.fitness_center, color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), size: 13.sp),
+                      SizedBox(width: 3.w),
+                      Text('${workout.exercises.length} ex', style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 11.sp)),
+                    ],
+                  ),
+                  SizedBox(height: 6.h),
+                  Row(
+                    children: [
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                        padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.h),
                         decoration: BoxDecoration(
-                          color: _getDifficultyColor(workout.level).withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(6.r),
+                          color: _levelColor.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(5.r),
                         ),
-                        child: Text(
-                          workout.level,
-                          style: TextStyle(
-                            color: _getDifficultyColor(workout.level),
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                        child: Text(workout.level, style: TextStyle(color: _levelColor, fontSize: 9.sp, fontWeight: FontWeight.w600)),
+                      ),
+                      SizedBox(width: 6.w),
+                      Row(
+                        children: [
+                          Icon(Icons.star_rounded, size: 10.sp, color: FitColors.amber),
+                          SizedBox(width: 2.w),
+                          Text('${workout.rating}', style: TextStyle(color: FitColors.amber, fontSize: 9.sp, fontWeight: FontWeight.w700)),
+                        ],
                       ),
                     ],
                   ),
+                  if (workout.targetMuscles.isNotEmpty) ...[
+                    SizedBox(height: 6.h),
+                    MuscleGroupIndicator(muscles: workout.targetMuscles),
+                  ],
                 ],
               ),
             ),
-
-            // Arrow
-            Icon(Icons.chevron_right_rounded, color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), size: 24.sp),
+            Icon(Icons.chevron_right_rounded, color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.6), size: 22.sp),
           ],
         ),
       ),
     );
-  }
-
-  IconData _getIconForCategory(String category) {
-    switch (category.toLowerCase()) {
-      case 'strength':
-        return Icons.fitness_center_rounded;
-      case 'cardio':
-        return Icons.directions_run_rounded;
-      case 'yoga':
-        return Icons.self_improvement_rounded;
-      case 'hiit':
-        return Icons.flash_on_rounded;
-      default:
-        return Icons.fitness_center_rounded;
-    }
-  }
-
-  Color _getDifficultyColor(String level) {
-    switch (level.toLowerCase()) {
-      case 'beginner':
-        return FitColors.neonGreen;
-      case 'intermediate':
-        return FitColors.orange;
-      case 'advanced':
-        return FitColors.red;
-      default:
-        return FitColors.neonGreen;
-    }
   }
 }

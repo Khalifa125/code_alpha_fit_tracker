@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:fit_tracker/src/routing/global_navigator.dart';
 import 'package:fit_tracker/src/routing/app_routes.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 import 'package:fit_tracker/src/features/auth/presentation/screens/signin_screen.dart';
 import 'package:fit_tracker/src/features/auth/presentation/screens/signup_screen.dart';
@@ -128,7 +130,7 @@ class MainShell extends StatefulWidget {
   State<MainShell> createState() => _MainShellState();
 }
 
-class _MainShellState extends State<MainShell> {
+class _MainShellState extends State<MainShell> with SingleTickerProviderStateMixin {
   static const _destinations = [
     ('/home', Icons.home_rounded, 'Home'),
     ('/fitness', Icons.fitness_center_rounded, 'Fitness'),
@@ -137,37 +139,123 @@ class _MainShellState extends State<MainShell> {
     ('/profile', Icons.person_rounded, 'Profile'),
   ];
 
+  late AnimationController _breatheController;
+  late Animation<double> _breatheAnim;
+
+  @override
+  void initState() {
+    super.initState();
+    _breatheController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat(reverse: true);
+    _breatheAnim = Tween<double>(begin: 0.6, end: 1).animate(
+      CurvedAnimation(parent: _breatheController, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _breatheController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final location = GoRouterState.of(context).uri.path;
     final selectedIndex = _destinations.indexWhere((d) => d.$1 == location).clamp(0, _destinations.length - 1);
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
       backgroundColor: isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
       body: widget.child,
-      bottomNavigationBar: ClipRRect(
-        child: BackdropFilter(
-          filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: NavigationBarTheme(
-            data: NavigationBarThemeData(
-              labelTextStyle: WidgetStateProperty.resolveWith((states) {
-                if (states.contains(WidgetState.selected)) {
-                  return TextStyle(color: isDark ? Colors.white : FitColors.textPrimaryLight, fontSize: 12, fontWeight: FontWeight.w600);
-                }
-                return TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 12);
-              }),
+      bottomNavigationBar: AnimatedBuilder(
+        animation: _breatheAnim,
+        builder: (_, __) => Container(
+          margin: EdgeInsets.fromLTRB(12.w, 0, 12.w, 8.h + bottomPadding),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24.r),
+            border: Border.all(
+              color: FitColors.neonGreen.withValues(alpha: 0.12 * _breatheAnim.value),
+              width: 0.5,
             ),
-            child: NavigationBar(
-              selectedIndex: selectedIndex,
-              onDestinationSelected: (index) => context.go(_destinations[index].$1),
-              backgroundColor: (isDark ? FitColors.surfaceDark : Colors.white).withValues(alpha: 0.7),
-              indicatorColor: FitColors.neonGreen,
-              destinations: _destinations.map((d) => NavigationDestination(
-                icon: Icon(d.$2, color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
-                selectedIcon: Icon(d.$2, color: Colors.white),
-                label: d.$3,
-              )).toList(),
+            boxShadow: [
+              BoxShadow(
+                color: FitColors.neonGreen.withValues(alpha: 0.06 * _breatheAnim.value),
+                blurRadius: 16,
+                spreadRadius: 1,
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(24.r),
+            child: BackdropFilter(
+              filter: ui.ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+              child: Container(
+                height: 64.h,
+                decoration: BoxDecoration(
+                  color: (isDark ? const Color(0xFF0D1117) : Colors.white).withValues(alpha: 0.75),
+                  border: Border(
+                    top: BorderSide(color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.04)),
+                  ),
+                ),
+                child: Row(
+                  children: List.generate(_destinations.length, (i) {
+                    final (path, icon, label) = _destinations[i];
+                    final isSelected = i == selectedIndex;
+                    return Expanded(
+                      child: GestureDetector(
+                        onTap: () => context.go(path),
+                        behavior: HitTestBehavior.opaque,
+                        child: AnimatedContainer(
+                          duration: 200.ms,
+                          margin: EdgeInsets.symmetric(vertical: 6.h, horizontal: 4.w),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16.r),
+                            color: isSelected
+                                ? FitColors.neonGreen.withValues(alpha: 0.12)
+                                : Colors.transparent,
+                            border: isSelected
+                                ? Border.all(color: FitColors.neonGreen.withValues(alpha: 0.2))
+                                : null,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                icon,
+                                size: 22.sp,
+                                color: isSelected ? FitColors.neonGreen : (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
+                              ),
+                              SizedBox(height: 2.h),
+                              Text(
+                                label,
+                                style: TextStyle(
+                                  color: isSelected ? FitColors.neonGreen : (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
+                                  fontSize: 9.sp,
+                                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                                ),
+                              ),
+                              if (isSelected)
+                                Container(
+                                  width: 16.w,
+                                  height: 2.h,
+                                  margin: EdgeInsets.only(top: 2.h),
+                                  decoration: BoxDecoration(
+                                    color: FitColors.neonGreen,
+                                    borderRadius: BorderRadius.circular(1.r),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ),
             ),
           ),
         ),

@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,9 +5,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:fit_tracker/src/theme/fit_colors.dart';
 import 'package:fit_tracker/src/shared/widgets/glass_container.dart';
+import 'package:fit_tracker/src/features/fitness/domain/entities/fitness_entities.dart';
+import 'package:fit_tracker/src/features/fitness/presentation/providers/fitness_providers.dart';
 import 'package:fit_tracker/src/features/fitness/presentation/screens/category_screen.dart';
-import 'package:fit_tracker/src/features/fit_track/screens/workout_session_screen.dart';
-import 'package:fit_tracker/src/features/fit_track/providers/workout_provider.dart';
+import 'package:fit_tracker/src/features/fitness/presentation/screens/workout_plans_screen.dart';
+import 'package:fit_tracker/src/features/fitness/presentation/screens/workout_details_screen.dart';
+import 'package:fit_tracker/src/features/fitness/presentation/widgets/fitness_widgets.dart';
+import 'package:fit_tracker/src/features/fitness/presentation/widgets/workout_preferences_sheet.dart';
+import 'package:fit_tracker/src/features/heart_rate/presentation/providers/heart_rate_provider.dart';
 
 class FitnessScreen extends ConsumerStatefulWidget {
   const FitnessScreen({super.key});
@@ -22,42 +25,24 @@ class _FitnessScreenState extends ConsumerState<FitnessScreen> with AutomaticKee
   @override
   bool get wantKeepAlive => true;
 
-  static const _categories = [
-    {'icon': Icons.fitness_center, 'name': 'Strength', 'count': '12 workouts', 'color': FitColors.neonGreen, 'category': 'Strength'},
-    {'icon': Icons.directions_run, 'name': 'Cardio', 'count': '8 workouts', 'color': FitColors.orange, 'category': 'Cardio'},
-    {'icon': Icons.bolt, 'name': 'HIIT', 'count': '6 workouts', 'color': FitColors.amber, 'category': 'HIIT'},
-    {'icon': Icons.self_improvement, 'name': 'Yoga', 'count': '10 workouts', 'color': FitColors.purple, 'category': 'Yoga'},
-  ];
-
-  static const _plans = [
-    {'title': 'PPL — Push Pull Legs', 'subtitle': '6 days / week · 8 weeks', 'color': FitColors.neonGreen, 'level': 'inter'},
-    {'title': '5×5 Strength', 'subtitle': '3 days / week · 12 weeks', 'color': FitColors.orange, 'level': 'adv'},
-    {'title': 'Home — No Equipment', 'subtitle': '4 days / week · 6 weeks', 'color': FitColors.blue, 'level': 'beg'},
-    {'title': 'HIIT Fat Burn', 'subtitle': '4 days / week · 4 weeks', 'color': FitColors.purple, 'level': 'inter'},
-  ];
-
   void _onCategoryTap(String category) {
     HapticFeedback.lightImpact();
     Navigator.push(context, MaterialPageRoute(builder: (_) => CategoryScreen(category: category)));
   }
 
-  void _generateQuickWorkout() {
-    try { HapticFeedback.mediumImpact(); } catch (_) {}
-    ref.read(workoutProvider.notifier).generateWorkout(
-      goal: 'Stay Active',
-      fitnessLevel: 'Intermediate',
-      availableMinutes: 10,
-    );
-    final workout = ref.read(workoutProvider).currentWorkout;
-    if (workout != null && mounted) {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => WorkoutSessionScreen(workout: workout)));
-    }
+  void _seeAllWorkouts() {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const WorkoutPlansScreen()));
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final plans = ref.watch(workoutPlansProvider);
+    final summaryAsync = ref.watch(dailySummaryProvider);
+
+    final todayPlan = plans.isNotEmpty ? plans.first : null;
+
     return RepaintBoundary(
       child: Scaffold(
         backgroundColor: isDark ? FitColors.backgroundDark : FitColors.backgroundLight,
@@ -77,281 +62,505 @@ class _FitnessScreenState extends ConsumerState<FitnessScreen> with AutomaticKee
             child: SingleChildScrollView(
               padding: EdgeInsets.all(16.w),
               child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GlassContainer(
-              opacity: isDark ? 0.06 : 0.2,
-              padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
-              radius: 20,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Fitness',
-                    style: TextStyle(
-                      color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: -0.5,
+                  // Header
+                  GlassContainer(
+                    opacity: isDark ? 0.06 : 0.2,
+                    padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
+                    radius: 20,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Fitness', style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight, fontSize: 24, fontWeight: FontWeight.w700, letterSpacing: -0.5)),
+                            SizedBox(height: 2.h),
+                            summaryAsync.when(data: (s) => Text('${s.activityCount} activities today', style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 11, letterSpacing: 0.3)), loading: () => const SizedBox(), error: (_, __) => const SizedBox()),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            GestureDetector(
+                              onTap: _seeAllWorkouts,
+                              child: GlassContainer(
+                                opacity: isDark ? 0.06 : 0.2,
+                                radius: 10,
+                                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+                                tint: FitColors.neonGreen,
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.explore_rounded, color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight, size: 14),
+                                    SizedBox(width: 4.w),
+                                    Text('Plans', style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight, fontSize: 11, fontWeight: FontWeight.w600)),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
+                  ).animate().fadeIn().slideX(begin: -0.1),
+                  SizedBox(height: 16.h),
+
+                  // Today's suggested workout
+                  if (todayPlan != null) ...[
+                    Text('Today\'s Pick', style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 0.5)),
+                    SizedBox(height: 10.h),
+                    _TodayWorkoutCard(plan: todayPlan, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => WorkoutDetailsScreen(workout: todayPlan)))),
+                    SizedBox(height: 16.h),
+                  ],
+
+                  // Health metrics card
+                  _HealthMetricsCard(
+                    steps: summaryAsync.when(data: (s) => s.totalSteps, loading: () => 0, error: (_, __) => 0),
+                    calories: summaryAsync.when(data: (s) => s.totalCalories, loading: () => 0.0, error: (_, __) => 0.0),
+                    hrBpm: ref.watch(heartRateProvider).latestBpm,
                   ),
+                  SizedBox(height: 16.h),
+
+                  // Generate personalized workout
                   GestureDetector(
-                    onTap: _generateQuickWorkout,
-                    child: GlassContainer(
-                      opacity: isDark ? 0.06 : 0.2,
-                      radius: 10,
-                      padding: EdgeInsets.all(8.w),
-                      tint: FitColors.neonGreen,
-                      child: Icon(Icons.add, color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight, size: 18),
+                    onTap: () => showWorkoutPreferencesSheet(context),
+                    child: Container(
+                      padding: EdgeInsets.all(14.r),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [FitColors.neonGreen.withValues(alpha: 0.1), FitColors.blue.withValues(alpha: 0.05)],
+                          begin: Alignment.topLeft, end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16.r),
+                        border: Border.all(color: FitColors.neonGreen.withValues(alpha: 0.3)),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 40.w, height: 40.w,
+                            decoration: BoxDecoration(
+                              color: FitColors.neonGreen.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            child: const Icon(Icons.auto_awesome_rounded, color: FitColors.neonGreen, size: 20),
+                          ),
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Generate Workout', style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight, fontSize: 13.sp, fontWeight: FontWeight.w700)),
+                                Text('AI-powered based on your goals', style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 10.sp)),
+                              ],
+                            ),
+                          ),
+                          Icon(Icons.chevron_right_rounded, color: isDark ? FitColors.textMutedDark : FitColors.textMutedLight, size: 20.sp),
+                        ],
+                      ),
+                    ),
+                  ).animate().fadeIn(delay: 150.ms).slideY(begin: 0.05),
+                  SizedBox(height: 16.h),
+
+                  // Quick Stats
+                  Row(
+                    children: [
+                      Expanded(child: _QuickStatCard(
+                        icon: Icons.local_fire_department_rounded,
+                        label: 'Calories',
+                        value: summaryAsync.when(data: (s) => s.totalCalories.toStringAsFixed(0), loading: () => '--', error: (_, __) => '0'),
+                        unit: 'kcal',
+                        color: FitColors.orange,
+                      )),
+                      SizedBox(width: 10.w),
+                      Expanded(child: _QuickStatCard(
+                        icon: Icons.directions_walk_rounded,
+                        label: 'Steps',
+                        value: summaryAsync.when(data: (s) => '${s.totalSteps}', loading: () => '--', error: (_, __) => '0'),
+                        unit: 'steps',
+                        color: FitColors.blue,
+                      )),
+                      SizedBox(width: 10.w),
+                      Expanded(child: _QuickStatCard(
+                        icon: Icons.timer_outlined,
+                        label: 'Minutes',
+                        value: summaryAsync.when(data: (s) => '${s.totalMinutes}', loading: () => '--', error: (_, __) => '0'),
+                        unit: 'active',
+                        color: FitColors.neonGreen,
+                      )),
+                    ],
+                  ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.1, end: 0),
+                  SizedBox(height: 16.h),
+
+                  // Categories in a more pro layout
+                  Text('Categories', style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 0.5)),
+                  SizedBox(height: 10.h),
+                  SizedBox(
+                    height: 72.h,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _categories.length,
+                      separatorBuilder: (_, __) => SizedBox(width: 10.w),
+                      itemBuilder: (_, i) {
+                        final cat = _categories[i];
+                        return _CategoryPill(
+                          icon: cat.icon,
+                          name: cat.name,
+                          color: cat.color,
+                          onTap: () => _onCategoryTap(cat.route),
+                        );
+                      },
                     ),
                   ),
+                  SizedBox(height: 16.h),
+
+                  // Popular plans section
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Popular Plans', style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 0.5)),
+                      GestureDetector(
+                        onTap: _seeAllWorkouts,
+                        child: const Text('See all', style: TextStyle(color: FitColors.neonGreen, fontSize: 10, fontWeight: FontWeight.w600)),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10.h),
+                  SizedBox(
+                    height: 190.h,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: plans.take(5).length,
+                      separatorBuilder: (_, __) => SizedBox(width: 12.w),
+                      itemBuilder: (_, i) {
+                        final plan = plans[i];
+                        return _FeaturedPlanCard(plan: plan, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => WorkoutDetailsScreen(workout: plan))));
+                      },
+                    ),
+                  ),
+
+                  SizedBox(height: 80.h),
                 ],
               ),
-            ).animate().fadeIn().slideX(begin: -0.1),
-            SizedBox(height: 16.h),
-
-            // Categories section
-            Text(
-              'Categories',
-              style: TextStyle(
-                color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.5,
-              ),
             ),
-            SizedBox(height: 10.h),
-            GlassContainer(
-              opacity: isDark ? 0.06 : 0.2,
-              radius: 20,
-              padding: EdgeInsets.zero,
-              child: GridView.builder(
-                cacheExtent: 500,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 8.w,
-                  crossAxisSpacing: 8.w,
-                  childAspectRatio: 1.5,
-                ),
-                itemCount: _categories.length,
-                itemBuilder: (context, index) {
-                  final cat = _categories[index];
-                  return _CategoryCard(
-                    key: ValueKey('cat_${cat['name']}'),
-                    icon: cat['icon'] as IconData,
-                    name: cat['name'] as String,
-                    count: cat['count'] as String,
-                    color: cat['color'] as Color,
-                    index: index,
-                    onTap: () => _onCategoryTap(cat['category'] as String),
-                  );
-                },
-              ),
-            ),
-            SizedBox(height: 16.h),
-
-            // Workout plans section
-            Text(
-              'Workout plans',
-              style: TextStyle(
-                color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.5,
-              ),
-            ),
-            SizedBox(height: 10.h),
-            GlassContainer(
-              opacity: isDark ? 0.06 : 0.2,
-              radius: 20,
-              padding: EdgeInsets.zero,
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: _plans.length,
-                itemBuilder: (context, index) {
-                  final plan = _plans[index];
-                  return _PlanItem(
-                    title: plan['title'] as String,
-                    subtitle: plan['subtitle'] as String,
-                    color: plan['color'] as Color,
-                    level: plan['level'] as String,
-                    index: index,
-                  );
-                },
-              ),
-            ),
-
-            SizedBox(height: 80.h),
-          ],
+          ),
         ),
       ),
-    ),
-  ),
-),
-);
+    );
   }
+
+  static const _categories = [
+    _CatData(Icons.fitness_center_rounded, 'Strength', FitColors.neonGreen, 'Strength'),
+    _CatData(Icons.directions_run_rounded, 'Cardio', FitColors.orange, 'Cardio'),
+    _CatData(Icons.bolt_rounded, 'HIIT', FitColors.amber, 'HIIT'),
+    _CatData(Icons.self_improvement_rounded, 'Yoga', FitColors.purple, 'Flexibility'),
+    _CatData(Icons.accessibility_new_rounded, 'Core', FitColors.pink, 'Strength'),
+    _CatData(Icons.flight_takeoff_rounded, 'Full Body', FitColors.cyan, 'Strength'),
+  ];
 }
 
-class _CategoryCard extends StatefulWidget {
+class _CatData {
   final IconData icon;
   final String name;
-  final String count;
   final Color color;
-  final int index;
-  final VoidCallback onTap;
-
-  const _CategoryCard({
-    super.key,
-    required this.icon,
-    required this.name,
-    required this.count,
-    required this.color,
-    required this.index,
-    required this.onTap,
-  });
-
-  @override
-  State<_CategoryCard> createState() => _CategoryCardState();
+  final String route;
+  const _CatData(this.icon, this.name, this.color, this.route);
 }
 
-class _CategoryCardState extends State<_CategoryCard> {
-  bool _isPressed = false;
+class _CategoryPill extends StatelessWidget {
+  final IconData icon;
+  final String name;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _CategoryPill({required this.icon, required this.name, required this.color, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
-      onTapDown: (_) => setState(() => _isPressed = true),
-      onTapUp: (_) {
-        setState(() => _isPressed = false);
-        widget.onTap();
-      },
-      onTapCancel: () => setState(() => _isPressed = false),
-      child: AnimatedScale(
-        scale: _isPressed ? 0.97 : 1.0,
-        duration: const Duration(milliseconds: 100),
-        child: GlassCard(
-          opacity: isDark ? 0.06 : 0.2,
-          radius: 12,
-          padding: EdgeInsets.all(12.r),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  color: widget.color.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(9),
-                ),
-                child: Icon(widget.icon, color: widget.color, size: 16),
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(color: color.withValues(alpha: 0.2)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 28.w,
+              height: 28.w,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(8.r),
               ),
-              SizedBox(height: 8.h),
-              Text(
-                widget.name,
-                style: TextStyle(
-                  color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: -0.1,
-                ),
-              ),
-              Text(
-                widget.count,
-                style: TextStyle(
-                  color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.7),
-                  fontSize: 10,
-                ),
-              ),
-            ],
-          ),
+              child: Icon(icon, color: color, size: 15.sp),
+            ),
+            SizedBox(width: 8.w),
+            Text(name, style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight, fontSize: 12.sp, fontWeight: FontWeight.w600)),
+          ],
         ),
       ),
-    ).animate().fadeIn(delay: (50 + widget.index * 30).ms).scale(begin: const Offset(0.95, 0.95));
+    );
   }
 }
 
-class _PlanItem extends StatelessWidget {
-  final String title;
-  final String subtitle;
+class _QuickStatCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  final String unit;
   final Color color;
-  final String level;
-  final int index;
 
-  const _PlanItem({
-    required this.title,
-    required this.subtitle,
-    required this.color,
-    required this.level,
-    required this.index,
-  });
+  const _QuickStatCard({required this.icon, required this.label, required this.value, required this.unit, required this.color});
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final levelLabel = level == 'beg' ? 'Beg' : level == 'inter' ? 'Inter' : 'Adv';
-    final levelColor = level == 'beg' ? FitColors.neonGreen : level == 'inter' ? FitColors.orange : FitColors.red;
-
-    return GlassCard(
-      opacity: isDark ? 0.06 : 0.2,
-      radius: 12,
+    return Container(
       padding: EdgeInsets.all(12.r),
-      margin: EdgeInsets.only(bottom: 8.h),
-      child: Row(
+      decoration: BoxDecoration(
+        color: isDark ? FitColors.cardDark : FitColors.cardLight,
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
+      ),
+      child: Column(
         children: [
           Container(
-            width: 3,
-            height: 32,
+            padding: EdgeInsets.all(6.r),
             decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(2),
+              color: color.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(8.r),
             ),
+            child: Icon(icon, color: color, size: 14.sp),
           ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          SizedBox(height: 6.h),
+          Text(value, style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight, fontSize: 16.sp, fontWeight: FontWeight.w800)),
+          Text(unit, style: TextStyle(color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.7), fontSize: 8.sp)),
+        ],
+      ),
+    );
+  }
+}
+
+class _TodayWorkoutCard extends StatelessWidget {
+  final WorkoutPlan plan;
+  final VoidCallback onTap;
+
+  const _TodayWorkoutCard({required this.plan, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(16.r),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              if (isDark) FitColors.cardDark else FitColors.cardLight,
+              FitColors.neonGreen.withValues(alpha: isDark ? 0.04 : 0.06),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(color: FitColors.neonGreen.withValues(alpha: 0.3)),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                        decoration: BoxDecoration(
+                          color: FitColors.neonGreen.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(4.r),
+                        ),
+                        child: Text('Suggested', style: TextStyle(color: FitColors.neonGreen, fontSize: 8.sp, fontWeight: FontWeight.w700)),
+                      ),
+                      SizedBox(width: 6.w),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                        decoration: BoxDecoration(
+                          color: FitColors.orange.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(4.r),
+                        ),
+                        child: Text('~${plan.calories} kcal', style: TextStyle(color: FitColors.orange, fontSize: 8.sp, fontWeight: FontWeight.w700)),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8.h),
+                  Text(plan.name, style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight, fontSize: 16.sp, fontWeight: FontWeight.w800)),
+                  SizedBox(height: 4.h),
+                  Text('${plan.durationMins} min  •  ${plan.level}  •  ${plan.exercises.length} exercises', style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 11.sp)),
+                  SizedBox(height: 10.h),
+                  Row(
+                    children: [
+                      Icon(Icons.star_rounded, size: 12.sp, color: FitColors.amber),
+                      SizedBox(width: 3.w),
+                      Text(plan.rating.toString(), style: TextStyle(color: FitColors.amber, fontSize: 10.sp, fontWeight: FontWeight.w700)),
+                      SizedBox(width: 10.w),
+                      Icon(Icons.people_rounded, size: 12.sp, color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
+                      SizedBox(width: 3.w),
+                      Text(_formatNumber(plan.completions), style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 10.sp)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 12.w),
+            Text(plan.emoji, style: TextStyle(fontSize: 48.sp)),
+          ],
+        ),
+      ),
+    ).animate().fadeIn(delay: 50.ms).slideY(begin: 0.08, end: 0);
+  }
+
+  String _formatNumber(int n) {
+    if (n >= 1000) return '${(n / 1000).toStringAsFixed(1)}k';
+    return '$n';
+  }
+}
+
+class _FeaturedPlanCard extends StatelessWidget {
+  final WorkoutPlan plan;
+  final VoidCallback onTap;
+
+  const _FeaturedPlanCard({required this.plan, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final levelColor = switch (plan.level) {
+      'Beginner' => FitColors.neonGreen,
+      'Intermediate' => FitColors.orange,
+      'Advanced' => FitColors.pink,
+      _ => FitColors.cyan,
+    };
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 200.w,
+        padding: EdgeInsets.all(14.r),
+        decoration: BoxDecoration(
+          color: isDark ? FitColors.cardDark : FitColors.cardLight,
+          borderRadius: BorderRadius.circular(18.r),
+          border: Border.all(color: isDark ? FitColors.borderDark : FitColors.borderLight),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
+                Container(
+                  width: 36.w,
+                  height: 36.w,
+                  decoration: BoxDecoration(
+                    color: levelColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
+                  child: Center(child: Text(plan.emoji, style: TextStyle(fontSize: 20.sp))),
                 ),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    color: (isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight).withValues(alpha: 0.7),
-                    fontSize: 10,
-                  ),
+                Row(
+                  children: [
+                    Icon(Icons.star_rounded, size: 12.sp, color: FitColors.amber),
+                    SizedBox(width: 2.w),
+                    Text('${plan.rating}', style: TextStyle(color: FitColors.amber, fontSize: 9.sp, fontWeight: FontWeight.w700)),
+                  ],
                 ),
               ],
             ),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
-            decoration: BoxDecoration(
-              color: levelColor.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(4),
+            SizedBox(height: 10.h),
+            Text(plan.name, style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight, fontSize: 12.sp, fontWeight: FontWeight.w700), maxLines: 2, overflow: TextOverflow.ellipsis),
+            SizedBox(height: 4.h),
+            Text('${plan.durationMins} min', style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 10.sp)),
+            SizedBox(height: 6.h),
+            Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+                  decoration: BoxDecoration(
+                    color: levelColor.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(4.r),
+                  ),
+                  child: Text(plan.level, style: TextStyle(color: levelColor, fontSize: 8.sp, fontWeight: FontWeight.w700)),
+                ),
+                SizedBox(width: 4.w),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+                  decoration: BoxDecoration(
+                    color: FitColors.blue.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(4.r),
+                  ),
+                  child: Text(plan.category, style: TextStyle(color: FitColors.blue, fontSize: 8.sp, fontWeight: FontWeight.w700)),
+                ),
+              ],
             ),
-            child: Text(
-              levelLabel,
-              style: TextStyle(
-                color: levelColor,
-                fontSize: 9,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.3,
-              ),
-            ),
-          ),
+            SizedBox(height: 6.h),
+            EquipmentList(equipment: plan.equipment),
+          ],
+        ),
+      ),
+    ).animate().fadeIn(delay: const Duration(milliseconds: 100)).slideY(begin: 0.08, end: 0);
+  }
+}
+
+class _HealthMetricsCard extends StatelessWidget {
+  final int steps;
+  final double calories;
+  final int? hrBpm;
+
+  const _HealthMetricsCard({required this.steps, required this.calories, this.hrBpm});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GlassContainer(
+      opacity: isDark ? 0.06 : 0.2,
+      padding: EdgeInsets.all(16.r),
+      radius: 16,
+      tint: FitColors.teal,
+      child: Row(
+        children: [
+          Expanded(child: _MetricTile(icon: Icons.favorite, label: 'Heart', value: hrBpm != null ? '$hrBpm' : '--', unit: 'BPM', color: FitColors.red)),
+          Container(width: 1, height: 40.h, color: isDark ? FitColors.borderDark : FitColors.borderLight),
+          Expanded(child: _MetricTile(icon: Icons.directions_walk_rounded, label: 'Steps', value: _formatNum(steps), unit: 'steps', color: FitColors.blue)),
+          Container(width: 1, height: 40.h, color: isDark ? FitColors.borderDark : FitColors.borderLight),
+          Expanded(child: _MetricTile(icon: Icons.local_fire_department_rounded, label: 'Calories', value: calories.toStringAsFixed(0), unit: 'kcal', color: FitColors.orange)),
         ],
       ),
-    ).animate().fadeIn(delay: (100 + index * 50).ms).slideX(begin: 0.05);
+    ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.05);
+  }
+
+  String _formatNum(int n) => n >= 1000 ? '${(n / 1000).toStringAsFixed(1)}k' : '$n';
+}
+
+class _MetricTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  final String unit;
+  final Color color;
+
+  const _MetricTile({required this.icon, required this.label, required this.value, required this.unit, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Icon(icon, color: color, size: 18.sp),
+        SizedBox(height: 4.h),
+        Text(value, style: TextStyle(color: color, fontSize: 14.sp, fontWeight: FontWeight.w800)),
+        Text(unit, style: TextStyle(color: color.withValues(alpha: 0.6), fontSize: 8.sp)),
+      ],
+    );
   }
 }

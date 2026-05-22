@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fit_tracker/src/features/fit_track/providers/auth_provider.dart';
 import 'package:fit_tracker/src/features/fit_track/providers/workout_provider.dart';
 import 'package:fit_tracker/src/theme/fit_colors.dart';
+import 'package:fit_tracker/src/features/profile/presentation/screens/edit_profile_screen.dart';
+import 'package:fit_tracker/src/features/settings/presentation/screens/settings_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -100,17 +102,17 @@ class ProfileScreen extends ConsumerWidget {
             _buildMenuItem(context, 
               icon: Icons.person_outline,
               label: 'Edit Profile',
-              onTap: () {},
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EditProfileScreen())),
             ),
             _buildMenuItem(context, 
               icon: Icons.notifications_outlined,
               label: 'Notifications',
-              onTap: () {},
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen())),
             ),
             _buildMenuItem(context, 
               icon: Icons.settings_outlined,
               label: 'Settings',
-              onTap: () {},
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen())),
             ),
             const SizedBox(height: 24),
             SizedBox(

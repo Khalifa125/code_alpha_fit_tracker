@@ -7,8 +7,201 @@ import 'package:fit_tracker/src/features/fitness/domain/entities/fitness_entitie
 import 'package:fit_tracker/src/theme/app_spacing.dart';
 import 'package:fit_tracker/src/theme/fit_colors.dart';
 
-// ─── Color Palette (re-exported for use in other files) ───────────────────
+// ─── Muscle Group Indicator ─────────────────────────────────────────────────
 
+class MuscleGroupIndicator extends StatelessWidget {
+  const MuscleGroupIndicator({
+    super.key,
+    required this.muscles,
+    this.maxDisplay = 4,
+  });
+
+  final List<String> muscles;
+  final int maxDisplay;
+
+  static const _muscleIcons = {
+    'Chest': Icons.fitness_center,
+    'Back': Icons.arrow_back,
+    'Legs': Icons.directions_walk,
+    'Core': Icons.straighten,
+    'Shoulders': Icons.accessibility_new,
+    'Arms': Icons.pan_tool,
+    'Full Body': Icons.accessibility,
+    'Cardio': Icons.favorite,
+    'Glutes': Icons.flight_takeoff,
+    'Quadriceps': Icons.sports_kabaddi,
+    'Hamstrings': Icons.sports_handball,
+    'Calves': Icons.arrow_upward,
+    'Obliques': Icons.tune,
+    'Hips': Icons.camera_alt,
+    'Neck': Icons.face,
+    'Chest & Shoulders': Icons.self_improvement,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final display = muscles.take(maxDisplay).toList();
+    final remaining = muscles.length - display.length;
+    return Row(
+      children: [
+        ...display.map((m) => Padding(
+          padding: EdgeInsets.only(right: 4.w),
+          child: Tooltip(
+            message: m,
+            child: Container(
+              width: 26.w,
+              height: 26.w,
+              decoration: BoxDecoration(
+                color: FitColors.neonGreen.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(6.r),
+              ),
+              child: Icon(
+                _muscleIcons[m] ?? Icons.circle_outlined,
+                color: FitColors.neonGreen,
+                size: 13.sp,
+              ),
+            ),
+          ),
+        )),
+        if (remaining > 0)
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+            decoration: BoxDecoration(
+              color: FitColors.neonGreen.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(4.r),
+            ),
+            child: Text(
+              '+$remaining',
+              style: TextStyle(color: FitColors.neonGreen, fontSize: 8.sp, fontWeight: FontWeight.w700),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+// ─── Difficulty Indicator ──────────────────────────────────────────────────
+
+class DifficultyIndicator extends StatelessWidget {
+  const DifficultyIndicator({
+    super.key,
+    required this.level,
+    this.compact = false,
+  });
+
+  final String level;
+  final bool compact;
+
+  Color get color => switch (level) {
+    'Beginner' || 'Easy' || 'Low' => FitColors.neonGreen,
+    'Intermediate' || 'Medium' || 'Moderate' => FitColors.orange,
+    'Advanced' || 'Hard' || 'High' => FitColors.pink,
+    _ => FitColors.cyan,
+  };
+
+  String get label => switch (level) {
+    'Beginner' || 'Easy' || 'Low' => 'Beginner',
+    'Intermediate' || 'Medium' || 'Moderate' => 'Intermediate',
+    'Advanced' || 'Hard' || 'High' => 'Advanced',
+    _ => level,
+  };
+
+  int get filledBars => switch (level) {
+    'Beginner' || 'Easy' || 'Low' => 1,
+    'Intermediate' || 'Medium' || 'Moderate' => 2,
+    'Advanced' || 'Hard' || 'High' => 3,
+    _ => 2,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    if (compact) {
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 3.h),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(5.r),
+        ),
+        child: Text(label, style: TextStyle(color: color, fontSize: 9.sp, fontWeight: FontWeight.w700)),
+      );
+    }
+    return Row(
+      children: [
+        ...List.generate(3, (i) => Container(
+          width: 18.w,
+          height: 5.h,
+          margin: EdgeInsets.only(right: 3.w),
+          decoration: BoxDecoration(
+            color: i < filledBars ? color : color.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(3.r),
+          ),
+        )),
+        SizedBox(width: 6.w),
+        Text(label, style: TextStyle(color: color, fontSize: 10.sp, fontWeight: FontWeight.w600)),
+      ],
+    );
+  }
+}
+
+// ─── Equipment List ────────────────────────────────────────────────────────
+
+class EquipmentList extends StatelessWidget {
+  const EquipmentList({
+    super.key,
+    required this.equipment,
+  });
+
+  final List<String> equipment;
+
+  static const _equipmentIcons = {
+    'Yoga mat': Icons.bed,
+    'Dumbbells': Icons.fitness_center,
+    'Dumbbell': Icons.fitness_center,
+    'Pull-up bar': Icons.vertical_align_top,
+    'Bench': Icons.chair,
+    'Chair': Icons.chair,
+    'Wall': Icons.wallpaper,
+    'Resistance band': Icons.attractions,
+    'Box': Icons.inventory_2,
+    'Towel': Icons.bathroom,
+    'Blanket': Icons.bed,
+    'Water bottle': Icons.water_drop,
+    'Step': Icons.stairs,
+    'Doorway': Icons.door_front_door,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    if (equipment.isEmpty || (equipment.length == 1 && equipment.first == '')) {
+      return Row(
+        children: [
+          Icon(Icons.check_circle_outline, size: 12.sp, color: FitColors.neonGreen),
+          SizedBox(width: 4.w),
+          Text('No equipment needed', style: TextStyle(color: FitColors.neonGreen, fontSize: 10.sp, fontWeight: FontWeight.w500)),
+        ],
+      );
+    }
+    return Wrap(
+      spacing: 6.w,
+      runSpacing: 4.h,
+      children: equipment.where((e) => e.isNotEmpty).map((e) => Container(
+        padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 3.h),
+        decoration: BoxDecoration(
+          color: FitColors.neonGreen.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(5.r),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(_equipmentIcons[e] ?? Icons.circle_outlined, size: 10.sp, color: FitColors.neonGreen),
+            SizedBox(width: 3.w),
+            Text(e, style: TextStyle(color: FitColors.neonGreen, fontSize: 9.sp, fontWeight: FontWeight.w600)),
+          ],
+        ),
+      )).toList(),
+    );
+  }
+}
 
 // ─── Stat Card ─────────────────────────────────────────────────────────────
 

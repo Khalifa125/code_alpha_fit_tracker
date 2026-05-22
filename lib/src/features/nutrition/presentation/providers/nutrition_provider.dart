@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fit_tracker/src/core/services/nutrition_api_service.dart';
+import 'package:fit_tracker/src/core/services/hive_storage_service.dart';
 
 class NutritionEntry {
   final String id;
@@ -61,24 +62,42 @@ class NutritionState {
 
 class NutritionNotifier extends Notifier<NutritionState> {
   @override
-  NutritionState build() => const NutritionState();
+  NutritionState build() {
+    _loadFromStorage();
+    return const NutritionState();
+  }
+
+  Future<void> _loadFromStorage() async {
+    final entries = await HiveStorageService.loadNutritionEntries();
+    final goal = await HiveStorageService.loadCalorieGoal();
+    if (entries.isNotEmpty || goal != 2000) {
+      state = NutritionState(entries: entries, calorieGoal: goal);
+    }
+  }
+
+  Future<void> _persistEntries() => HiveStorageService.saveNutritionEntries(state.entries);
+  Future<void> _persistGoal() => HiveStorageService.saveCalorieGoal(state.calorieGoal);
 
   void addEntry(NutritionEntry entry) {
     state = state.copyWith(entries: [...state.entries, entry]);
+    _persistEntries();
   }
 
   void removeEntry(String id) {
     state = state.copyWith(
       entries: state.entries.where((e) => e.id != id).toList(),
     );
+    _persistEntries();
   }
 
   void setCalorieGoal(double goal) {
     state = state.copyWith(calorieGoal: goal);
+    _persistGoal();
   }
 
   void clearEntries() {
     state = state.copyWith(entries: []);
+    _persistEntries();
   }
 }
 
