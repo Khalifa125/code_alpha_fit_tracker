@@ -1,10 +1,15 @@
-// ignore_for_file: unnecessary_import
+// ignore_for_file: unnecessary_import, deprecated_member_use
+
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fit_tracker/src/imports/core_imports.dart';
 import 'package:fit_tracker/src/features/settings/presentation/providers/theme_provider.dart';
 import 'package:fit_tracker/src/features/gamification/presentation/providers/gamification_provider.dart';
+import 'package:fit_tracker/src/features/water/presentation/providers/water_provider.dart';
+import 'package:fit_tracker/src/features/sleep/presentation/providers/sleep_provider.dart';
+import 'package:fit_tracker/src/features/fitness/presentation/providers/fitness_providers.dart';
 import 'package:fit_tracker/src/shared/wrappers/error_boundary.dart';
 
 class _FitScrollBehavior extends ScrollBehavior {
@@ -66,17 +71,53 @@ class _StartupHandler extends ConsumerStatefulWidget {
 
 class _StartupHandlerState extends ConsumerState<_StartupHandler> {
   bool _initialized = false;
+  int _lastDay = DateTime.now().day;
+  Timer? _midnightTimer;
+
+  void _syncAchievements() {
+    final gs = ref.read(gamificationProvider);
+    int waterGlasses = 0;
+    try { waterGlasses = ref.read(waterProvider).totalIntake ~/ 250; } catch (_) {}
+    int sleepHours = 0;
+    try { sleepHours = ref.read(sleepProvider).totalHours; } catch (_) {}
+    int steps = 0;
+    try {
+      final summary = ref.read(dailySummaryProvider).valueOrNull;
+      if (summary != null) steps = summary.totalSteps;
+    } catch (_) {}
+    ref.read(achievementsProvider.notifier).updateProgress(
+      gs, waterGlasses: waterGlasses, sleepHours: sleepHours, steps: steps,
+    );
+  }
+
+  void _checkMidnight() {
+    final now = DateTime.now();
+    if (now.day != _lastDay) {
+      _lastDay = now.day;
+      ref.read(gamificationProvider.notifier).generateDailyChallenges();
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    _lastDay = DateTime.now().day;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_initialized) {
         _initialized = true;
         ref.read(gamificationProvider.notifier).generateDailyChallenges();
-        ref.read(achievementsProvider.notifier).updateProgress(ref.read(gamificationProvider));
+        _syncAchievements();
+        ref.listenManual(waterProvider, (_, __) => _syncAchievements());
+        ref.listenManual(sleepProvider, (_, __) => _syncAchievements());
+        _midnightTimer = Timer.periodic(const Duration(minutes: 1), (_) => _checkMidnight());
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _midnightTimer?.cancel();
+    super.dispose();
   }
 
   @override

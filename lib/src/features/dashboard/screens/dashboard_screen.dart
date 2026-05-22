@@ -8,10 +8,20 @@ import 'package:fit_tracker/src/theme/fit_colors.dart';
 import 'package:fit_tracker/src/shared/widgets/glass_container.dart';
 import 'package:fit_tracker/src/features/dashboard/widgets/progress_ring.dart';
 import 'package:fit_tracker/src/features/water/presentation/providers/water_provider.dart';
+import 'package:fit_tracker/src/features/nutrition/presentation/providers/nutrition_provider.dart';
+import 'package:fit_tracker/src/features/fitness/presentation/providers/fitness_providers.dart';
+import 'package:fit_tracker/src/features/gamification/presentation/providers/gamification_provider.dart';
 
-final caloriesConsumedProvider = Provider<double>((ref) => 1200);
-final caloriesGoalProvider = Provider<double>((ref) => 2000);
-final stepCountProvider = Provider<int>((ref) => 5000);
+final caloriesConsumedProvider = Provider<double>((ref) {
+  final state = ref.watch(nutritionProvider);
+  final today = DateTime.now();
+  return state.entriesForDate(today).fold<double>(0, (sum, e) => sum + e.calories);
+});
+final caloriesGoalProvider = Provider<double>((ref) => ref.watch(nutritionProvider).calorieGoal);
+final stepCountProvider = Provider<int>((ref) {
+  final summary = ref.watch(dailySummaryProvider).valueOrNull;
+  return summary?.totalSteps ?? 0;
+});
 
 class ModernDashboard extends ConsumerWidget {
   const ModernDashboard({super.key});
@@ -214,10 +224,10 @@ class ModernDashboard extends ConsumerWidget {
                             opacity: isDark ? 0.06 : 0.2,
                             radius: 16,
                             padding: const EdgeInsets.all(16),
-                            child: const _StatContent(
+                            child: _StatContent(
                               title: 'Streak',
-                              value: '5 days',
-                              subtitle: 'Personal best!',
+                              value: '${ref.watch(gamificationProvider).streak.currentStreak} days',
+                              subtitle: 'Best: ${ref.watch(gamificationProvider).streak.longestStreak}',
                               icon: Icons.local_fire_department,
                               color: FitColors.streak,
                               delayMs: 700,

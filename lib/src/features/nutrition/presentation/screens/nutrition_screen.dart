@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +8,9 @@ import 'package:intl/intl.dart';
 import 'package:fit_tracker/src/theme/fit_colors.dart';
 import 'package:fit_tracker/src/shared/widgets/glass_container.dart';
 import 'package:fit_tracker/src/features/water/presentation/screens/water_tracking_screen.dart';
+import 'package:fit_tracker/src/features/water/presentation/providers/water_provider.dart';
+import 'package:fit_tracker/src/features/nutrition/presentation/providers/nutrition_provider.dart';
+import 'package:fit_tracker/src/core/services/nutrition_api_service.dart';
 
 class NutritionScreen extends ConsumerStatefulWidget {
   const NutritionScreen({super.key});
@@ -22,26 +23,7 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> with Automati
   @override
   bool get wantKeepAlive => true;
 
-  int consumedCalories = 1250;
-  int goalCalories = 2000;
-  double protein = 85;
-  double carbs = 150;
-  double fat = 45;
-  int proteinGoal = 150;
-  int carbsGoal = 250;
-  int fatGoal = 65;
-  int waterMl = 1200;
-  int waterGoal = 2000;
   DateTime _selectedDate = DateTime.now();
-
-  final List<_FoodEntry> _foodEntries = [];
-
-  final List<Map<String, dynamic>> _meals = [
-    {'name': 'Breakfast', 'icon': Icons.wb_sunny_outlined, 'calories': 350},
-    {'name': 'Lunch', 'icon': Icons.wb_twilight, 'calories': 450},
-    {'name': 'Dinner', 'icon': Icons.nightlight_outlined, 'calories': 350},
-    {'name': 'Snacks', 'icon': Icons.cookie_outlined, 'calories': 100},
-  ];
 
   static bool _isSameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
@@ -55,10 +37,14 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> with Automati
 
   List<double> get _weeklyCalories {
     final now = DateTime.now();
+    final entries = ref.read(nutritionProvider).entries;
     return List.generate(7, (i) {
-      final day = now.subtract(Duration(days: 7 - 1 - i));
-      if (day.day == _selectedDate.day && day.month == _selectedDate.month) return consumedCalories.toDouble();
-      return [1200, 1850, 900, 2100, 1500, 1780, 1300][i % 7].toDouble();
+      final day = now.subtract(Duration(days: 6 - i));
+      final dayEntries = entries.where((e) =>
+          e.date.year == day.year &&
+          e.date.month == day.month &&
+          e.date.day == day.day);
+      return dayEntries.fold<double>(0, (sum, e) => sum + e.calories);
     });
   }
 
@@ -115,17 +101,21 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> with Automati
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    final cal = int.tryParse(calCtrl.text) ?? 0;
+                    final cal = double.tryParse(calCtrl.text) ?? 0;
                     final p = double.tryParse(proteinCtrl.text) ?? 0;
                     final c = double.tryParse(carbsCtrl.text) ?? 0;
                     final f = double.tryParse(fatCtrl.text) ?? 0;
-                    setState(() {
-                      _foodEntries.add(_FoodEntry(name: nameCtrl.text.isEmpty ? 'Unknown' : nameCtrl.text, meal: mealName, calories: cal, protein: p, carbs: c, fat: f));
-                      consumedCalories += cal;
-                      protein += p;
-                      carbs += c;
-                      fat += f;
-                    });
+                    ref.read(nutritionProvider.notifier).addEntry(NutritionEntry(
+                      id: DateTime.now().millisecondsSinceEpoch.toString(),
+                      name: nameCtrl.text.isEmpty ? 'Unknown' : nameCtrl.text,
+                      calories: cal,
+                      protein: p,
+                      carbs: c,
+                      fat: f,
+                      grams: 0,
+                      mealType: mealName,
+                      date: _selectedDate,
+                    ));
                     HapticFeedback.heavyImpact();
                     Navigator.pop(ctx);
                   },
@@ -191,18 +181,34 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> with Automati
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     final barcode = barcodeCtrl.text.trim();
                     if (barcode.isEmpty) return;
                     HapticFeedback.heavyImpact();
-                    setState(() {
-                      _foodEntries.add(_FoodEntry(name: 'Scanned Item #${barcode.substring(barcode.length > 4 ? barcode.length - 4 : 0)}', meal: 'Snacks', calories: 200, protein: 5, carbs: 25, fat: 8));
-                      consumedCalories += 200;
-                      protein += 5;
-                      carbs += 25;
-                      fat += 8;
-                    });
-                    Navigator.pop(ctx);
+
+                    final food = await openFoodFactsApi.getByBarcode(barcode);
+                    if (food != null) {
+                      final grams = food.servingSize ?? 100;
+                      final scale = grams / 100.0;
+                      ref.read(nutritionProvider.notifier).addEntry(NutritionEntry(
+                        id: DateTime.now().millisecondsSinceEpoch.toString(),
+                        name: food.name,
+                        calories: food.calories * scale,
+                        protein: food.protein * scale,
+                        carbs: food.carbs * scale,
+                        fat: food.fat * scale,
+                        grams: grams,
+                        mealType: 'Snacks',
+                        date: _selectedDate,
+                      ));
+                    } else {
+                      if (ctx.mounted) {
+                        ScaffoldMessenger.of(ctx).showSnackBar(
+                          const SnackBar(content: Text('Product not found. Try adding manually.')),
+                        );
+                      }
+                    }
+                    if (ctx.mounted) Navigator.pop(ctx);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: FitColors.neonGreen,
@@ -220,9 +226,10 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> with Automati
   }
 
   void _showMacroGoalSheet() {
-    final pCtrl = TextEditingController(text: proteinGoal.toString());
-    final cCtrl = TextEditingController(text: carbsGoal.toString());
-    final fCtrl = TextEditingController(text: fatGoal.toString());
+    final state = ref.read(nutritionProvider);
+    final pCtrl = TextEditingController(text: state.proteinGoal.toString());
+    final cCtrl = TextEditingController(text: state.carbsGoal.toString());
+    final fCtrl = TextEditingController(text: state.fatGoal.toString());
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -251,11 +258,10 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> with Automati
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    setState(() {
-                      proteinGoal = int.tryParse(pCtrl.text) ?? proteinGoal;
-                      carbsGoal = int.tryParse(cCtrl.text) ?? carbsGoal;
-                      fatGoal = int.tryParse(fCtrl.text) ?? fatGoal;
-                    });
+                    final notifier = ref.read(nutritionProvider.notifier);
+                    notifier.setProteinGoal(int.tryParse(pCtrl.text) ?? state.proteinGoal);
+                    notifier.setCarbsGoal(int.tryParse(cCtrl.text) ?? state.carbsGoal);
+                    notifier.setFatGoal(int.tryParse(fCtrl.text) ?? state.fatGoal);
                     Navigator.pop(ctx);
                   },
                   style: ElevatedButton.styleFrom(
@@ -277,6 +283,25 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> with Automati
   Widget build(BuildContext context) {
     super.build(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final nutritionState = ref.watch(nutritionProvider);
+    final dateEntries = nutritionState.entriesForDate(_selectedDate);
+    final consumedCalories = dateEntries.fold<double>(0, (sum, e) => sum + e.calories).toInt();
+    final goalCalories = nutritionState.calorieGoal.toInt();
+    final protein = dateEntries.fold<double>(0, (sum, e) => sum + e.protein);
+    final carbs = dateEntries.fold<double>(0, (sum, e) => sum + e.carbs);
+    final fat = dateEntries.fold<double>(0, (sum, e) => sum + e.fat);
+    final proteinGoal = nutritionState.proteinGoal;
+    final carbsGoal = nutritionState.carbsGoal;
+    final fatGoal = nutritionState.fatGoal;
+
+    final meals = ['Breakfast', 'Lunch', 'Dinner', 'Snacks'];
+    final mealIcons = {
+      'Breakfast': Icons.wb_sunny_outlined,
+      'Lunch': Icons.wb_twilight,
+      'Dinner': Icons.nightlight_outlined,
+      'Snacks': Icons.cookie_outlined,
+    };
+
     return RepaintBoundary(
       child: Scaffold(
         body: DecoratedBox(
@@ -345,13 +370,11 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> with Automati
                   SizedBox(height: 24.h),
 
                   // Meal sections
-                  ..._meals.asMap().entries.map((e) => _MealSectionCard(
-                    name: e.value['name'] as String,
-                    icon: e.value['icon'] as IconData,
-                    calories: e.value['calories'] as int,
-                    foodEntries: _foodEntries.where((f) => f.meal == e.value['name']).toList(),
-                    index: e.key,
-                    onAddFood: () => _onAddFood(e.value['name'] as String),
+                  ...meals.map((meal) => _MealSectionCard(
+                    name: meal,
+                    icon: mealIcons[meal]!,
+                    foodEntries: dateEntries.where((f) => f.mealType == meal).toList(),
+                    onAddFood: () => _onAddFood(meal),
                     onScan: _onScanBarcode,
                   )),
                   SizedBox(height: 16.h),
@@ -359,7 +382,7 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> with Automati
                   // Water widget
                   GestureDetector(
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const WaterTrackingScreen())),
-                    child: _WaterMiniWidget(waterMl: waterMl, waterGoal: waterGoal),
+                    child: const _WaterMiniWidget(),
                   ),
                 ],
               ),
@@ -504,11 +527,11 @@ class _MacrosRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: _MacroCard(name: 'Protein', value: '${protein.toInt()}g', color: FitColors.blue, progress: protein / proteinGoal)),
+        Expanded(child: _MacroCard(name: 'Protein', value: '${protein.toInt()}g', color: FitColors.blue, progress: proteinGoal > 0 ? protein / proteinGoal : 0)),
         SizedBox(width: 12.w),
-        Expanded(child: _MacroCard(name: 'Carbs', value: '${carbs.toInt()}g', color: FitColors.amber, progress: carbs / carbsGoal)),
+        Expanded(child: _MacroCard(name: 'Carbs', value: '${carbs.toInt()}g', color: FitColors.amber, progress: carbsGoal > 0 ? carbs / carbsGoal : 0)),
         SizedBox(width: 12.w),
-        Expanded(child: _MacroCard(name: 'Fat', value: '${fat.toInt()}g', color: FitColors.pink, progress: fat / fatGoal)),
+        Expanded(child: _MacroCard(name: 'Fat', value: '${fat.toInt()}g', color: FitColors.pink, progress: fatGoal > 0 ? fat / fatGoal : 0)),
       ],
     );
   }
@@ -559,18 +582,14 @@ class _MacroCard extends StatelessWidget {
 class _MealSectionCard extends StatelessWidget {
   final String name;
   final IconData icon;
-  final int calories;
-  final List<_FoodEntry> foodEntries;
-  final int index;
+  final List<NutritionEntry> foodEntries;
   final VoidCallback onAddFood;
   final VoidCallback onScan;
 
   const _MealSectionCard({
     required this.name,
     required this.icon,
-    required this.calories,
     required this.foodEntries,
-    required this.index,
     required this.onAddFood,
     required this.onScan,
   });
@@ -578,7 +597,7 @@ class _MealSectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final mealCalories = foodEntries.fold(calories, (sum, f) => sum + f.calories);
+    final mealCalories = foodEntries.fold(0, (sum, f) => sum + f.calories.toInt());
     return GlassCard(
       opacity: isDark ? 0.06 : 0.2,
       padding: EdgeInsets.all(14.r),
@@ -619,7 +638,7 @@ class _MealSectionCard extends StatelessWidget {
                   SizedBox(width: 6.w),
                   Text(f.name, style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 11)),
                   const Spacer(),
-                  Text('${f.calories} cal', style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 10)),
+                  Text('${f.calories.toInt()} cal', style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight, fontSize: 10)),
                 ],
               ),
             )),
@@ -654,19 +673,19 @@ class _MealSectionCard extends StatelessWidget {
           ),
         ],
       ),
-    ).animate().fadeIn(delay: (100 + index * 50).ms);
+    ).animate().fadeIn();
   }
 }
 
-class _WaterMiniWidget extends StatelessWidget {
-  final int waterMl;
-  final int waterGoal;
-
-  const _WaterMiniWidget({required this.waterMl, required this.waterGoal});
+class _WaterMiniWidget extends ConsumerWidget {
+  const _WaterMiniWidget();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final waterState = ref.watch(waterProvider);
+    final waterMl = waterState.totalIntake;
+    final waterGoal = waterState.goal;
     return GlassContainer(
       opacity: isDark ? 0.06 : 0.2,
       padding: EdgeInsets.all(16.r),
@@ -684,7 +703,7 @@ class _WaterMiniWidget extends StatelessWidget {
                   color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
                   fontSize: 16, fontWeight: FontWeight.bold,
                 )),
-                Text('${(waterMl / waterGoal * 100).toInt()}% of daily goal', style: TextStyle(
+                Text('${waterGoal > 0 ? (waterMl / waterGoal * 100).toInt() : 0}% of daily goal', style: TextStyle(
                   color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
                   fontSize: 12,
                 )),
@@ -692,7 +711,7 @@ class _WaterMiniWidget extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(3),
                   child: LinearProgressIndicator(
-                    value: (waterMl / waterGoal).clamp(0.0, 1.0),
+                    value: waterGoal > 0 ? (waterMl / waterGoal).clamp(0.0, 1.0) : 0.0,
                     backgroundColor: isDark ? FitColors.surfaceDark : FitColors.surfaceLight,
                     valueColor: const AlwaysStoppedAnimation(FitColors.blue),
                     minHeight: 4,
@@ -708,15 +727,4 @@ class _WaterMiniWidget extends StatelessWidget {
       ),
     );
   }
-}
-
-class _FoodEntry {
-  final String name;
-  final String meal;
-  final int calories;
-  final double protein;
-  final double carbs;
-  final double fat;
-
-  const _FoodEntry({required this.name, required this.meal, required this.calories, this.protein = 0, this.carbs = 0, this.fat = 0});
 }

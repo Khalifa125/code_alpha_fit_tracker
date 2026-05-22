@@ -48,6 +48,14 @@ class HiveStorageService {
     await _nutrition.put('calorie_goal', goal);
   }
 
+  static Future<int?> loadMacroGoal(String key) async {
+    return _nutrition.get(key) as int?;
+  }
+
+  static Future<void> saveMacroGoal(String key, int value) async {
+    await _nutrition.put(key, value);
+  }
+
   static String _gamificationStateToJson(GamificationState s) {
     return jsonEncode({
       'totalXp': s.totalXp,

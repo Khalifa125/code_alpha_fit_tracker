@@ -29,12 +29,18 @@ class NutritionEntry {
 class NutritionState {
   final List<NutritionEntry> entries;
   final double calorieGoal;
+  final int proteinGoal;
+  final int carbsGoal;
+  final int fatGoal;
   final bool isLoading;
   final String? error;
 
   const NutritionState({
     this.entries = const [],
     this.calorieGoal = 2000,
+    this.proteinGoal = 150,
+    this.carbsGoal = 250,
+    this.fatGoal = 65,
     this.isLoading = false,
     this.error,
   });
@@ -45,15 +51,27 @@ class NutritionState {
   double get totalFat => entries.fold(0, (sum, e) => sum + e.fat);
   double get remaining => calorieGoal - totalCalories;
 
+  List<NutritionEntry> entriesForDate(DateTime date) =>
+      entries.where((e) =>
+          e.date.year == date.year &&
+          e.date.month == date.month &&
+          e.date.day == date.day).toList();
+
   NutritionState copyWith({
     List<NutritionEntry>? entries,
     double? calorieGoal,
+    int? proteinGoal,
+    int? carbsGoal,
+    int? fatGoal,
     bool? isLoading,
     String? error,
   }) {
     return NutritionState(
       entries: entries ?? this.entries,
       calorieGoal: calorieGoal ?? this.calorieGoal,
+      proteinGoal: proteinGoal ?? this.proteinGoal,
+      carbsGoal: carbsGoal ?? this.carbsGoal,
+      fatGoal: fatGoal ?? this.fatGoal,
       isLoading: isLoading ?? this.isLoading,
       error: error,
     );
@@ -70,9 +88,16 @@ class NutritionNotifier extends Notifier<NutritionState> {
   Future<void> _loadFromStorage() async {
     final entries = await HiveStorageService.loadNutritionEntries();
     final goal = await HiveStorageService.loadCalorieGoal();
-    if (entries.isNotEmpty || goal != 2000) {
-      state = NutritionState(entries: entries, calorieGoal: goal);
-    }
+    final proteinGoal = await HiveStorageService.loadMacroGoal('proteinGoal') ?? 150;
+    final carbsGoal = await HiveStorageService.loadMacroGoal('carbsGoal') ?? 250;
+    final fatGoal = await HiveStorageService.loadMacroGoal('fatGoal') ?? 65;
+    state = NutritionState(
+      entries: entries,
+      calorieGoal: goal,
+      proteinGoal: proteinGoal,
+      carbsGoal: carbsGoal,
+      fatGoal: fatGoal,
+    );
   }
 
   Future<void> _persistEntries() => HiveStorageService.saveNutritionEntries(state.entries);
@@ -93,6 +118,21 @@ class NutritionNotifier extends Notifier<NutritionState> {
   void setCalorieGoal(double goal) {
     state = state.copyWith(calorieGoal: goal);
     _persistGoal();
+  }
+
+  void setProteinGoal(int goal) {
+    state = state.copyWith(proteinGoal: goal);
+    HiveStorageService.saveMacroGoal('proteinGoal', goal);
+  }
+
+  void setCarbsGoal(int goal) {
+    state = state.copyWith(carbsGoal: goal);
+    HiveStorageService.saveMacroGoal('carbsGoal', goal);
+  }
+
+  void setFatGoal(int goal) {
+    state = state.copyWith(fatGoal: goal);
+    HiveStorageService.saveMacroGoal('fatGoal', goal);
   }
 
   void clearEntries() {

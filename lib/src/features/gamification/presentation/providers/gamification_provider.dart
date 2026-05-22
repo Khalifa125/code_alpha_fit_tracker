@@ -54,6 +54,7 @@ class GamificationNotifier extends Notifier<GamificationState> {
 
   void completeWorkout(int calories, int minutes) {
     addXp(50 + (minutes ~/ 10) * 10);
+    final previouslyCompleted = state.challenges.where((c) => c.isCompleted).map((c) => c.id).toSet();
     final challenges = state.challenges.map((c) {
       if (c.type == ChallengeType.completeWorkout && !c.isCompleted) {
         return DailyChallenge(id: c.id, title: c.title, description: c.description, icon: c.icon, xpReward: c.xpReward, type: c.type, target: c.target, isCompleted: true);
@@ -76,7 +77,7 @@ class GamificationNotifier extends Notifier<GamificationState> {
 
     _persist();
     for (final c in challenges) {
-      if (c.isCompleted) addXp(c.xpReward);
+      if (c.isCompleted && !previouslyCompleted.contains(c.id)) addXp(c.xpReward);
     }
   }
 
@@ -161,7 +162,7 @@ class AchievementsNotifier extends Notifier<List<Achievement>> {
 
   Future<void> _persist() => HiveStorageService.saveAchievements(state);
 
-  void updateProgress(GamificationState gs) {
+  void updateProgress(GamificationState gs, {int waterGlasses = 0, int sleepHours = 0, int steps = 0}) {
     state = state.map((a) {
       int current;
       switch (a.category) {
@@ -172,11 +173,11 @@ class AchievementsNotifier extends Notifier<List<Achievement>> {
         case AchievementCategory.calories:
           current = gs.totalCaloriesBurned;
         case AchievementCategory.steps:
-          current = 0;
+          current = steps;
         case AchievementCategory.water:
-          current = 0;
+          current = waterGlasses;
         case AchievementCategory.sleep:
-          current = 0;
+          current = sleepHours;
       }
       if (current >= a.targetValue && !a.isUnlocked) {
         return a.copyWith(currentValue: current, isUnlocked: true, unlockedAt: DateTime.now());
