@@ -1,4 +1,3 @@
-// ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -57,7 +56,7 @@ class MoreScreen extends ConsumerWidget {
                 subtitle: themeMode == ThemeMode.dark ? 'On' : 'Off',
                 trailing: Switch(
                   value: themeMode == ThemeMode.dark,
-                  activeColor: FitColors.neonGreen,
+                  activeThumbColor: FitColors.neonGreen,
                   onChanged: (v) => ref.read(themeProvider.notifier).setThemeMode(
                     v ? ThemeMode.dark : ThemeMode.light,
                   ),

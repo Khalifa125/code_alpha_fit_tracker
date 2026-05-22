@@ -1,4 +1,3 @@
-// ignore_for_file: deprecated_member_use, inference_failure_on_function_return_type, inference_failure_on_function_invocation, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -228,7 +227,7 @@ class _StatItem extends StatelessWidget {
 }
 
 class _AddSleepButton extends StatelessWidget {
-  final Function(DateTime start, DateTime end, int? quality) onAdd;
+  final void Function(DateTime start, DateTime end, int? quality) onAdd;
 
   const _AddSleepButton({required this.onAdd});
 
@@ -258,13 +257,13 @@ class _AddSleepButton extends StatelessWidget {
     );
   }
 
-  void _showAddDialog(BuildContext context) {
+  Future<void> _showAddDialog(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     DateTime startTime = DateTime.now().subtract(const Duration(hours: 8));
     DateTime endTime = DateTime.now();
     int? quality;
 
-    showModalBottomSheet(
+    return showModalBottomSheet<dynamic>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

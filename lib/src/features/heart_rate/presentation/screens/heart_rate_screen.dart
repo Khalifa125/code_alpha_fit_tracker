@@ -1,4 +1,3 @@
-// ignore_for_file: deprecated_member_use, inference_failure_on_function_return_type, inference_failure_on_function_invocation, unused_import, prefer_const_constructors
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -277,7 +276,7 @@ class _StatItem extends StatelessWidget {
 }
 
 class _AddHeartRateButton extends StatelessWidget {
-  final Function(int bpm, String? activity) onAdd;
+  final void Function(int bpm, String? activity) onAdd;
 
   const _AddHeartRateButton({required this.onAdd});
 
@@ -307,12 +306,12 @@ class _AddHeartRateButton extends StatelessWidget {
     );
   }
 
-  void _showAddDialog(BuildContext context) {
+  Future<void> _showAddDialog(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bpmController = TextEditingController();
     String? selectedActivity;
 
-    showModalBottomSheet(
+    return showModalBottomSheet<dynamic>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

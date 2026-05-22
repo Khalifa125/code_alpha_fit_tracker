@@ -1,8 +1,5 @@
-// ignore_for_file: unnecessary_import, deprecated_member_use
 
 import 'dart:async';
-
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fit_tracker/src/imports/core_imports.dart';
 import 'package:fit_tracker/src/features/settings/presentation/providers/theme_provider.dart';

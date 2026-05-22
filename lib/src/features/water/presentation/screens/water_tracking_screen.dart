@@ -1,4 +1,3 @@
-// ignore_for_file: unused_element, inference_failure_on_function_return_type, deprecated_member_use, prefer_const_constructors, inference_failure_on_function_invocation
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -130,16 +129,6 @@ class WaterTrackingScreen extends ConsumerWidget {
     if (date != null) ref.read(waterProvider.notifier).selectDate(date);
   }
 
-  void _showSettings(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => _WaterSettingsSheet(),
-    );
-  }
 }
 
 class _DateSelector extends StatelessWidget {
@@ -317,7 +306,7 @@ class _QuickAddButton extends StatelessWidget {
 }
 
 class _CustomAmountButton extends StatefulWidget {
-  final Function(int) onAdd;
+  final void Function(int) onAdd;
 
   const _CustomAmountButton({required this.onAdd});
 
@@ -359,9 +348,9 @@ class _CustomAmountButtonState extends State<_CustomAmountButton> {
     );
   }
 
-  void _showDialog(BuildContext context) {
+  Future<void> _showDialog(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    showDialog(
+    return showDialog<dynamic>(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.transparent,
@@ -490,132 +479,4 @@ class _WaterEntryTile extends StatelessWidget {
   }
 }
 
-class _WaterSettingsSheet extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final state = ref.watch(waterProvider);
-    return GlassContainer(
-      opacity: isDark ? 0.06 : 0.2,
-      padding: EdgeInsets.all(20.w),
-      radius: 20,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Settings', style: TextStyle(
-                color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w700,
-              )),
-              IconButton(
-                icon: Icon(Icons.close, color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ],
-          ),
-          SizedBox(height: 16.h),
-          ListTile(
-            leading: Icon(Icons.flag, color: FitColors.neonGreen),
-            title: Text('Daily Goal', style: TextStyle(
-              color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
-            )),
-            subtitle: Text('${state.goal} ml', style: TextStyle(
-              color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
-            )),
-            onTap: () => _showGoalDialog(context, ref, state.goal),
-          ),
-          Divider(color: isDark ? FitColors.borderDark : FitColors.borderLight),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.h),
-            child: Text('Reminders', style: TextStyle(
-              color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-            )),
-          ),
-          ...state.reminders.map((reminder) => SwitchListTile(
-            secondary: Icon(Icons.access_time, color: FitColors.blue),
-            title: Text(reminder.label ?? 'Reminder', style: TextStyle(
-              color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
-            )),
-            subtitle: Text('${reminder.hour.toString().padLeft(2, '0')}:${reminder.minute.toString().padLeft(2, '0')}',
-              style: TextStyle(color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight)),
-            value: reminder.isEnabled,
-            activeColor: FitColors.neonGreen,
-            onChanged: (v) => ref.read(waterProvider.notifier).toggleReminder(reminder.id, v),
-          )),
-          SizedBox(height: 20.h),
-        ],
-      ),
-    );
-  }
 
-  void _showGoalDialog(BuildContext context, WidgetRef ref, int currentGoal) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final controller = TextEditingController(text: currentGoal.toString());
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.transparent,
-        content: GlassContainer(
-          opacity: isDark ? 0.06 : 0.2,
-          padding: EdgeInsets.all(20.r),
-          radius: 20,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Set Daily Goal', style: TextStyle(
-                color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight,
-                fontSize: 18.sp, fontWeight: FontWeight.bold,
-              )),
-              SizedBox(height: 16.h),
-              TextField(
-                controller: controller,
-                keyboardType: TextInputType.number,
-                style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
-                decoration: InputDecoration(
-                  suffixText: 'ml',
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: isDark ? FitColors.borderDark : FitColors.borderLight),
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: FitColors.neonGreen),
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                ),
-              ),
-              SizedBox(height: 16.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text('Cancel', style: TextStyle(
-                      color: isDark ? FitColors.textSecondaryDark : FitColors.textSecondaryLight,
-                    )),
-                  ),
-                  SizedBox(width: 8.w),
-                  TextButton(
-                    onPressed: () {
-                      final goal = int.tryParse(controller.text);
-                      if (goal != null && goal > 0) {
-                        ref.read(waterProvider.notifier).setGoal(goal);
-                        Navigator.pop(context);
-                      }
-                    },
-                    child: Text('Save', style: TextStyle(color: FitColors.neonGreen)),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}

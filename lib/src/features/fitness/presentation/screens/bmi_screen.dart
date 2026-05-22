@@ -1,17 +1,9 @@
-// ignore_for_file: deprecated_member_use, prefer_const_constructors, unnecessary_import, unused_import, unused_element_parameter
 
-import 'package:fit_tracker/src/imports/core_imports.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fit_tracker/src/imports/core_imports.dart';import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:intl/intl.dart';
-import 'package:fit_tracker/src/features/fitness/data/models/fitness_models.dart';
+import 'package:flutter_animate/flutter_animate.dart';import 'package:fit_tracker/src/features/fitness/data/models/fitness_models.dart';
 import 'package:fit_tracker/src/features/fitness/presentation/providers/fitness_providers.dart';
-import 'package:fit_tracker/src/features/fitness/presentation/widgets/fitness_widgets.dart';
-import 'package:fit_tracker/src/theme/app_spacing.dart';
-
 class BmiScreen extends ConsumerStatefulWidget {
   const BmiScreen({super.key});
 
@@ -339,7 +331,7 @@ class _GenderBtn extends StatelessWidget {
 }
 
 class _SmallInput extends StatelessWidget {
-  const _SmallInput({super.key, required this.controller, required this.label, required this.hint});
+  const _SmallInput({required this.controller, required this.label, required this.hint});
   final TextEditingController controller; final String label; final String hint;
 
   @override

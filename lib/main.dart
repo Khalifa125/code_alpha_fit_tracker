@@ -1,16 +1,10 @@
-// ignore_for_file: inference_failure_on_function_invocation, unnecessary_import, inference_failure_on_instance_creation, deprecated_member_use
-
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'firebase_options.dart';
 import 'src/imports/core_imports.dart';
-import 'src/app.dart';
-import 'src/services/notification_service.dart';
-import 'src/features/water/data/services/water_service.dart';
+import 'src/app.dart';import 'src/features/water/data/services/water_service.dart';
 import 'src/features/water/presentation/providers/water_provider.dart';
 import 'src/features/sleep/data/services/sleep_service.dart';
 import 'src/features/sleep/presentation/providers/sleep_provider.dart';
@@ -37,13 +31,13 @@ Future<void> main() async {
   await _initFirebase();
   await Hive.initFlutter();
   await Future.wait([
-    Hive.openBox('settings'),
-    Hive.openBox('user_data'),
-    Hive.openBox('workouts'),
-    Hive.openBox('nutrition'),
-    Hive.openBox('water'),
-    Hive.openBox('sleep'),
-    Hive.openBox('progress'),
+    Hive.openBox<dynamic>('settings'),
+    Hive.openBox<dynamic>('user_data'),
+    Hive.openBox<dynamic>('workouts'),
+    Hive.openBox<dynamic>('nutrition'),
+    Hive.openBox<dynamic>('water'),
+    Hive.openBox<dynamic>('sleep'),
+    Hive.openBox<dynamic>('progress'),
   ]);
 
   await EasyLocalization.ensureInitialized();

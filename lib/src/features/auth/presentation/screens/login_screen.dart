@@ -1,4 +1,3 @@
-// ignore_for_file: deprecated_member_use, use_if_null_to_convert_nulls_to_bools, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -97,7 +96,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _emailController,
-                  validator: (v) => v?.isEmpty == true ? 'Email required' : null,
+                  validator: (v) => (v?.isEmpty ?? true) ? 'Email required' : null,
                   keyboardType: TextInputType.emailAddress,
                   style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
                   decoration: InputDecoration(
@@ -125,7 +124,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _passwordController,
-                  validator: (v) => v?.isEmpty == true ? 'Password required' : null,
+                  validator: (v) => (v?.isEmpty ?? true) ? 'Password required' : null,
                   obscureText: _obscurePassword,
                   style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
                   decoration: InputDecoration(

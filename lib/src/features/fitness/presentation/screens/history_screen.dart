@@ -1,12 +1,6 @@
 // ─── history_screen.dart ───────────────────────────────────────────────────
-// ignore_for_file: unnecessary_import
-
-import 'package:fit_tracker/src/imports/core_imports.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
-import 'package:fit_tracker/src/features/fitness/data/models/fitness_models.dart';
+import 'package:fit_tracker/src/imports/core_imports.dart';import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';import 'package:fit_tracker/src/features/fitness/data/models/fitness_models.dart';
 import 'package:fit_tracker/src/features/fitness/presentation/providers/fitness_providers.dart';
 import 'package:fit_tracker/src/features/fitness/presentation/widgets/fitness_widgets.dart';
 

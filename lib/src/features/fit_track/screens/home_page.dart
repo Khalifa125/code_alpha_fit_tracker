@@ -1,25 +1,9 @@
-// ignore_for_file: deprecated_member_use, unused_import, prefer_const_constructors, inference_failure_on_function_invocation
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:intl/intl.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:fit_tracker/src/features/fitness/data/models/fitness_models.dart';
-import 'package:fit_tracker/src/features/fitness/presentation/providers/fitness_providers.dart';
-import 'package:fit_tracker/src/features/fitness/presentation/screens/workout_plans_screen.dart';
-import 'package:fit_tracker/src/features/fitness/presentation/screens/bmi_screen.dart';
-import 'package:fit_tracker/src/features/fitness/presentation/screens/history_screen.dart';
-import 'package:fit_tracker/src/features/profile/presentation/screens/profile_screen.dart'
-    as app_profile;
-import 'package:fit_tracker/src/features/auth/presentation/providers/auth_provider.dart'
-    as app_auth;
-import 'package:fit_tracker/src/features/nutrition/presentation/providers/nutrition_provider.dart';
-import 'package:fit_tracker/src/features/water/presentation/screens/water_tracking_screen.dart';
-import 'package:fit_tracker/src/features/sleep/presentation/screens/sleep_tracking_screen.dart';
-import 'package:fit_tracker/src/features/heart_rate/presentation/screens/heart_rate_screen.dart';
-import 'package:fit_tracker/src/theme/app_spacing.dart';
+
 import 'package:fit_tracker/src/theme/fit_colors.dart';
 import 'package:fit_tracker/src/features/fit_track/providers/workout_provider.dart';
 import 'package:fit_tracker/src/features/fit_track/providers/auth_provider.dart'
@@ -27,6 +11,9 @@ import 'package:fit_tracker/src/features/fit_track/providers/auth_provider.dart'
 import 'package:fit_tracker/src/features/fit_track/screens/workout_session_screen.dart';
 import 'package:fit_tracker/src/features/fit_track/screens/profile_screen.dart'
     as fit_track_profile;
+import 'package:fit_tracker/src/features/water/presentation/screens/water_tracking_screen.dart';
+import 'package:fit_tracker/src/features/sleep/presentation/screens/sleep_tracking_screen.dart';
+import 'package:fit_tracker/src/features/heart_rate/presentation/screens/heart_rate_screen.dart';
 
 class FitTrackHomePage extends ConsumerWidget {
   const FitTrackHomePage({super.key});

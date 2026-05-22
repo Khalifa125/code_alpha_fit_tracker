@@ -1,4 +1,3 @@
-// ignore_for_file: use_if_null_to_convert_nulls_to_bools, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -68,7 +67,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
             children: [
               TextFormField(
                 controller: _nameController,
-                validator: (v) => v?.isEmpty == true ? 'Name required' : null,
+                validator: (v) => (v?.isEmpty ?? true) ? 'Name required' : null,
                 style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
                 decoration: InputDecoration(
                   hintText: 'Full name',
@@ -84,7 +83,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _emailController,
-                validator: (v) => v?.isEmpty == true ? 'Email required' : null,
+                validator: (v) => (v?.isEmpty ?? true) ? 'Email required' : null,
                 keyboardType: TextInputType.emailAddress,
                 style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
                 decoration: InputDecoration(
@@ -101,7 +100,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _passwordController,
-                validator: (v) => v?.isEmpty == true ? 'Password required' : null,
+                validator: (v) => (v?.isEmpty ?? true) ? 'Password required' : null,
                 obscureText: _obscurePassword,
                 style: TextStyle(color: isDark ? FitColors.textPrimaryDark : FitColors.textPrimaryLight),
                 decoration: InputDecoration(

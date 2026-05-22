@@ -1,5 +1,6 @@
 import 'package:fit_tracker/src/imports/core_imports.dart';
 import 'package:fit_tracker/src/imports/packages_imports.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:fit_tracker/src/features/auth/presentation/providers/session_provider.dart';
 

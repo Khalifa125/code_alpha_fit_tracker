@@ -1,10 +1,8 @@
-// ignore_for_file: unused_field
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fit_tracker/src/features/settings/presentation/screens/settings_screen.dart';
 
 class SettingsRepository {
-  static const _notificationKey = 'notification_settings';
   static const _workoutRemindersKey = 'workout_reminders';
   static const _dailyGoalsKey = 'daily_goals';
   static const _motivationKey = 'motivation_notifications';

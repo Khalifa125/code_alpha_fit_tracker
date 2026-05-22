@@ -1,14 +1,7 @@
-// ignore_for_file: deprecated_member_use, prefer_const_constructors, unnecessary_import, inference_failure_on_function_invocation
-
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fit_tracker/src/theme/fit_colors.dart';
-import 'package:fit_tracker/src/imports/core_imports.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';import 'package:fit_tracker/src/imports/core_imports.dart';
 import 'package:fit_tracker/src/features/settings/presentation/providers/theme_provider.dart';
 import 'package:fit_tracker/src/features/settings/data/repositories/settings_repository.dart';
-import 'package:fit_tracker/src/shared/widgets/glass_container.dart';
-
 final settingsRepoProvider = Provider<SettingsRepository>((ref) => SettingsRepository());
 
 final notificationSettingsProvider = NotifierProvider<NotificationSettingsNotifier, NotificationSettings>(() => NotificationSettingsNotifier());
@@ -150,7 +143,7 @@ class SettingsScreen extends ConsumerWidget {
                       trailing: Switch(
                         value: notificationSettings.workoutReminders,
                         onChanged: (v) => ref.read(notificationSettingsProvider.notifier).setWorkoutReminders(v),
-                        activeColor: FitColors.neonGreen,
+                        activeThumbColor: FitColors.neonGreen,
                       ),
                     ),
                     _SettingsTile(
@@ -160,7 +153,7 @@ class SettingsScreen extends ConsumerWidget {
                       trailing: Switch(
                         value: notificationSettings.dailyGoals,
                         onChanged: (v) => ref.read(notificationSettingsProvider.notifier).setDailyGoals(v),
-                        activeColor: FitColors.neonGreen,
+                        activeThumbColor: FitColors.neonGreen,
                       ),
                     ),
                     _SettingsTile(
@@ -170,7 +163,7 @@ class SettingsScreen extends ConsumerWidget {
                       trailing: Switch(
                         value: notificationSettings.motivationNotifications,
                         onChanged: (v) => ref.read(notificationSettingsProvider.notifier).setMotivationNotifications(v),
-                        activeColor: FitColors.neonGreen,
+                        activeThumbColor: FitColors.neonGreen,
                       ),
                     ),
                     _SettingsTile(
@@ -228,7 +221,7 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   void _showIntervalPicker(BuildContext context, WidgetRef ref, int current) {
-    showModalBottomSheet(
+    showModalBottomSheet<dynamic>(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) => _GlassBottomSheet(
@@ -260,7 +253,7 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   void _showLanguagePicker(BuildContext context) {
-    showModalBottomSheet(
+    showModalBottomSheet<dynamic>(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) => _GlassBottomSheet(

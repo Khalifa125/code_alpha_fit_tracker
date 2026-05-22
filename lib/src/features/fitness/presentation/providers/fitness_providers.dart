@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_int_literals
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fit_tracker/src/features/fitness/data/models/fitness_models.dart';
@@ -113,7 +112,7 @@ final dailySummaryProvider =
   final totalSteps = hasPedometer ? pedometerSteps : activitySteps;
   
   return DailySummary(
-    totalCalories: activities.fold(0.0, (sum, a) => sum + a.caloriesBurned),
+    totalCalories: activities.fold<double>(0, (sum, a) => sum + a.caloriesBurned),
     totalSteps: totalSteps,
     totalMinutes: activities.fold(0, (sum, a) => sum + a.durationMinutes),
     activityCount: activities.length,

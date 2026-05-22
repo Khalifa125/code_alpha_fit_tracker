@@ -84,6 +84,9 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
 
+  # Splash screen
+  flutter_native_splash: ^2.3.10
+
   # Maps (OpenStreetMap - no API key required)
   flutter_map: ^7.0.2
   latlong2: ^0.9.1
@@ -100,9 +103,6 @@ dev_dependencies:
 
   # Icons generator
   flutter_launcher_icons: ^0.14.4
-
-  # Splash screen
-  flutter_native_splash: ^2.3.10
 
   # Internationalization
   intl_utils: ^2.8.7

@@ -1,4 +1,3 @@
-// ignore_for_file: deprecated_member_use, use_if_null_to_convert_nulls_to_bools, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -87,7 +86,7 @@ class ProfileScreen extends ConsumerWidget {
                         ),
                         child: Center(
                           child: Text(
-                            user?.name.isNotEmpty == true ? user!.name[0].toUpperCase() : 'U',
+                            (user?.name.isNotEmpty ?? true) ? user!.name[0].toUpperCase() : 'U',
                             style: const TextStyle(
                               color: FitColors.neonGreen,
                               fontSize: 32,

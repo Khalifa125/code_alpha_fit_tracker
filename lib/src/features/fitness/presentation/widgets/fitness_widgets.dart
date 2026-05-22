@@ -1,10 +1,8 @@
-// ignore_for_file: deprecated_member_use, unused_import
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:fit_tracker/src/features/fitness/domain/entities/fitness_entities.dart';
-import 'package:fit_tracker/src/theme/app_spacing.dart';
 import 'package:fit_tracker/src/theme/fit_colors.dart';
 
 // ─── Muscle Group Indicator ─────────────────────────────────────────────────
