@@ -86,7 +86,7 @@ class ProfileScreen extends ConsumerWidget {
                         ),
                         child: Center(
                           child: Text(
-                            (user?.name.isNotEmpty ?? true) ? user!.name[0].toUpperCase() : 'U',
+                            (user != null && user.name.isNotEmpty) ? user.name[0].toUpperCase() : 'U',
                             style: const TextStyle(
                               color: FitColors.neonGreen,
                               fontSize: 32,
