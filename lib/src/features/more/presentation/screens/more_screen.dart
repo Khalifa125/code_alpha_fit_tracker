@@ -56,7 +56,8 @@ class MoreScreen extends ConsumerWidget {
                 subtitle: themeMode == ThemeMode.dark ? 'On' : 'Off',
                 trailing: Switch(
                   value: themeMode == ThemeMode.dark,
-                  activeThumbColor: FitColors.neonGreen,
+                  // ignore: deprecated_member_use
+                  activeColor: FitColors.neonGreen,
                   onChanged: (v) => ref.read(themeProvider.notifier).setThemeMode(
                     v ? ThemeMode.dark : ThemeMode.light,
                   ),

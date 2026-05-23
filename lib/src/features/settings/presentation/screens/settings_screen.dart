@@ -143,7 +143,8 @@ class SettingsScreen extends ConsumerWidget {
                       trailing: Switch(
                         value: notificationSettings.workoutReminders,
                         onChanged: (v) => ref.read(notificationSettingsProvider.notifier).setWorkoutReminders(v),
-                        activeThumbColor: FitColors.neonGreen,
+                        // ignore: deprecated_member_use
+                        activeColor: FitColors.neonGreen,
                       ),
                     ),
                     _SettingsTile(
@@ -153,7 +154,8 @@ class SettingsScreen extends ConsumerWidget {
                       trailing: Switch(
                         value: notificationSettings.dailyGoals,
                         onChanged: (v) => ref.read(notificationSettingsProvider.notifier).setDailyGoals(v),
-                        activeThumbColor: FitColors.neonGreen,
+                        // ignore: deprecated_member_use
+                        activeColor: FitColors.neonGreen,
                       ),
                     ),
                     _SettingsTile(
@@ -163,7 +165,8 @@ class SettingsScreen extends ConsumerWidget {
                       trailing: Switch(
                         value: notificationSettings.motivationNotifications,
                         onChanged: (v) => ref.read(notificationSettingsProvider.notifier).setMotivationNotifications(v),
-                        activeThumbColor: FitColors.neonGreen,
+                        // ignore: deprecated_member_use
+                        activeColor: FitColors.neonGreen,
                       ),
                     ),
                     _SettingsTile(
