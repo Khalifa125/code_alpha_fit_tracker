@@ -77,9 +77,6 @@ dependencies:
   http: ^1.4.0
   mobile_scanner: ^6.0.5
 
-  # Auth
-  google_sign_in: ^6.2.2
-
   # Local Storage
   hive: ^2.2.3
   hive_flutter: ^1.1.0

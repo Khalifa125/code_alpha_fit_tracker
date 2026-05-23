@@ -58,6 +58,8 @@
 		<string>Fit Track needs photo library access to save workout photos.</string>
 		<key>NSPhotoLibraryAddUsageDescription</key>
 		<string>Fit Track needs permission to save photos to your library.</string>
+		<key>NSNotificationUsageDescription</key>
+		<string>Fit Track sends notifications for workout reminders and daily motivation.</string>
 		<key>UIStatusBarHidden</key>
 		<true/>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
